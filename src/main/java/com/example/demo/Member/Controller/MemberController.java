@@ -22,8 +22,6 @@ public class MemberController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public boolean register(@RequestBody MemberRequestDTO memberRequestDTO) {
-        System.out.println("email: " + memberRequestDTO.getUserEmail());
-        System.out.println("password: " + memberRequestDTO.getPassword());
         return memberService.register(memberRequestDTO);
     }
 

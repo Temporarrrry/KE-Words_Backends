@@ -29,8 +29,6 @@ public class MemberServiceImpl implements MemberService {
     public SessionMember loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByUserEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 userName이 없습니다."));
-        System.out.println("email: " + member.getUserEmail());
-        System.out.println("password: " + member.getPassword());
         return new SessionMember(member);
     }
 
