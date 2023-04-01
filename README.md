@@ -31,6 +31,8 @@ https://www.figma.com/file/NzZZlpWP4BlfH117EJ48vR/KE-Words
 ### 개발 스택 (Used Stack)
 - Spring Security
 - Spring Data JPA
+- MySQL
+- AWS
 
 ### 참여 인원
 - 프론트엔드(1명)
