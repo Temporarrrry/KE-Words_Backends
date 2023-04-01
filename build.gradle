@@ -14,6 +14,10 @@ configurations {
 	}
 }
 
+jar {
+	enabled = false
+}
+
 repositories {
 	mavenCentral()
 }
@@ -47,4 +51,10 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+//github action 관련
+//https://bcp0109.tistory.com/363
+tasks.getByName('jar') {
+	enabled = false
 }
