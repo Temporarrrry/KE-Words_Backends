@@ -5,7 +5,6 @@ import com.example.demo.Member.Entity.SessionMember;
 import com.example.demo.Member.Repository.MemberRepository;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
