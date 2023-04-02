@@ -41,11 +41,14 @@ jobs:
                   java-version: '19'
 
             # (3) 배포용 application.yml 생성
+            - name: create application.yml check
+              uses: actions/checkout@v3
             - name: create application.yml
-            - uses: actions/checkout@v3
-            - run: touch ./src/main/resources/application.yml
-            - run: echo "${{env.APPLICATION}}" > ./src/main/resources/application.yml
-            - uses: actions/upload-artifact@v2
+              run: touch ./src/main/resources/application.yml
+            - name: copy to application.yml
+              run: echo "${{env.APPLICATION}}" > ./src/main/resources/application.yml
+            - name: upload application.yml
+              uses: actions/upload-artifact@v2
               with:
                 name: application.yml
                 path: ./src/main/resources/application.yml

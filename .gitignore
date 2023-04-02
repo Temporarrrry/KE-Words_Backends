@@ -38,4 +38,5 @@ out/
 
 
 #database setting
+application-dev.yml
 application-prod.yml
