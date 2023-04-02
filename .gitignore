@@ -38,4 +38,4 @@ out/
 
 
 #database setting
-application-datasource-secret.yml
+application-prod.yml
