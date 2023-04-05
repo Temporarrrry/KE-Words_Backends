@@ -1,12 +1,11 @@
 #이 파일은 개발 시 사용하는 파일, 배포용 설정은 github secret에 존재하며 github action을 통해 포함
+#TODO profiles 설정을 하면 db가 연결되지 않는 문제가 있음
 spring:
-    config:
-        activate:
-            on-profile: dev
+    #config:
+        #activate:
+            #on-profile: dev
 
     datasource:
-        #url: jdbc:mysql://localhost:3306/mysql_database?characterEncoding=UTF-8&serverTimezone=UTC
-        #driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:h2:tcp://localhost/~/test
         driver-class-name: org.h2.Driver
         username: sa
@@ -18,6 +17,3 @@ spring:
         properties:
             hibernate:
                 format_sql: true
-
-        #database: mysql
-        #database-platform: org.hibernate.dialect.MySQL8Dialect

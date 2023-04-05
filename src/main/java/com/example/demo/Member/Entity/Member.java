@@ -2,16 +2,10 @@ package com.example.demo.Member.Entity;
 
 import com.example.demo.Member.Common.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 @Getter
 @Setter

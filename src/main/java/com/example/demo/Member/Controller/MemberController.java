@@ -23,12 +23,12 @@ public class MemberController {
     private final ModelMapper modelMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {
-        if (memberService.register(memberRequestDTO)) return new ResponseEntity<>(HttpStatus.CREATED);
-        else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<String> register(@RequestBody MemberRequestDTO memberRequestDTO) {
+        if (memberService.register(memberRequestDTO)) return new ResponseEntity<>("ye", HttpStatus.CREATED);
+        else return new ResponseEntity<>("damn", HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/withdraw")
+    @RequestMapping(method = RequestMethod.POST, value = "/resign")
     public ResponseEntity<Void> resign(@AuthenticationPrincipal SessionMember sessionMember) {
         if (sessionMember == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST); //로그인 되지 않았을 때
 
@@ -38,7 +38,7 @@ public class MemberController {
     }
     //READ
 
-    @RequestMapping(method = RequestMethod.GET, value = "/userEmailCheck")
+    @RequestMapping(method = RequestMethod.GET, value = "/userEmailDuplicatedCheck")
     public ResponseEntity<Void> userEmailDuplicatedCheck(String userEmail) {
 
         if (memberService.userEmailDupCheck(userEmail)) return new ResponseEntity<>(HttpStatus.CONFLICT);
