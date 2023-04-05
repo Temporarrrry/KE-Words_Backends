@@ -17,11 +17,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean register(MemberRequestDTO memberRequestDTO) {
-        if (duplicateUserEmail(memberRequestDTO.getUserEmail())) return false;
+        if (userEmailDupCheck(memberRequestDTO.getUserEmail())) return false;
 
         memberRequestDTO.setPassword(passwordEncoder.encode(memberRequestDTO.getPassword()));
         memberRepository.save(memberRequestDTO.toEntity());
         return true;
+    }
+
+    @Override
+    public boolean userEmailDupCheck(String userEmail) {
+        return memberRepository.existsByUserEmail(userEmail);
     }
 
     @Override
@@ -35,10 +40,5 @@ public class MemberServiceImpl implements MemberService {
     public boolean resign(MemberRequestDTO memberRequestDTO) {
         memberRepository.delete(memberRequestDTO.toEntity());
         return true;
-    }
-
-    @Override
-    public boolean duplicateUserEmail(String userEmail) {
-        return memberRepository.existsByUserEmail(userEmail);
     }
 }

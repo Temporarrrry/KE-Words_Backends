@@ -1,11 +1,13 @@
 package com.example.demo.Member.Controller;
 
-import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.SessionMember;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.dto.MemberRequestDTO;
+import com.example.demo.Member.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +23,34 @@ public class MemberController {
     private final ModelMapper modelMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public boolean register(@RequestBody MemberRequestDTO memberRequestDTO) {
-        return memberService.register(memberRequestDTO);
+    public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {
+        if (memberService.register(memberRequestDTO)) return new ResponseEntity<>(HttpStatus.CREATED);
+        else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/withdraw")
-    public boolean resign(@AuthenticationPrincipal SessionMember sessionMember) {
-        return memberService.resign(modelMapper.map(sessionMember.getMember(), MemberRequestDTO.class));
+    public ResponseEntity<Void> resign(@AuthenticationPrincipal SessionMember sessionMember) {
+        if (sessionMember == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST); //로그인 되지 않았을 때
+
+        if (memberService.resign(modelMapper.map(sessionMember.getMember(), MemberRequestDTO.class)))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    //READ
+
+    @RequestMapping(method = RequestMethod.GET, value = "/userEmailCheck")
+    public ResponseEntity<Void> userEmailDuplicatedCheck(String userEmail) {
+
+        if (memberService.userEmailDupCheck(userEmail)) return new ResponseEntity<>(HttpStatus.CONFLICT);
+        else return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST, value = "/getMemberInform")
+    public ResponseEntity<MemberResponseDTO> getMemberInform(@AuthenticationPrincipal SessionMember sessionMember) {
+        if (sessionMember == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        MemberResponseDTO memberResponseDTO = modelMapper.map(sessionMember, MemberResponseDTO.class);
+        return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
     }
 }

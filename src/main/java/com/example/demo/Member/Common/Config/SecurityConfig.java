@@ -1,6 +1,6 @@
 package com.example.demo.Member.Common.Config;
 
-import com.example.demo.Member.Service.MemberService;
+import com.example.demo.Member.Handler.LoginFailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,13 +34,15 @@ public class SecurityConfig {
 
         // 로그인 설정
         http.formLogin()
-                //.loginPage("/members/memberLogin") // 로그인하는 페이지를 지정할 때 사용, 일단 스프링 제공 기본 로그인 페이지 사용
+                .loginPage("/member/login") // 로그인하는 페이지를 지정할 때 사용
                 .usernameParameter("userId") // username을 userId로 지정
                 .passwordParameter("passwd") // password를 passwd로 지정
                 .loginProcessingUrl("/loginProc") //loginProc으로 들어오면 UserDetailsService 구현한 loadUser에 자동으로 들어감
-                .defaultSuccessUrl("/"); // 로그인에 성공했을 때 기본적으로 이동하는 페이지를 지정할 때 사용
-        //.failureUrl("/login"); //TODO 로그인에 실패 했을 때 이동하는 페이지, 일단 기본 로그인 페이지로 적용
-        //TODO successHandler랑 failureHandler 해야함
+                .defaultSuccessUrl("/") // 로그인에 성공했을 때 기본적으로 이동하는 페이지를 지정할 때 사용
+                //.successHandler(new LoginSuccessHandler()) //일단 굳이 필요없어 보임
+                .failureHandler(new LoginFailureHandler());
+                //.failureUrl("/login"); //로그인에 실패 했을 때 이동하는 페이지, 일단 기본 로그인 페이지로 적용
+
 
         // 로그아웃 설정
         http.logout()

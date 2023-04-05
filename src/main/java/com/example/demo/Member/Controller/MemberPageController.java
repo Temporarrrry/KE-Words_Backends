@@ -1,6 +1,5 @@
 package com.example.demo.Member.Controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,4 +9,7 @@ public class MemberPageController {
     public String register() {
         return "member/register";
     }
+
+    @GetMapping(value = "/member/login")
+    public String login() { return "/member/login"; }
 }
