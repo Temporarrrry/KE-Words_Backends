@@ -50,7 +50,7 @@ public class MemberController {
     public ResponseEntity<MemberResponseDTO> getMemberInform(@AuthenticationPrincipal SessionMember sessionMember) {
         if (sessionMember == null) return new ResponseEntity<>(null, HttpStatus.OK);
 
-        MemberResponseDTO memberResponseDTO = modelMapper.map(sessionMember, MemberResponseDTO.class);
+        MemberResponseDTO memberResponseDTO = modelMapper.map(sessionMember.getMember(), MemberResponseDTO.class);
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
     }
 }
