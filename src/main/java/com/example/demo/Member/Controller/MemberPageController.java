@@ -11,5 +11,5 @@ public class MemberPageController {
     }
 
     @GetMapping(value = "/member/login")
-    public String login() { return "member/login"; }
+    public String login() { return "loginPage"; }
 }

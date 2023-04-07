@@ -23,9 +23,9 @@ public class MemberController {
     private final ModelMapper modelMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public ResponseEntity<String> register(@RequestBody MemberRequestDTO memberRequestDTO) {
-        if (memberService.register(memberRequestDTO)) return new ResponseEntity<>("ye", HttpStatus.CREATED);
-        else return new ResponseEntity<>("damn", HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {
+        if (memberService.register(memberRequestDTO)) return new ResponseEntity<>(HttpStatus.CREATED);
+        else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
