@@ -17,3 +17,20 @@ spring:
         properties:
             hibernate:
                 format_sql: true
+
+
+
+
+#TODO github secret에 갱신해야함
+jwt:
+    accessToken:
+        tokenPrefix: 'Bearer '
+        headerName: 'Authorization'
+        secret: 'KEWordsSecretAccessKey'
+        expirationMs: 900000 # 1000 * 60 * 15 -> 15 minutes
+    refreshToken:
+        headerName: 'refreshToken'
+        secret: 'KEWordsSecretRefreshKey'
+        expirationMs: 1209600000 # 1000 * 60 * 60 * 24 * 14 -> 2 weeks
+
+#debug: true

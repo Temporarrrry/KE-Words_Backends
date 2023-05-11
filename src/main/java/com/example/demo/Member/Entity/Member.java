@@ -1,6 +1,6 @@
 package com.example.demo.Member.Entity;
 
-import com.example.demo.Member.Common.Entity.BaseTimeEntity;
+import com.example.demo.Common.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,17 +16,23 @@ public class Member extends BaseTimeEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String userEmail;
+    private String userEmail;
 
     @Column(nullable = false)
-    String password;
+    private String password;
+
+    //@Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 
     @Builder
-    public Member(String userEmail, String password) {
+    public Member(String userEmail, String password, Role role) {
         this.userEmail = userEmail;
         this.password = password;
+        this.role = role;
     }
 }

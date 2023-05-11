@@ -1,18 +1,20 @@
 package com.example.demo.Member.Entity;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SessionMember extends Member implements UserDetails {
+public class PrincipalDetails extends Member implements UserDetails {
 
     private Member member;
     private Map<String, Object> userAttributes;
 
-    public SessionMember(Member member) {
+    public PrincipalDetails(Member member) {
         this.member = member;
         this.userAttributes = new HashMap<>();
     }
@@ -24,7 +26,10 @@ public class SessionMember extends Member implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(member.getRole().name()));
+
+        return grantedAuthorities;
     }
 
     @Override

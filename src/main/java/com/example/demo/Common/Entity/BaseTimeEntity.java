@@ -1,4 +1,4 @@
-package com.example.demo.Member.Common.Entity;
+package com.example.demo.Common.Entity;
 
 
 import jakarta.persistence.EntityListeners;

@@ -1,4 +1,4 @@
-package com.example.demo.Member.Common.Config;
+package com.example.demo.Common.Config;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

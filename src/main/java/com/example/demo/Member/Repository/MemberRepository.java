@@ -13,8 +13,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     <S extends Member> S save(S entity);
 
     //DELETE
-    @Override
-    void delete(Member entity);
+
+
+    void deleteByUserEmail(String userEmail);
+
+
 
     //READ
     Optional<Member> findByUserEmail(String userEmail);
