@@ -28,7 +28,8 @@ public class MemberController {
         else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    //TODO refreshToken 삭제
+
+    @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
     public ResponseEntity<Void> resign(HttpServletRequest request) {
         Optional<String> OptionalAccessToken = jwtTokenProvider.getAccessTokenByRequest(request);
@@ -36,7 +37,7 @@ public class MemberController {
 
         String userEmail = jwtTokenProvider.getUserEmailByAccessToken(OptionalAccessToken.get());
         if (memberService.resign(new MemberRequestDTO(userEmail))) return new ResponseEntity<>(HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND); //TODO httpStatus 수정
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     //READ
 

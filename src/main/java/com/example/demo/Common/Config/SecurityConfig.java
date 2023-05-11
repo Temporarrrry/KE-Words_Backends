@@ -56,7 +56,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring().requestMatchers(
-                    "/member/register", // register 시에 security 미적용
+                    "/member/register", "/member/userEmailDuplicatedCheck", // register 시에 security 미적용
                     "/swagger-ui/**", "/v3/api-docs/**" // swagger-ui 보안 미적용
             );
         };
