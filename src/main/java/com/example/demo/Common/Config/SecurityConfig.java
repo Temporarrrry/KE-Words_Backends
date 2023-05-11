@@ -57,6 +57,7 @@ public class SecurityConfig {
         return web -> {
             web.ignoring().requestMatchers(
                     "/member/register", "/member/userEmailDuplicatedCheck", // register 시에 security 미적용
+                    "/", "/login", "/register", // 임시
                     "/swagger-ui/**", "/v3/api-docs/**" // swagger-ui 보안 미적용
             );
         };
@@ -72,6 +73,10 @@ public class SecurityConfig {
                         .and()
                 .formLogin().disable() // 폼 로그인 비활성화
                 .httpBasic().disable() //httpBasic 비활성화
+
+
+
+
 
                 // Rest api를 위해 server를 stateless하게 유지
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
