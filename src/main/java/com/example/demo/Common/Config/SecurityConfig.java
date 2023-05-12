@@ -51,10 +51,10 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring().requestMatchers(
-                    "/member/register", "/member/userEmailDuplicatedCheck", // register 시에 security 미적용
+                    "/api/member/register", "/api/member/userEmailDuplicatedCheck", // register 시에 security 미적용
                     "/swagger-ui/**", "/v3/api-docs/**", // swagger-ui 보안 미적용
                     "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/assets/**",
-                    "/resources/static/assets/**", "/index.html", "/home" // 임시
+                    "/resources/static/assets/**", "/index.html", "/home", "/temporal/**" // 임시
             );
         };
     }
@@ -71,9 +71,9 @@ public class SecurityConfig {
                 .httpBasic().disable() //httpBasic 비활성화
 
                 .authorizeHttpRequests()
-                .requestMatchers(
-                        "/", "/login", "/register"
-                ).permitAll()
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
+
                     .and()
 
 
@@ -113,6 +113,26 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    /*@Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterFilterRegistration(
+            AuthenticationManager authenticationManager
+    ) throws Exception {
+        FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(
+                new JwtAuthenticationFilter(
+                        accessTokenHeaderName,
+                        refreshTokenHeaderName,
+                        authenticationManager,
+                        jwtTokenProvider,
+                        jwtTokenService)
+        );
+        registrationBean.addUrlPatterns("/api/member/login");
+        registrationBean.setOrder(1);
+        registrationBean.setName("first");
+        return registrationBean;
+    }*/
+
 
 
     /*@Bean

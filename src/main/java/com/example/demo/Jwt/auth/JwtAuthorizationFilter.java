@@ -80,4 +80,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "처리되지 않은 에러입니다.");
         }
     }
+
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        System.out.println("author path: " + path);
+        return !path.startsWith("/api/");
+    }
 }
