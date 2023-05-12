@@ -25,7 +25,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -52,6 +52,7 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
@@ -66,12 +67,17 @@ public class SecurityConfig {
 
 
     @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception{
+    protected SecurityFilterChain filterChain(HttpSecurity http,
+                                              AuthenticationManager authenticationManager,
+                                              CorsConfigurationSource corsConfigurationSource) throws Exception{
 
         http
+                .cors() // cors 적용
+                    .and()
                 .csrf().disable() // csrf 비활성화
                 .headers().frameOptions().disable()
                         .and()
+
                 .formLogin().disable() // 폼 로그인 비활성화
                 .httpBasic().disable() //httpBasic 비활성화
 
@@ -112,49 +118,25 @@ public class SecurityConfig {
                                 accessTokenHeaderName,
                                 refreshTokenHeaderName,
                                 jwtTokenProvider,
-                                jwtTokenService),
+                                jwtTokenService,
+                                corsConfigurationSource),
                         UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
     }
 
-    /*@Bean
-    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterFilterRegistration(
-            AuthenticationManager authenticationManager
-    ) throws Exception {
-        FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(
-                new JwtAuthenticationFilter(
-                        accessTokenHeaderName,
-                        refreshTokenHeaderName,
-                        authenticationManager,
-                        jwtTokenProvider,
-                        jwtTokenService)
-        );
-        registrationBean.addUrlPatterns("/api/member/login");
-        registrationBean.setOrder(1);
-        registrationBean.setName("first");
-        return registrationBean;
-    }*/
-
-
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
-        config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
-        
-        /*config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
-        config.setAllowedMethods(Collections.singletonList("*"));*/
+        config.setAllowedMethods(Collections.singletonList("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
         source.registerCorsConfiguration("/api/**", config);
         source.registerCorsConfiguration("/login/proc", config);
 

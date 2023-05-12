@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.Optional;
 
-@CrossOrigin(originPatterns = "http://43.201.192.197:8080/**", maxAge = 3600)
+@CrossOrigin(originPatterns = "http://**", maxAge = 3600)
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor

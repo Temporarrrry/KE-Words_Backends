@@ -9,6 +9,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsProcessor;
+import org.springframework.web.cors.DefaultCorsProcessor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -20,12 +24,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final String refreshTokenHeaderName;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtTokenService jwtTokenService;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-    public JwtAuthorizationFilter(String accessTokenHeaderName, String refreshTokenHeaderName, JwtTokenProvider jwtTokenProvider, JwtTokenService jwtTokenService) {
+    public JwtAuthorizationFilter(String accessTokenHeaderName, String refreshTokenHeaderName, JwtTokenProvider jwtTokenProvider, JwtTokenService jwtTokenService, CorsConfigurationSource corsConfigurationSource) {
         this.accessTokenHeaderName = accessTokenHeaderName;
         this.refreshTokenHeaderName = refreshTokenHeaderName;
         this.jwtTokenProvider = jwtTokenProvider;
         this.jwtTokenService = jwtTokenService;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Override
@@ -33,6 +39,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             System.out.println("authorization 시작");
             System.out.println("url: " + request.getRequestURL());
+
+            //CORS 설정
+            CorsConfiguration corsConfiguration = corsConfigurationSource.getCorsConfiguration(request);
+            if (corsConfiguration != null) {
+                CorsProcessor corsProcessor = new DefaultCorsProcessor();
+                corsProcessor.processRequest(corsConfiguration, request, response);
+            }
+
 
             Optional<String> accessTokenByRequest = jwtTokenProvider.getAccessTokenByRequest(request);
 
@@ -84,8 +98,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getServletPath();
-        System.out.println("author path: " + path);
-        return !path.startsWith("/api/");
+        StringBuffer requestURL = request.getRequestURL();
+        System.out.println("author requestURL: " + requestURL);
+        return !requestURL.toString().startsWith("/api/");
     }
 }
