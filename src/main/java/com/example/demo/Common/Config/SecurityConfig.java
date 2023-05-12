@@ -21,11 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -58,17 +54,14 @@ public class SecurityConfig {
         return web -> {
             web.ignoring().requestMatchers(
                     "/api/member/register", "/api/member/userEmailDuplicatedCheck", // register 시에 security 미적용
-                    "/swagger-ui/**", "/v3/api-docs/**", // swagger-ui 보안 미적용
-                    "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/assets/**",
-                    "/resources/static/assets/**", "/index.html", "/home", "/temporal/**" // 임시
+                    "/swagger-ui/**", "/v3/api-docs/**" // swagger-ui 보안 미적용
             );
         };
     }
 
 
     @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity http,
-                                              AuthenticationManager authenticationManager,
+    protected SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager,
                                               CorsConfigurationSource corsConfigurationSource) throws Exception{
 
         http
@@ -80,14 +73,6 @@ public class SecurityConfig {
 
                 .formLogin().disable() // 폼 로그인 비활성화
                 .httpBasic().disable() //httpBasic 비활성화
-
-                .authorizeHttpRequests()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
-
-                    .and()
-
-
 
                 // Rest api를 위해 server를 stateless하게 유지
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -122,25 +107,7 @@ public class SecurityConfig {
                                 corsConfigurationSource),
                         UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Collections.singletonList("*"));
-        config.setAllowedHeaders(Collections.singletonList("*"));
-        config.setAllowedMethods(Collections.singletonList("*"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        source.registerCorsConfiguration("/api/**", config);
-        source.registerCorsConfiguration("/login/proc", config);
-
-        return source;
     }
 
     @Bean
@@ -156,5 +123,4 @@ public class SecurityConfig {
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
     }
-
 }

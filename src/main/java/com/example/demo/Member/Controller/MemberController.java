@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.Optional;
 
-@CrossOrigin(originPatterns = "http://**", maxAge = 3600)
+@CrossOrigin(originPatterns = "http://**", maxAge = 3600) //TODO originPatterns 수정
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -48,6 +48,7 @@ public class MemberController {
         else return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //filter에서 진행
     /*@RequestMapping(method = RequestMethod.POST, value = "/login")
     public ResponseEntity<MemberResponseDTO> login(@RequestBody MemberRequestDTO memberRequestDTO) {
         return new ResponseEntity<>(memberService.login(memberRequestDTO), HttpStatus.OK);

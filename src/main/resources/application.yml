@@ -21,7 +21,6 @@ spring:
 
 
 
-#TODO github secret에 갱신해야함
 jwt:
     accessToken:
         tokenPrefix: 'Bearer '
@@ -32,5 +31,12 @@ jwt:
         headerName: 'refreshToken'
         secret: 'KEWordsSecretRefreshKey'
         expirationMs: 1209600000 # 1000 * 60 * 60 * 24 * 14 -> 2 weeks
+
+Cors:
+    AllowedOriginPatterns: '*'
+    AllowedHeaders: '*'
+    AllowedMethods: '*'
+
+
 
 debug: true
