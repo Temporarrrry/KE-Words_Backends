@@ -32,6 +32,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             System.out.println("authorization 시작");
+            System.out.println("url: " + request.getRequestURL());
 
             Optional<String> accessTokenByRequest = jwtTokenProvider.getAccessTokenByRequest(request);
 
