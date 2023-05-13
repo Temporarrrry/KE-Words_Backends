@@ -54,7 +54,8 @@ public class SecurityConfig {
         return web -> {
             web.ignoring().requestMatchers(
                     "/api/member/register", "/api/member/userEmailDuplicatedCheck", // register 시에 security 미적용
-                    "/swagger-ui/**", "/v3/api-docs/**" // swagger-ui 보안 미적용
+                    "/swagger-ui/**", "/v3/api-docs/**", // swagger-ui 보안 미적용
+                    "/assets/**"
             );
         };
     }
