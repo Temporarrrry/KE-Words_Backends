@@ -36,8 +36,6 @@ public class SecurityConfig {
 
     private final JwtTokenService jwtTokenService;
 
-
-
     @Bean
     public PasswordEncoder passwordEncoder(){ // bean이면 spring security에서 자동으로 적용해줌
         return new BCryptPasswordEncoder();
