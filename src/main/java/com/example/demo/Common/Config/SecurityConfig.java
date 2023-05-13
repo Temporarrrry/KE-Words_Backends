@@ -66,7 +66,8 @@ public class SecurityConfig {
                                               CorsConfigurationSource corsConfigurationSource) throws Exception{
 
         http
-                .cors() // cors 적용
+                .cors()
+                .configurationSource(corsConfigurationSource)// cors 적용
                     .and()
                 .csrf().disable() // csrf 비활성화
                 .headers().frameOptions().disable()
