@@ -47,7 +47,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 corsProcessor.processRequest(corsConfiguration, request, response);
             }
 
-
             Optional<String> accessTokenByRequest = jwtTokenProvider.getAccessTokenByRequest(request);
 
             if (accessTokenByRequest.isPresent()) { // accessToken이 존재하는 경우
