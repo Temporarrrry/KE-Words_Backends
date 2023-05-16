@@ -3,6 +3,7 @@ package com.example.demo.Jwt.Service;
 import com.example.demo.Jwt.Entity.RefreshToken;
 import com.example.demo.Jwt.Exception.RefreshTokenNotExistException;
 import com.example.demo.Jwt.Repository.RefreshTokenRepository;
+import com.example.demo.Jwt.auth.JwtToken;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshTokenRepository.findByUserEmail(userEmail).orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
     }
 
-    public String reIssueAccessToken(String refreshToken) throws Exception {
-        jwtTokenProvider.validateRefreshToken(refreshToken);
-
+    public JwtToken reIssueTokens(String refreshToken) throws Exception {
         String userEmail = jwtTokenProvider.getUserEmailByRefreshToken(refreshToken);
-        return jwtTokenProvider.createAccessToken(userEmail);
+        return new JwtToken(jwtTokenProvider.createAccessToken(userEmail), jwtTokenProvider.createRefreshToken(userEmail));
     }
 }

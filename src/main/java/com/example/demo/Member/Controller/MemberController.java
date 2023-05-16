@@ -42,8 +42,8 @@ public class MemberController {
     }
     //READ
 
-    @RequestMapping(method = RequestMethod.POST, value = "/userEmailDuplicatedCheck")
-    public ResponseEntity<Void> userEmailDuplicatedCheck(String userEmail) {
+    @RequestMapping(method = RequestMethod.GET, value = "/userEmailDuplicatedCheck")
+    public ResponseEntity<Void> userEmailDuplicatedCheck(@RequestBody String userEmail) {
         if (memberService.userEmailDupCheck(userEmail)) return new ResponseEntity<>(HttpStatus.CONFLICT);
         else return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -64,10 +64,5 @@ public class MemberController {
 
         MemberResponseDTO memberResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/temp")
-    public ResponseEntity<Void> temp() {
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

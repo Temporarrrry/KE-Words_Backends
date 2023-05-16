@@ -1,6 +1,8 @@
 package com.example.demo.Jwt.Controller;
 
+import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
 import com.example.demo.Jwt.Service.RefreshTokenService;
+import com.example.demo.Jwt.auth.JwtToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,9 @@ public class RefreshTokenController {
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/reIssue")
-    public ResponseEntity<String> reIssueAccessToken(@RequestBody String refreshToken) throws Exception {
-        String accessToken = refreshTokenService.reIssueAccessToken(refreshToken);
-        return new ResponseEntity<>(accessToken, HttpStatus.OK);
+    public ResponseEntity<JwtToken> reIssueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) throws Exception {
+        String refreshToken = refreshTokenRequestDTO.getRefreshToken();
+        JwtToken jwtToken = refreshTokenService.reIssueTokens(refreshToken);
+        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }
 }

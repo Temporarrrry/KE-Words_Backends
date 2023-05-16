@@ -84,8 +84,9 @@ public class JwtTokenProvider {
     }
 
 
-    public String getUserEmailByRefreshToken(String token) {
-        return Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getUserEmailByRefreshToken(String refreshToken) throws Exception {
+        validateRefreshToken(refreshToken);
+        return Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(refreshToken).getBody().getSubject();
     }
 
 
@@ -104,7 +105,7 @@ public class JwtTokenProvider {
         String refreshToken = request.getHeader(refreshTokenHeaderName);
         if (refreshToken == null) return Optional.empty();
 
-        return Optional.of(refreshToken);
+        return Optional.of(refreshToken.replace(tokenPrefix, ""));
     }
 
 
@@ -113,7 +114,6 @@ public class JwtTokenProvider {
         try{
             Jws<Claims> claims = Jwts.parser().setSigningKey(accessTokenSecretKey).parseClaimsJws(accessToken);
         } catch (ExpiredJwtException e) {
-            System.out.println("access Ex");
             throw new AccessTokenExpiredException();
         }
     }

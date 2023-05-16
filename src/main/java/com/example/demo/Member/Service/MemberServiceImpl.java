@@ -79,6 +79,7 @@ public class MemberServiceImpl implements MemberService {
     //DELETE
     @Override
     public boolean resign(MemberRequestDTO memberRequestDTO) {
+        //TODO accessToken 비활성화
         refreshTokenService.deleteByEmail(memberRequestDTO.getUserEmail());
         memberRepository.deleteByUserEmail(memberRequestDTO.getUserEmail());
         return true;
