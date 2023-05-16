@@ -68,12 +68,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
 
-    @Override
+    /*@Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURL = request.getRequestURL().toString();
         System.out.println("author requestURL: " + requestURL);
-        return !requestURL.startsWith("/api/");
-    }
-
-
+        return requestURL.startsWith("/api/");
+    }*/
 }
