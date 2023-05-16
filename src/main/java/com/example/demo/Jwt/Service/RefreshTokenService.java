@@ -1,7 +1,9 @@
 package com.example.demo.Jwt.Service;
 
 
-public interface JwtTokenService {
+import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
+
+public interface RefreshTokenService {
 
     void saveOrUpdate(String userEmail, String refreshToken);
 
@@ -9,5 +11,5 @@ public interface JwtTokenService {
 
     String findByEmail(String userEmail);
 
-
+    String reIssueAccessToken(String refreshToken) throws Exception;
 }

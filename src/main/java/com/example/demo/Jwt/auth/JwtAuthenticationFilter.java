@@ -1,7 +1,9 @@
 package com.example.demo.Jwt.auth;
 
-import com.example.demo.Jwt.Service.JwtTokenService;
+import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Member.Entity.PrincipalDetails;
+import com.example.demo.Member.Exception.MemberNotExistException;
+import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -9,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -24,14 +28,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtTokenService jwtTokenService;
+    private final RefreshTokenService refreshTokenService;
+    private final MemberService memberService;
 
-    public JwtAuthenticationFilter(String accessTokenHeaderName, String refreshTokenHeaderName, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, JwtTokenService jwtTokenService) throws Exception {
+    public JwtAuthenticationFilter(String accessTokenHeaderName, String refreshTokenHeaderName, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService, MemberService memberService) throws Exception {
         this.accessTokenHeaderName = accessTokenHeaderName;
         this.refreshTokenHeaderName = refreshTokenHeaderName;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.jwtTokenService = jwtTokenService;
+        this.refreshTokenService = refreshTokenService;
+        this.memberService = memberService;
 
         setFilterProcessesUrl("/api/member/login");
     }
@@ -39,12 +45,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         System.out.println("attempt authentication");
-        ObjectMapper mapper = new ObjectMapper();
         MemberRequestDTO memberRequestDTO = null;
 
         try {
             // 이 부분을 위해서 MemberRequestDTO에 NoArgsConStructor가 필요함
-            memberRequestDTO = mapper.readValue(request.getInputStream(), MemberRequestDTO.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            memberRequestDTO = objectMapper.readValue(request.getInputStream(), MemberRequestDTO.class);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -67,11 +73,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = jwtTokenProvider.createAccessToken(principalDetails.getUsername());
         String refreshToken = jwtTokenProvider.createRefreshToken(principalDetails.getUsername());
 
+        refreshTokenService.saveOrUpdate(principalDetails.getUsername(), refreshToken); // 새로 발급한 refreshToken 저장
 
-        jwtTokenService.saveOrUpdate(principalDetails.getUsername(), refreshToken);
+        Long id = memberService.findIdByUserEmail(principalDetails.getUsername())
+                .orElseThrow(MemberNotExistException::new);
 
-        response.addHeader(accessTokenHeaderName, accessToken);
-        response.addHeader(refreshTokenHeaderName, refreshToken);
+        // body에 tokens
+        HashMap<String, Object> responseBodyWriting = new HashMap<>();
+        responseBodyWriting.put("id", id); // body에 userId 추가
+        responseBodyWriting.put(accessTokenHeaderName, accessToken); //body에 accessToken 추가
+        responseBodyWriting.put(refreshTokenHeaderName, refreshToken); //body에 refreshToken 추가
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE); // body type 설정
+        response.getWriter().print(responseBodyWriting); //body에 작성
+
+
+        // header에 tokens 작성
+        //response.addHeader(accessTokenHeaderName, accessToken);
+        //response.addHeader(refreshTokenHeaderName, refreshToken);
         response.setStatus(HttpStatus.OK.value());
     }
 

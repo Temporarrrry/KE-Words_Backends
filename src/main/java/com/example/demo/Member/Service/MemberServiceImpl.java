@@ -1,6 +1,6 @@
 package com.example.demo.Member.Service;
 
-import com.example.demo.Jwt.Service.JwtTokenService;
+import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.PrincipalDetails;
 import com.example.demo.Member.Entity.Role;
@@ -9,9 +9,10 @@ import com.example.demo.Member.Repository.MemberRepository;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import com.example.demo.Member.dto.MemberResponseDTO;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,21 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
-    private final JwtTokenService jwtTokenService;
+    private PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
+
+    public MemberServiceImpl(MemberRepository memberRepository, RefreshTokenService refreshTokenService) {
+        this.memberRepository = memberRepository;
+        this.refreshTokenService = refreshTokenService;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        this.passwordEncoder = new BCryptPasswordEncoder();
+        return this.passwordEncoder;
+    }
 
 
     //CREATE
@@ -69,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
     //DELETE
     @Override
     public boolean resign(MemberRequestDTO memberRequestDTO) {
-        jwtTokenService.deleteByEmail(memberRequestDTO.getUserEmail());
+        refreshTokenService.deleteByEmail(memberRequestDTO.getUserEmail());
         memberRepository.deleteByUserEmail(memberRequestDTO.getUserEmail());
         return true;
     }
@@ -77,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
         Member member = memberRepository.findByUserEmail(memberRequestDTO.getUserEmail())
                 .orElseThrow(MemberNotExistException::new);
-
+        ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(member, MemberResponseDTO.class);
     }
 

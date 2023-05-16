@@ -3,14 +3,11 @@ package com.example.demo.Jwt.auth;
 import com.example.demo.Jwt.Exception.AccessTokenExpiredException;
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
-import com.example.demo.Member.Entity.PrincipalDetails;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -24,8 +21,8 @@ public class JwtTokenProvider {
     @Value("${jwt.accessToken.tokenPrefix}")
     private String tokenPrefix;
 
-    @Value("${jwt.accessToken.headerName}")
-    private String accessTokenHeaderName;
+    @Value("${jwt.accessToken.GettingHeaderName}")
+    private String accessTokenGettingHeaderName;
     @Value("${jwt.refreshToken.headerName}")
     private String refreshTokenHeaderName;
 
@@ -72,14 +69,17 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getUserEmailByAccessTokenRequest(HttpServletRequest request) {
+
+    public String getUserEmailByAccessTokenRequest(HttpServletRequest request) throws Exception {
         return getUserEmailByAccessToken(
                 getAccessTokenByRequest(request)
                         .orElseThrow(AccessTokenNotExistException::new)
         );
     }
 
-    public String getUserEmailByAccessToken(String accessToken) {
+
+    public String getUserEmailByAccessToken(String accessToken) throws Exception {
+        validateAccessToken(accessToken);
         return Jwts.parser().setSigningKey(accessTokenSecretKey).parseClaimsJws(accessToken).getBody().getSubject();
     }
 
@@ -88,46 +88,45 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public Authentication getAuthentication(PrincipalDetails principalDetails) {
+
+    /*public Authentication getAuthentication(PrincipalDetails principalDetails) {
         return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
-    }
+    }*/
 
     public Optional<String> getAccessTokenByRequest(HttpServletRequest request) {
-        String accessToken = request.getHeader(accessTokenHeaderName);
+        String accessToken = request.getHeader(accessTokenGettingHeaderName);
         if (accessToken == null) return Optional.empty();
 
         return Optional.of(accessToken.replace(tokenPrefix, ""));
     }
 
     public Optional<String> getRefreshTokenByRequest(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(refreshTokenHeaderName));
+        String refreshToken = request.getHeader(refreshTokenHeaderName);
+        if (refreshToken == null) return Optional.empty();
+
+        return Optional.of(refreshToken);
     }
 
 
 
-    public boolean validateAccessToken(String jwtToken) throws ExpiredJwtException {
+    public void validateAccessToken(String accessToken) throws AccessTokenExpiredException {
         try{
-            Jws<Claims> claims = Jwts.parser().setSigningKey(accessTokenSecretKey).parseClaimsJws(jwtToken);
-            return claims.getBody().getExpiration().after(new Date());
+            Jws<Claims> claims = Jwts.parser().setSigningKey(accessTokenSecretKey).parseClaimsJws(accessToken);
         } catch (ExpiredJwtException e) {
+            System.out.println("access Ex");
             throw new AccessTokenExpiredException();
-        } catch (Exception e) {
-            return false;
         }
     }
 
-    public boolean validateRefreshToken(String jwtToken) {
+    public void validateRefreshToken(String refreshToken) throws RefreshTokenExpiredException {
         try{
-            Jws<Claims> claims = Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(jwtToken);
-            return claims.getBody().getExpiration().after(new Date());
+            Jws<Claims> claims = Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(refreshToken);
         } catch (ExpiredJwtException e) {
             throw new RefreshTokenExpiredException();
-        } catch (Exception e) {
-            return false;
         }
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    /*public String resolveToken(HttpServletRequest request) {
         return request.getHeader("X-AUTH-TOKEN");
-    }
+    }*/
 }

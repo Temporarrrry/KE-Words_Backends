@@ -32,7 +32,7 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
-    public ResponseEntity<Void> resign(HttpServletRequest request) {
+    public ResponseEntity<Void> resign(HttpServletRequest request) throws Exception {
         Optional<String> OptionalAccessToken = jwtTokenProvider.getAccessTokenByRequest(request);
         if (OptionalAccessToken.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // accessToken이 존재하지 않을 때
 
@@ -58,11 +58,16 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.GET, value = "/info")
-    public ResponseEntity<MemberResponseDTO> getMemberInform(HttpServletRequest request, @RequestParam String email) {
+    public ResponseEntity<MemberResponseDTO> getMemberInform(HttpServletRequest request, @RequestParam String email) throws Exception {
         String userEmail = jwtTokenProvider.getUserEmailByAccessTokenRequest(request);
         if (!Objects.equals(userEmail, email)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         MemberResponseDTO memberResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
         return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/temp")
+    public ResponseEntity<Void> temp() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

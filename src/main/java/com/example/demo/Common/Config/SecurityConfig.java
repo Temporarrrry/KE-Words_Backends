@@ -1,9 +1,10 @@
 package com.example.demo.Common.Config;
 
-import com.example.demo.Jwt.Service.JwtTokenService;
+import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Jwt.auth.JwtAuthenticationFilter;
 import com.example.demo.Jwt.auth.JwtAuthorizationFilter;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
+import com.example.demo.Member.Service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,19 +26,16 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Value("${jwt.accessToken.headerName}")
-    private String accessTokenHeaderName;
+    @Value("${jwt.accessToken.SendingHeaderName}")
+    private String accessTokenSendingHeaderName;
     @Value("${jwt.refreshToken.headerName}")
     private String refreshTokenHeaderName;
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final JwtTokenService jwtTokenService;
+    private final RefreshTokenService refreshTokenService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){ // bean이면 spring security에서 자동으로 적용해줌
-        return new BCryptPasswordEncoder();
-    }
+    private final MemberService memberService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -73,6 +69,10 @@ public class SecurityConfig {
                 .formLogin().disable() // 폼 로그인 비활성화
                 .httpBasic().disable() //httpBasic 비활성화
 
+                /*.authorizeHttpRequests()
+                .anyRequest().authenticated()
+                    .and()*/
+
                 // Rest api를 위해 server를 stateless하게 유지
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
@@ -91,19 +91,20 @@ public class SecurityConfig {
                 //AuthenticationFilter
                 .addFilterBefore(
                         new JwtAuthenticationFilter(
-                                accessTokenHeaderName,
+                                accessTokenSendingHeaderName,
                                 refreshTokenHeaderName,
                                 authenticationManager,
                                 jwtTokenProvider,
-                                jwtTokenService),
+                                refreshTokenService,
+                                memberService
+                        ),
                         UsernamePasswordAuthenticationFilter.class)
                 //AuthorizationFilter
-                .addFilterAfter(new JwtAuthorizationFilter(
-                                accessTokenHeaderName,
-                                refreshTokenHeaderName,
+                .addFilterAfter(
+                        new JwtAuthorizationFilter(
                                 jwtTokenProvider,
-                                jwtTokenService,
-                                corsConfigurationSource),
+                                corsConfigurationSource
+                        ),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
