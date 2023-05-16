@@ -84,7 +84,7 @@ public class JwtTokenProvider {
     }
 
 
-    public String getUserEmailByRefreshToken(String refreshToken) throws Exception {
+    public String getUserEmailByRefreshToken(String refreshToken) throws RefreshTokenExpiredException {
         validateRefreshToken(refreshToken);
         return Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(refreshToken).getBody().getSubject();
     }

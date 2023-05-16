@@ -1,5 +1,6 @@
 package com.example.demo.Jwt.Controller;
 
+import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
 import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
 import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Jwt.auth.JwtToken;
@@ -17,8 +18,9 @@ public class RefreshTokenController {
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/reIssue")
-    public ResponseEntity<JwtToken> reIssueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) throws Exception {
+    public ResponseEntity<JwtToken> reIssueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) throws RefreshTokenExpiredException {
         String refreshToken = refreshTokenRequestDTO.getRefreshToken();
+
         JwtToken jwtToken = refreshTokenService.reIssueTokens(refreshToken);
         return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }

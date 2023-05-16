@@ -35,7 +35,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshTokenRepository.findByUserEmail(userEmail).orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
     }
 
-    public JwtToken reIssueTokens(String refreshToken) throws Exception {
+    public JwtToken reIssueTokens(String refreshToken) throws RefreshTokenNotExistException {
+
         String userEmail = jwtTokenProvider.getUserEmailByRefreshToken(refreshToken);
         return new JwtToken(jwtTokenProvider.createAccessToken(userEmail), jwtTokenProvider.createRefreshToken(userEmail));
     }
