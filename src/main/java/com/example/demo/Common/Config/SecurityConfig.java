@@ -45,7 +45,6 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
