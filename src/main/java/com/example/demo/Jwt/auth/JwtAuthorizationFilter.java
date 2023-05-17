@@ -19,11 +19,13 @@ import java.util.Optional;
 
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+    private final String origin;
     private final JwtTokenProvider jwtTokenProvider;
 
     private final CorsConfigurationSource corsConfigurationSource;
 
-    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, CorsConfigurationSource corsConfigurationSource) {
+    public JwtAuthorizationFilter(String origin, JwtTokenProvider jwtTokenProvider, CorsConfigurationSource corsConfigurationSource) {
+        this.origin = origin;
         this.jwtTokenProvider = jwtTokenProvider;
         this.corsConfigurationSource = corsConfigurationSource;
     }
@@ -68,10 +70,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
 
-    /*@Override
+    @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURL = request.getRequestURL().toString();
         System.out.println("author requestURL: " + requestURL);
-        return requestURL.startsWith("/api/");
-    }*/
+        return !requestURL.startsWith(origin + "/api/");
+    }
 }

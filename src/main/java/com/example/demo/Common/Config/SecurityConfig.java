@@ -31,6 +31,9 @@ public class SecurityConfig {
     @Value("${jwt.refreshToken.headerName}")
     private String refreshTokenHeaderName;
 
+    @Value("${spring.origin}")
+    private String origin;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final RefreshTokenService refreshTokenService;
@@ -99,6 +102,7 @@ public class SecurityConfig {
                 //AuthorizationFilter
                 .addFilterAfter(
                         new JwtAuthorizationFilter(
+                                origin,
                                 jwtTokenProvider,
                                 corsConfigurationSource
                         ),
