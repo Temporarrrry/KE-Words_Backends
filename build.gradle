@@ -61,6 +61,8 @@ dependencies {
 	// javax.xml.bind
 	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
+	//https://stackoverflow.com/questions/51384547/facing-hibernate-error-caused-by-java-lang-classnotfoundexception-net-bytebud
+	compileOnly 'net.bytebuddy:byte-buddy:1.14.5'
 }
 
 tasks.named('test') {
