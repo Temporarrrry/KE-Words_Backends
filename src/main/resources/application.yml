@@ -30,7 +30,7 @@ jwt:
         SendingHeaderName: 'accessToken'
         secret: 'KEWordsSecretAccessKey'
         #expirationMs: 900000 # 1000 * 60 * 15 -> 15 minutes
-        expirationMs: 10000 # 1000 * 10 -> 10 seconds for test
+        expirationMs: 1000000 # 1000 * 10 -> 10 seconds for test
     refreshToken:
         headerName: 'refreshToken'
         secret: 'KEWordsSecretRefreshKey'

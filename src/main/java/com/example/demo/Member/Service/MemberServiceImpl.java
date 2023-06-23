@@ -9,7 +9,6 @@ import com.example.demo.Member.Repository.MemberRepository;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import com.example.demo.Member.dto.MemberResponseDTO;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -88,8 +87,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
         Member member = memberRepository.findByUserEmail(memberRequestDTO.getUserEmail())
                 .orElseThrow(MemberNotExistException::new);
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(member, MemberResponseDTO.class);
+        return new MemberResponseDTO(member);
     }
 
 
