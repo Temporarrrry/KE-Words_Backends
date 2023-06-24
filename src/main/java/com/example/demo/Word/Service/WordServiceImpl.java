@@ -25,14 +25,13 @@ public class WordServiceImpl implements WordService {
         wordRepository.deleteByEnglish(wordRequestDTO.getEnglish());
     }
 
-
     @Override
-    public WordResponseDTO findWord() {
-        return new WordResponseDTO(wordRepository.findByRandom());
+    public WordResponseDTO findByEnglish(String english) {
+        return new WordResponseDTO(wordRepository.findByEnglish(english));
     }
 
     @Override
-    public List<WordResponseDTO> find10Words() {
-        return wordRepository.find10WordsByRandom().stream().map(WordResponseDTO::new).toList();
+    public List<WordResponseDTO> findWords(int count) {
+        return wordRepository.findWordsByRandom(count).stream().map(WordResponseDTO::new).toList();
     }
 }

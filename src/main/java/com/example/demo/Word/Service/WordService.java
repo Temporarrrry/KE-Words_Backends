@@ -9,6 +9,7 @@ public interface WordService {
 
     void saveWord(WordRequestDTO wordRequestDTO);
     void deleteWord(WordRequestDTO wordRequestDTO);
-    WordResponseDTO findWord();
-    List<WordResponseDTO> find10Words();
+
+    WordResponseDTO findByEnglish(String english);
+    List<WordResponseDTO> findWords(int count);
 }
