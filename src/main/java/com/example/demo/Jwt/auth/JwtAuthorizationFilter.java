@@ -8,6 +8,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsProcessor;
@@ -53,6 +55,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
             // accessToken이 존재하지 않는 경우 throw exception
             else throw new AccessTokenNotExistException();
+
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken(
+                        jwtTokenProvider.getUserEmailByAccessTokenRequest(request), null
+                    )
+            );
 
             chain.doFilter(request, response); //filter 계속 진행
 

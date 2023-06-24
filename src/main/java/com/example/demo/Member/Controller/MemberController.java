@@ -5,15 +5,14 @@ import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.dto.MemberEmailRequestDTO;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import com.example.demo.Member.dto.MemberResponseDTO;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @CrossOrigin(originPatterns = "http://**", maxAge = 3600) //TODO originPatterns 수정
 @RestController
@@ -33,11 +32,8 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
-    public ResponseEntity<Void> resign(HttpServletRequest request) throws Exception {
-        Optional<String> OptionalAccessToken = jwtTokenProvider.getAccessTokenByRequest(request);
-        if (OptionalAccessToken.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // accessToken이 존재하지 않을 때
-
-        String userEmail = jwtTokenProvider.getUserEmailByAccessToken(OptionalAccessToken.get());
+    public ResponseEntity<Void> resign(Authentication authentication) throws Exception {
+        String userEmail = ((String) authentication.getPrincipal());
         if (memberService.resign(new MemberRequestDTO(userEmail))) return new ResponseEntity<>(HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -60,8 +56,8 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.GET, value = "/info")
-    public ResponseEntity<MemberResponseDTO> getMemberInform(HttpServletRequest request, @RequestParam String email) throws Exception {
-        String userEmail = jwtTokenProvider.getUserEmailByAccessTokenRequest(request);
+    public ResponseEntity<MemberResponseDTO> getMemberInform(Authentication authentication, @RequestParam String email) throws Exception {
+        String userEmail = ((String) authentication.getPrincipal());
         if (!Objects.equals(userEmail, email)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         MemberResponseDTO memberResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
