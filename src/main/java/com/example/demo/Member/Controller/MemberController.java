@@ -1,6 +1,5 @@
 package com.example.demo.Member.Controller;
 
-import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.dto.MemberEmailRequestDTO;
 import com.example.demo.Member.dto.MemberRequestDTO;
@@ -21,7 +20,6 @@ import java.util.Objects;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {

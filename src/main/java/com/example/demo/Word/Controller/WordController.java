@@ -31,14 +31,15 @@ public class WordController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @RequestMapping(method = RequestMethod.GET, value = "/oneWord")
-    public ResponseEntity<WordResponseDTO> getOneWord() {
-        return new ResponseEntity<>(wordService.findWord(), HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.GET, value = "/findByEnglish")
+    public ResponseEntity<WordResponseDTO> findByEnglish(@RequestBody String english) {
+        return new ResponseEntity<>(wordService.findByEnglish(english), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/10Words")
-    public ResponseEntity<List<WordResponseDTO>> get10Words() {
-        return new ResponseEntity<>(wordService.find10Words(), HttpStatus.OK);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getWords")
+    public ResponseEntity<List<WordResponseDTO>> get10Words(@RequestBody int count) {
+        if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(wordService.findWords(count), HttpStatus.OK);
     }
 }
