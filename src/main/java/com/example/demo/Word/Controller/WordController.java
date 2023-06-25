@@ -32,7 +32,7 @@ public class WordController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByEnglish")
-    public ResponseEntity<WordResponseDTO> findByEnglish(@RequestBody String english) {
+    public ResponseEntity<WordResponseDTO> findByEnglish(@RequestParam(value = "english") String english) {
         return new ResponseEntity<>(wordService.findByEnglish(english), HttpStatus.OK);
     }
 
