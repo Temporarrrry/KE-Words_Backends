@@ -18,6 +18,6 @@ public interface WordRepository extends JpaRepository<Word, String> {
 
     Word findByEnglish(String english);
 
-    @Query(value = "select * from Word order by RAND() limit :count", nativeQuery = true)
+    @Query(value = "select * from word order by RAND() limit :count", nativeQuery = true)
     List<Word> findWordsByRandom(@Param("count") int count);
 }
