@@ -38,7 +38,7 @@ public class WordController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/getWords")
-    public ResponseEntity<List<WordResponseDTO>> get10Words(@RequestBody int count) {
+    public ResponseEntity<List<WordResponseDTO>> getWords(@RequestParam(value = "count") int count) {
         if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(wordService.findWords(count), HttpStatus.OK);
     }

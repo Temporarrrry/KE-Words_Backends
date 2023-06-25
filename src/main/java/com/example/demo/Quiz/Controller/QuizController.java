@@ -33,7 +33,7 @@ public class QuizController {
 
     //@Secured("ROLE_ADMIN")
     @RequestMapping(method = RequestMethod.POST, value = "/deleteQuiz")
-    public ResponseEntity<Void> deleteQuiz(@RequestBody Long id) {
+    public ResponseEntity<Void> deleteQuiz(@RequestParam(value = "id") Long id) {
         quizService.deleteQuizById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -46,7 +46,7 @@ public class QuizController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/findById")
-    public ResponseEntity<QuizResponseDTO> findById(Authentication authentication, @RequestBody Long id) {
+    public ResponseEntity<QuizResponseDTO> findById(Authentication authentication, @RequestParam(value = "id") Long id) {
         Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
                 .orElseThrow(MemberNotExistException::new);
         QuizResponseDTO quizResponseDTO = quizService.findById(id);
