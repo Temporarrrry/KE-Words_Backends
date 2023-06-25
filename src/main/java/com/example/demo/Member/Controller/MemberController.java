@@ -1,7 +1,6 @@
 package com.example.demo.Member.Controller;
 
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Member.dto.MemberEmailRequestDTO;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import com.example.demo.Member.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +37,8 @@ public class MemberController {
     //READ
 
     @RequestMapping(method = RequestMethod.GET, value = "/userEmailDuplicatedCheck")
-    public ResponseEntity<Void> userEmailDuplicatedCheck(@RequestBody MemberEmailRequestDTO memberEmailRequestDTO) {
-        if (memberService.userEmailDupCheck(memberEmailRequestDTO.getUserEmail()))
+    public ResponseEntity<Void> userEmailDuplicatedCheck(@RequestParam(value = "email") String email) {
+        if (memberService.userEmailDupCheck(email))
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         else return new ResponseEntity<>(HttpStatus.OK);
     }
