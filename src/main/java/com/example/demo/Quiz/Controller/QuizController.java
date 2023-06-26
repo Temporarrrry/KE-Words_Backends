@@ -3,7 +3,8 @@ package com.example.demo.Quiz.Controller;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.Service.QuizService;
-import com.example.demo.Quiz.dto.QuizProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
 import com.example.demo.Quiz.dto.QuizRequestDTO;
 import com.example.demo.Quiz.dto.QuizResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +39,14 @@ public class QuizController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/generateQuiz")
-    public ResponseEntity<QuizProblemResponseDTO> generateQuizProblem(@RequestParam(value = "count") int count) {
-        return new ResponseEntity<>(quizService.generateQuiz(count), HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.GET, value = "/generateEnglishQuiz")
+    public ResponseEntity<QuizEnglishProblemResponseDTO> generateEnglishQuizProblem(@RequestParam(value = "count") int count) {
+        return new ResponseEntity<>(quizService.generateEnglishQuiz(count), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/generateKoreanQuiz")
+    public ResponseEntity<QuizKoreanProblemResponseDTO> generateKoreanQuizProblem(@RequestParam(value = "count") int count) {
+        return new ResponseEntity<>(quizService.generateKoreanQuiz(count), HttpStatus.OK);
     }
 
 

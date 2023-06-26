@@ -1,7 +1,8 @@
 package com.example.demo.Quiz.Service;
 
 import com.example.demo.Quiz.Repository.QuizRepository;
-import com.example.demo.Quiz.dto.QuizProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
 import com.example.demo.Quiz.dto.QuizRequestDTO;
 import com.example.demo.Quiz.dto.QuizResponseDTO;
 import com.example.demo.Word.Service.WordService;
@@ -38,7 +39,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizProblemResponseDTO generateQuiz(int count) {
+    public QuizEnglishProblemResponseDTO generateEnglishQuiz(int count) {
         List<WordResponseDTO> words = wordService.findWords(count * 4);
 
         Stream<String> englishStream = words.stream().map(WordResponseDTO::getEnglish);
@@ -46,24 +47,65 @@ public class QuizServiceImpl implements QuizService {
 
         List<List<String>> koreans = words.stream().map(WordResponseDTO::getKorean).toList();
 
-        QuizProblemResponseDTO quizProblemResponseDTO = new QuizProblemResponseDTO();
+        QuizEnglishProblemResponseDTO quizEnglishProblemResponseDTO = new QuizEnglishProblemResponseDTO();
 
-        quizProblemResponseDTO.setEnglish(
+        quizEnglishProblemResponseDTO.setEnglish(
                 IntStream.range(0, englishes.size())
                     .filter(i -> i % 4 == 0)
                     .mapToObj(englishes::get)
                     .toList()
         );
-        System.out.print("korean: ");
-        System.out.println(koreans);
+
+        quizEnglishProblemResponseDTO.setAnswer(
+                IntStream.range(0, koreans.size())
+                        .filter(i -> i % 4 == 0)
+                        .mapToObj(koreans::get)
+                        .toList()
+        );
+
 
         for (int i = 0; i < count * 4; i += 4) {
             List<List<String>> problemKorean = new ArrayList<>(koreans.subList(i, i + 4)); // list가 unmodifiable하기 때문에 new로 생성
             Collections.shuffle(problemKorean);
-            quizProblemResponseDTO.getKoreanChoice().add(problemKorean);
+            quizEnglishProblemResponseDTO.getKoreanChoice().add(problemKorean);
         }
 
-        return quizProblemResponseDTO;
+        return quizEnglishProblemResponseDTO;
+    }
+
+    @Override
+    public QuizKoreanProblemResponseDTO generateKoreanQuiz(int count) {
+        List<WordResponseDTO> words = wordService.findWords(count * 4);
+
+        Stream<List<String>> koreanStream = words.stream().map(WordResponseDTO::getKorean);
+        List<List<String>> koreans = koreanStream.toList();
+
+        List<String> englishes = words.stream().map(WordResponseDTO::getEnglish).toList();
+
+        QuizKoreanProblemResponseDTO quizKoreanProblemResponseDTO = new QuizKoreanProblemResponseDTO();
+
+        quizKoreanProblemResponseDTO.setKorean(
+                IntStream.range(0, koreans.size())
+                        .filter(i -> i % 4 == 0)
+                        .mapToObj(koreans::get)
+                        .toList()
+        );
+
+        quizKoreanProblemResponseDTO.setAnswer(
+                IntStream.range(0, englishes.size())
+                        .filter(i -> i % 4 == 0)
+                        .mapToObj(englishes::get)
+                        .toList()
+        );
+
+
+        for (int i = 0; i < count * 4; i += 4) {
+            List<String> problemEnglish = new ArrayList<>(englishes.subList(i, i + 4)); // list가 unmodifiable하기 때문에 new로 생성
+            Collections.shuffle(problemEnglish);
+            quizKoreanProblemResponseDTO.getEnglishChoice().add(problemEnglish);
+        }
+
+        return quizKoreanProblemResponseDTO;
     }
 
     @Override
