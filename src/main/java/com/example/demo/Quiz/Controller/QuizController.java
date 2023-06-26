@@ -34,7 +34,11 @@ public class QuizController {
 
     //@Secured("ROLE_ADMIN")
     @RequestMapping(method = RequestMethod.POST, value = "/deleteQuiz")
-    public ResponseEntity<Void> deleteQuiz(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<Void> deleteQuizResult(Authentication authentication, @RequestParam(value = "id") Long id) {
+        Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
+                .orElseThrow(MemberNotExistException::new);
+        if (!Objects.equals(quizService.findById(id).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
         quizService.deleteQuizById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
