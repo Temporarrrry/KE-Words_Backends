@@ -25,14 +25,16 @@ public class QuizController {
 
     private final MemberService memberService;
 
-    //@Secured("ROLE_ADMIN")
     @RequestMapping(method = RequestMethod.POST, value = "/saveQuiz")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody QuizRequestDTO quizRequestDTO) {
+    public ResponseEntity<Void> saveQuizResult(Authentication authentication, @RequestBody QuizRequestDTO quizRequestDTO) {
+        Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
+                .orElseThrow(MemberNotExistException::new);
+        if (!Objects.equals(quizRequestDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
         quizService.saveQuiz(quizRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //@Secured("ROLE_ADMIN")
     @RequestMapping(method = RequestMethod.POST, value = "/deleteQuiz")
     public ResponseEntity<Void> deleteQuizResult(Authentication authentication, @RequestParam(value = "id") Long id) {
         Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
