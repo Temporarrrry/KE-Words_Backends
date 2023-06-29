@@ -21,6 +21,7 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsProcessor;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +34,8 @@ public class SecurityConfig {
 
     @Value("${spring.origin}")
     private String origin;
+
+    private final CorsProcessor corsProcessor;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -101,8 +104,8 @@ public class SecurityConfig {
                 //AuthorizationFilter
                 .addFilterAfter(
                         new JwtAuthorizationFilter(
-                                origin,
                                 jwtTokenProvider,
+                                corsProcessor,
                                 corsConfigurationSource
                         ),
                         UsernamePasswordAuthenticationFilter.class);

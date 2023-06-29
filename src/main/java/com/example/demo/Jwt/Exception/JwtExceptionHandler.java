@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class JwtExceptionHandler {
     @ExceptionHandler(TokenNotValidException.class)
-    public ResponseEntity<String> loginFailure(TokenNotValidException e) {
+    public ResponseEntity<String> TokenNotValid(TokenNotValidException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(RefreshTokenExpiredException.class)
-    public ResponseEntity<String> MemberNotExist(RefreshTokenExpiredException e) {
+    public ResponseEntity<String> RefreshTokenExpired(RefreshTokenExpiredException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(RefreshTokenNotExistException.class)
-    public ResponseEntity<String> MemberNotExist(RefreshTokenNotExistException e) {
+    public ResponseEntity<String> RefreshTokenNotExist(RefreshTokenNotExistException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 

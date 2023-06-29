@@ -1,8 +1,11 @@
 package com.example.demo.Member.Controller;
 
+import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
+import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.dto.MemberRequestDTO;
 import com.example.demo.Member.dto.MemberResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {
         if (memberService.register(memberRequestDTO)) return new ResponseEntity<>(HttpStatus.CREATED);
@@ -29,9 +34,11 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
-    public ResponseEntity<Void> resign(Authentication authentication) throws Exception {
-        String userEmail = ((String) authentication.getPrincipal());
-        if (memberService.resign(new MemberRequestDTO(userEmail))) return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> resign(HttpServletRequest request) {
+        String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
+                .orElseThrow(AccessTokenNotExistException::new);
+
+        if (memberService.resign(accessToken)) return new ResponseEntity<>(HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     //READ
@@ -49,7 +56,14 @@ public class MemberController {
         return new ResponseEntity<>(memberService.login(memberRequestDTO), HttpStatus.OK);
     }*/
 
+    @RequestMapping(method = RequestMethod.POST, value = "/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
+                .orElseThrow(AccessTokenNotExistException::new);
 
+        memberService.logout(accessToken);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.GET, value = "/info")

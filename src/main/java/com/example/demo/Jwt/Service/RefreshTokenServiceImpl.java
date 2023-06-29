@@ -5,6 +5,7 @@ import com.example.demo.Jwt.Exception.RefreshTokenNotExistException;
 import com.example.demo.Jwt.Repository.RefreshTokenRepository;
 import com.example.demo.Jwt.auth.JwtToken;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
+import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,26 +19,39 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void saveOrUpdate(String userEmail, String refreshToken) {
-        RefreshToken refreshToken1 = RefreshToken.builder()
-                .userEmail(userEmail)
-                .refreshToken(refreshToken).build();
-        refreshTokenRepository.save(refreshToken1);
+    public void saveOrUpdate(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        refreshTokenRepository.save(RefreshToken.builder()
+                .userEmail(refreshTokenRequestDTO.getUserEmail())
+                .refreshToken(refreshTokenRequestDTO.getRefreshToken())
+                .expiration(refreshTokenRequestDTO.getExpiration()).build());
     }
 
     @Override
-    public void deleteByEmail(String userEmail) {
-        refreshTokenRepository.deleteByUserEmail(userEmail);
+    public void deleteByUserEmail(String userEmail) {
+        refreshTokenRepository.delete(RefreshToken.builder().userEmail(userEmail).build());
     }
 
     @Override
-    public String findByEmail(String userEmail) {
-        return refreshTokenRepository.findByUserEmail(userEmail).orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
+    public String findByUserEmail(String userEmail) {
+        return refreshTokenRepository.findByUserEmail(userEmail)
+                .orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
     }
 
     public JwtToken reIssueTokens(String refreshToken) throws RefreshTokenNotExistException {
+        jwtTokenProvider.validateRefreshToken(refreshToken);
 
+        Long userId = jwtTokenProvider.getUserIdByRefreshToken(refreshToken);
         String userEmail = jwtTokenProvider.getUserEmailByRefreshToken(refreshToken);
-        return new JwtToken(jwtTokenProvider.createAccessToken(userEmail), jwtTokenProvider.createRefreshToken(userEmail));
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(userId, userEmail);
+
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .userEmail(userEmail)
+                        .refreshToken(newRefreshToken)
+                        .expiration(jwtTokenProvider.getRemainingTimeByRefreshToken(newRefreshToken))
+                        .build()
+        );
+
+        return new JwtToken(jwtTokenProvider.createAccessToken(userId, userEmail), newRefreshToken);
     }
 }

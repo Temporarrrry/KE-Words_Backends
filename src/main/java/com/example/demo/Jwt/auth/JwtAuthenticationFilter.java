@@ -1,6 +1,7 @@
 package com.example.demo.Jwt.auth;
 
 import com.example.demo.Jwt.Service.RefreshTokenService;
+import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
 import com.example.demo.Member.Entity.PrincipalDetails;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Service.MemberService;
@@ -68,19 +69,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain filterChain, Authentication authResult) throws IOException, ServletException {
         System.out.println("authentication success");
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+        String userEmail = ((PrincipalDetails) authResult.getPrincipal()).getUsername();
 
-        String accessToken = jwtTokenProvider.createAccessToken(principalDetails.getUsername());
-        String refreshToken = jwtTokenProvider.createRefreshToken(principalDetails.getUsername());
-
-        refreshTokenService.saveOrUpdate(principalDetails.getUsername(), refreshToken); // 새로 발급한 refreshToken 저장
-
-        Long id = memberService.findIdByUserEmail(principalDetails.getUsername())
+        Long userId = memberService.findIdByUserEmail(userEmail)
                 .orElseThrow(MemberNotExistException::new);
+
+        String accessToken = jwtTokenProvider.createAccessToken(userId, userEmail);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userId, userEmail);
+
+        refreshTokenService.saveOrUpdate(
+                new RefreshTokenRequestDTO(userEmail, refreshToken, jwtTokenProvider.getRemainingTimeByRefreshToken(refreshToken))
+        ); // 새로 발급한 refreshToken 저장
+
 
         // body에 tokens
         HashMap<String, Object> responseBodyWriting = new HashMap<>();
-        responseBodyWriting.put("id", id); // body에 userId 추가
+        responseBodyWriting.put("id", userId); // body에 userId 추가
         responseBodyWriting.put(accessTokenHeaderName, accessToken); //body에 accessToken 추가
         responseBodyWriting.put(refreshTokenHeaderName, refreshToken); //body에 refreshToken 추가
         response.setContentType(MediaType.APPLICATION_JSON_VALUE); // body type 설정

@@ -17,7 +17,9 @@ public interface MemberService extends UserDetailsService {
 
     //MemberResponseDTO login(MemberRequestDTO memberRequestDTO);
 
-    boolean resign(MemberRequestDTO userEmail);
+    void logout(String accessToken);
+
+    boolean resign(String accessToken);
 
     boolean userEmailDupCheck(String userEmail);
 

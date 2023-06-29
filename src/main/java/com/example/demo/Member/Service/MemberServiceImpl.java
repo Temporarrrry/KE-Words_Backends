@@ -1,6 +1,9 @@
 package com.example.demo.Member.Service;
 
+import com.example.demo.Jwt.Service.LogoutAccessTokenService;
 import com.example.demo.Jwt.Service.RefreshTokenService;
+import com.example.demo.Jwt.auth.JwtTokenProvider;
+import com.example.demo.Jwt.dto.LogoutAccessTokenRequestDTO;
 import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.PrincipalDetails;
 import com.example.demo.Member.Entity.Role;
@@ -22,11 +25,16 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private PasswordEncoder passwordEncoder;
-    private final RefreshTokenService refreshTokenService;
 
-    public MemberServiceImpl(MemberRepository memberRepository, RefreshTokenService refreshTokenService) {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
+    private final LogoutAccessTokenService logoutAccessTokenService;
+
+    public MemberServiceImpl(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService, LogoutAccessTokenService logoutAccessTokenService) {
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenService = refreshTokenService;
+        this.logoutAccessTokenService = logoutAccessTokenService;
     }
 
     @Bean
@@ -74,13 +82,18 @@ public class MemberServiceImpl implements MemberService {
         return new PrincipalDetails(member);
     }
 
+    @Override
+    public void logout(String accessToken) {
+        Long remainingTime = jwtTokenProvider.getRemainingTimeByAccessToken(accessToken);
+        logoutAccessTokenService.saveLogoutAccessToken(new LogoutAccessTokenRequestDTO(accessToken, remainingTime));
+        refreshTokenService.deleteByUserEmail(jwtTokenProvider.getUserEmailByAccessToken(accessToken));
+    }
 
     //DELETE
     @Override
-    public boolean resign(MemberRequestDTO memberRequestDTO) {
-        //TODO accessToken 비활성화
-        refreshTokenService.deleteByEmail(memberRequestDTO.getUserEmail());
-        memberRepository.deleteByUserEmail(memberRequestDTO.getUserEmail());
+    public boolean resign(String accessToken) {
+        logout(accessToken);
+        memberRepository.deleteByUserEmail(jwtTokenProvider.getUserEmailByAccessToken(accessToken));
         return true;
     }
 

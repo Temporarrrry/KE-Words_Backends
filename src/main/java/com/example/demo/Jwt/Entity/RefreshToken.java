@@ -1,29 +1,21 @@
 package com.example.demo.Jwt.Entity;
 
-import com.example.demo.Common.Entity.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
-@Setter
-@Entity
+@Builder
 @NoArgsConstructor
-public class RefreshToken extends BaseTimeEntity {
-    @Id
-    @Column(nullable = false)
+@AllArgsConstructor
+@RedisHash(value = "RefreshToken", timeToLive = 1209600000) // TTL을 수정하면 yml도 수정해야함
+public class RefreshToken {
+    @Id // @Id annotation의 패키지에 주의
     private String userEmail;
 
-    @Column(nullable = false)
     private String refreshToken;
 
-    @Builder
-    public RefreshToken(String userEmail, String refreshToken) {
-        this.userEmail = userEmail;
-        this.refreshToken = refreshToken;
-    }
+    @TimeToLive
+    private Long expiration;
 }

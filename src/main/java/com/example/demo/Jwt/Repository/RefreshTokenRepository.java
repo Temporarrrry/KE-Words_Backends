@@ -1,23 +1,22 @@
 package com.example.demo.Jwt.Repository;
 
 import com.example.demo.Jwt.Entity.RefreshToken;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 
     //CREATE
     @Override
     <S extends RefreshToken> S save(S entity);
 
     //DELETE
-    void deleteByUserEmail(String userEmail);
+    @Override
+    void deleteById(String userEmail);
 
     //READ
     Optional<RefreshToken> findByUserEmail(String userEmail);
-
-    boolean existsByUserEmail(String userEmail);
 }

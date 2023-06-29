@@ -13,22 +13,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsProcessor;
-import org.springframework.web.cors.DefaultCorsProcessor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final String origin;
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final CorsProcessor corsProcessor;
 
     private final CorsConfigurationSource corsConfigurationSource;
 
-    public JwtAuthorizationFilter(String origin, JwtTokenProvider jwtTokenProvider, CorsConfigurationSource corsConfigurationSource) {
-        this.origin = origin;
+    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, CorsProcessor corsProcessor, CorsConfigurationSource corsConfigurationSource) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.corsProcessor = corsProcessor;
         this.corsConfigurationSource = corsConfigurationSource;
     }
 
@@ -41,24 +40,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             //CORS 설정
             CorsConfiguration corsConfiguration = corsConfigurationSource.getCorsConfiguration(request);
             if (corsConfiguration != null) {
-                CorsProcessor corsProcessor = new DefaultCorsProcessor();
                 corsProcessor.processRequest(corsConfiguration, request, response);
             }
 
-            Optional<String> accessTokenByRequest = jwtTokenProvider.getAccessTokenByRequest(request);
 
-            // accessToken이 존재하는 경우
-            if (accessTokenByRequest.isPresent()) {
-                // accessToken이 만료된 경우 AccessTokenExpiredException throw
-                jwtTokenProvider.validateAccessToken(accessTokenByRequest.get());
-                // accessToken이 만료되지 않은 경우 계속 진행
-            }
-            // accessToken이 존재하지 않는 경우 throw exception
-            else throw new AccessTokenNotExistException();
+            String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
+                    .orElseThrow(AccessTokenNotExistException::new);
+
+            // logout된 token일 경우 TokenNotValidException
+            // accessToken이 만료된 경우 AccessTokenExpiredException
+            // accessToken이 만료되지 않은 경우 계속 진행
+            jwtTokenProvider.validateAccessToken(accessToken);
 
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(
-                        jwtTokenProvider.getUserEmailByAccessTokenRequest(request), null
+                        jwtTokenProvider.getUserEmailByAccessToken(accessToken), null
                     )
             );
 
