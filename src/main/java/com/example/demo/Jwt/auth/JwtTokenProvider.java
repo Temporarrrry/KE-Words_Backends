@@ -4,7 +4,7 @@ import com.example.demo.Jwt.Exception.AccessTokenExpiredException;
 import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
 import com.example.demo.Jwt.Exception.RefreshTokenNotExistException;
 import com.example.demo.Jwt.Exception.TokenNotValidException;
-import com.example.demo.Jwt.Repository.RefreshTokenRepository;
+import com.example.demo.Jwt.Repository.RefreshTokenRedisRepository;
 import com.example.demo.Jwt.Service.LogoutAccessTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
 
     private final LogoutAccessTokenService logoutAccessTokenService;
 
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
 
 
@@ -181,7 +181,7 @@ public class JwtTokenProvider {
         try{
             Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(refreshToken); // parsing 시에 검증 됨
             // accessToken과 반대로 refreshToken이 존재하면 허가, 존재하지 않으면 거부
-            if (refreshTokenRepository.findByUserEmail(getUserEmailByRefreshToken(refreshToken)).isEmpty())
+            if (refreshTokenRedisRepository.findByUserEmail(getUserEmailByRefreshToken(refreshToken)).isEmpty())
                 throw new RefreshTokenNotExistException();
         } catch (ExpiredJwtException e) {
             throw new RefreshTokenExpiredException();
