@@ -27,15 +27,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final String accessTokenHeaderName;
     private final String refreshTokenHeaderName;
     private final AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
     private final MemberService memberService;
 
-    public JwtAuthenticationFilter(String accessTokenHeaderName, String refreshTokenHeaderName, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService, MemberService memberService) throws Exception {
+    public JwtAuthenticationFilter(String accessTokenHeaderName, String refreshTokenHeaderName, AuthenticationManager authenticationManager, ObjectMapper objectMapper, JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService, MemberService memberService) throws Exception {
         this.accessTokenHeaderName = accessTokenHeaderName;
         this.refreshTokenHeaderName = refreshTokenHeaderName;
         this.authenticationManager = authenticationManager;
+        this.objectMapper = objectMapper;
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenService = refreshTokenService;
         this.memberService = memberService;
@@ -50,7 +52,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         try {
             // 이 부분을 위해서 MemberRequestDTO에 NoArgsConStructor가 필요함
-            ObjectMapper objectMapper = new ObjectMapper();
             memberRequestDTO = objectMapper.readValue(request.getInputStream(), MemberRequestDTO.class);
         }
         catch (Exception e) {
@@ -88,7 +89,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         responseBodyWriting.put(accessTokenHeaderName, accessToken); //body에 accessToken 추가
         responseBodyWriting.put(refreshTokenHeaderName, refreshToken); //body에 refreshToken 추가
         response.setContentType(MediaType.APPLICATION_JSON_VALUE); // body type 설정
-        response.getWriter().print(responseBodyWriting); //body에 작성
+        response.getWriter().print(objectMapper.writeValueAsString(responseBodyWriting)); //body에 작성
 
 
         // header에 tokens 작성

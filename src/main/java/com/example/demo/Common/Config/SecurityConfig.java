@@ -5,6 +5,7 @@ import com.example.demo.Jwt.auth.JwtAuthenticationFilter;
 import com.example.demo.Jwt.auth.JwtAuthorizationFilter;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.Service.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,8 @@ public class SecurityConfig {
 
     @Value("${spring.origin}")
     private String origin;
+
+    private final ObjectMapper objectMapper;
 
     private final CorsProcessor corsProcessor;
 
@@ -96,6 +99,7 @@ public class SecurityConfig {
                                 accessTokenSendingHeaderName,
                                 refreshTokenHeaderName,
                                 authenticationManager,
+                                objectMapper,
                                 jwtTokenProvider,
                                 refreshTokenService,
                                 memberService

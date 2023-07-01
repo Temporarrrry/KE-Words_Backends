@@ -40,7 +40,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public QuizEnglishProblemResponseDTO generateEnglishQuiz(int count) {
-        List<WordResponseDTO> words = wordService.findWords(count * 4);
+        List<WordResponseDTO> words = wordService.findWordsByRandom(count * 4);
 
         Stream<String> englishStream = words.stream().map(WordResponseDTO::getEnglish);
         List<String> englishes = englishStream.toList();
@@ -75,7 +75,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public QuizKoreanProblemResponseDTO generateKoreanQuiz(int count) {
-        List<WordResponseDTO> words = wordService.findWords(count * 4);
+        List<WordResponseDTO> words = wordService.findWordsByRandom(count * 4);
 
         Stream<List<String>> koreanStream = words.stream().map(WordResponseDTO::getKorean);
         List<List<String>> koreans = koreanStream.toList();

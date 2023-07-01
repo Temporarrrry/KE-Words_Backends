@@ -37,9 +37,9 @@ public class WordController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getWords")
-    public ResponseEntity<List<WordResponseDTO>> getWords(@RequestParam(value = "count") int count) {
+    @RequestMapping(method = RequestMethod.GET, value = "/getWordsByRandom")
+    public ResponseEntity<List<WordResponseDTO>> getWordsByRandom(@RequestParam(value = "count") int count) {
         if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(wordService.findWords(count), HttpStatus.OK);
+        return new ResponseEntity<>(wordService.findWordsByRandom(count), HttpStatus.OK);
     }
 }

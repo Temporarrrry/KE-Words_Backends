@@ -31,7 +31,7 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public List<WordResponseDTO> findWords(int count) {
+    public List<WordResponseDTO> findWordsByRandom(int count) {
         return wordRepository.findWordsByRandom(count).stream().map(WordResponseDTO::new).toList();
     }
 }

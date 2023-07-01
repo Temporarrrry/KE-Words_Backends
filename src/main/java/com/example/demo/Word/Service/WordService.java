@@ -11,5 +11,5 @@ public interface WordService {
     void deleteWord(WordRequestDTO wordRequestDTO);
 
     WordResponseDTO findByEnglish(String english);
-    List<WordResponseDTO> findWords(int count);
+    List<WordResponseDTO> findWordsByRandom(int count);
 }
