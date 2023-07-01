@@ -25,14 +25,15 @@ Web APP for Studying Korean, English Words
 https://www.figma.com/file/NzZZlpWP4BlfH117EJ48vR/KE-Words
 
 ### 데이터베이스 (DataBase)
-
+- MySQL, Redis
 ### APIs
 
 ### 개발 스택 (Used Stack)
 - Spring Security
-- Spring Data JPA
-- MySQL
-- AWS
+- Spring Data JPA 
+- Infra: AWS EC2, AWS RDS
+- docs: swagger
+- CI/CD: AWS S3, github action
 
 ### 참여 인원
 - 프론트엔드(1명)
@@ -52,35 +53,30 @@ https://www.figma.com/file/NzZZlpWP4BlfH117EJ48vR/KE-Words
 ### 개발 일지
 
 ##### 23.03.28
-
 - MemberService 기초 개발
 
 ##### 23.03.31
-
 - AWS 배포 환경 구축
 
 ##### 23.05.13
-
 - CORS 설정
 
 ##### 23.05.17
-
 - Token 관련 에러 수정
 
 ##### 23.06.23
-
 - word service 구현
 
 ##### 23.06.25
-
 - Quiz service 구현
 
-
 ##### 23.06.29
+- refresh token redis 기반으로 변경 
+- accessToken blacklist 구현
 
-- refresh token redis 기반으로 변경, accessToken blacklist 구현
 
-
+### 개발 후기
+- https://develop-the-seate.vercel.app/KEWords
 
 
 
