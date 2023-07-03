@@ -1,6 +1,11 @@
 package com.example.demo.Quiz.Service;
 
-import com.example.demo.Quiz.dto.*;
+import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizRequestDTO;
+import com.example.demo.Quiz.dto.QuizResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface QuizService {
 
@@ -12,5 +17,5 @@ public interface QuizService {
     QuizKoreanProblemResponseDTO generateKoreanQuiz(int count);
 
     QuizResponseDTO findById(Long id);
-    AllQuizByUserIdResponseDTO findAllByUserId(Long userId);
+    Page<QuizResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 }

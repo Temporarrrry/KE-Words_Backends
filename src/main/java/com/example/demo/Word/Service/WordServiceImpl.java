@@ -27,7 +27,7 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public WordResponseDTO findByEnglish(String english) {
-        return new WordResponseDTO(wordRepository.findByEnglish(english));
+        return new WordResponseDTO(wordRepository.findByEnglish(english).orElseThrow());
     }
 
     @Override

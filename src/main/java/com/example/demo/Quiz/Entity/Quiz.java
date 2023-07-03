@@ -18,10 +18,10 @@ public class Quiz extends BaseTimeEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
-    private long userId;
+    private Long userId;
 
     private LocalDate quizDate;
 

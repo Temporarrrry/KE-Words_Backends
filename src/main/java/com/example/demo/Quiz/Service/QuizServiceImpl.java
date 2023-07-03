@@ -1,10 +1,16 @@
 package com.example.demo.Quiz.Service;
 
+import com.example.demo.Quiz.Exception.QuizNotExistException;
 import com.example.demo.Quiz.Repository.QuizRepository;
-import com.example.demo.Quiz.dto.*;
+import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
+import com.example.demo.Quiz.dto.QuizRequestDTO;
+import com.example.demo.Quiz.dto.QuizResponseDTO;
 import com.example.demo.Word.Service.WordService;
 import com.example.demo.Word.dto.WordResponseDTO;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -108,12 +114,13 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizResponseDTO findById(Long id) {
-        return new QuizResponseDTO(quizRepository.findById(id));
+    public QuizResponseDTO findById(Long id) throws QuizNotExistException {
+        return new QuizResponseDTO(quizRepository.findById(id).orElseThrow(QuizNotExistException::new));
     }
 
     @Override
-    public AllQuizByUserIdResponseDTO findAllByUserId(Long userId) {
-        return new AllQuizByUserIdResponseDTO(quizRepository.findAllByUserId(userId));
+    public Page<QuizResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
+        //return new AllQuizByUserIdResponseDTO(quizRepository.findAllByUserId(userId, pageable));
+        return quizRepository.findAllByUserId(userId, pageable).map(QuizResponseDTO::new);
     }
 }
