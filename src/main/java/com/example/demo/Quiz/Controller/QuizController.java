@@ -3,17 +3,13 @@ package com.example.demo.Quiz.Controller;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.Service.QuizService;
-import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
-import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
-import com.example.demo.Quiz.dto.QuizRequestDTO;
-import com.example.demo.Quiz.dto.QuizResponseDTO;
+import com.example.demo.Quiz.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @CrossOrigin(originPatterns = "http://**", maxAge = 3600) //TODO originPatterns 수정
@@ -68,9 +64,9 @@ public class QuizController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findAllByUserId")
-    public ResponseEntity<List<QuizResponseDTO>> findAllByUserId(Authentication authentication) {
+    public ResponseEntity<AllQuizByUserIdResponseDTO> findAllByUserId(Authentication authentication) {
         Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
                 .orElseThrow(MemberNotExistException::new);
-        return new ResponseEntity<>(quizService.findByUserId(userId), HttpStatus.OK);
+        return new ResponseEntity<>(quizService.findAllByUserId(userId), HttpStatus.OK);
     }
 }

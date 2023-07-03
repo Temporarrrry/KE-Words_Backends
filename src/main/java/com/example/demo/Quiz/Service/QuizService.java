@@ -1,11 +1,6 @@
 package com.example.demo.Quiz.Service;
 
-import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
-import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
-import com.example.demo.Quiz.dto.QuizRequestDTO;
-import com.example.demo.Quiz.dto.QuizResponseDTO;
-
-import java.util.List;
+import com.example.demo.Quiz.dto.*;
 
 public interface QuizService {
 
@@ -17,5 +12,5 @@ public interface QuizService {
     QuizKoreanProblemResponseDTO generateKoreanQuiz(int count);
 
     QuizResponseDTO findById(Long id);
-    List<QuizResponseDTO> findByUserId(Long userId);
+    AllQuizByUserIdResponseDTO findAllByUserId(Long userId);
 }

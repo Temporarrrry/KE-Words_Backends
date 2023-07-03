@@ -1,15 +1,13 @@
 package com.example.demo.Quiz.Service;
 
 import com.example.demo.Quiz.Repository.QuizRepository;
-import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
-import com.example.demo.Quiz.dto.QuizKoreanProblemResponseDTO;
-import com.example.demo.Quiz.dto.QuizRequestDTO;
-import com.example.demo.Quiz.dto.QuizResponseDTO;
+import com.example.demo.Quiz.dto.*;
 import com.example.demo.Word.Service.WordService;
 import com.example.demo.Word.dto.WordResponseDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +28,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public void saveQuiz(QuizRequestDTO quizRequestDTO) {
+        quizRequestDTO.setDate(LocalDate.now());
         quizRepository.save(quizRequestDTO.toEntity());
     }
 
@@ -114,7 +113,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<QuizResponseDTO> findByUserId(Long userId) {
-        return quizRepository.findAllByUserId(userId).stream().map(QuizResponseDTO::new).toList();
+    public AllQuizByUserIdResponseDTO findAllByUserId(Long userId) {
+        return new AllQuizByUserIdResponseDTO(quizRepository.findAllByUserId(userId));
     }
 }

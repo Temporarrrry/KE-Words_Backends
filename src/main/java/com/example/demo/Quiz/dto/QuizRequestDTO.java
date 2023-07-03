@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -18,6 +19,8 @@ public class QuizRequestDTO {
     @NotBlank
     private Long userId;
 
+    private LocalDate date;
+
     @NotBlank
     private List<String> english;
 
@@ -26,6 +29,7 @@ public class QuizRequestDTO {
     public Quiz toEntity(){
         return Quiz.builder()
                 .userId(userId)
+                .date(date)
                 .english(english)
                 .result(result)
                 .build();

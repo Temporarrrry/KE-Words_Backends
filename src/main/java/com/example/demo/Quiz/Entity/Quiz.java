@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -22,19 +23,25 @@ public class Quiz extends BaseTimeEntity {
     @Column(nullable = false)
     private long userId;
 
+    private LocalDate date;
+
     @Column(nullable = false)
     private String english;
 
+    private int score;
 
+    private int count;
 
     private String result;
 
 
     @Builder
-    public Quiz(Long userId, List<String> english, List<Boolean> result) {
+    public Quiz(Long userId, LocalDate date, List<String> english, List<Boolean> result) {
         this.userId = userId;
+        this.date = date;
         this.english = String.join("|", english);
-        this.result = String.join("|", result.stream()
-                .map(aBoolean -> (aBoolean) ? "1" : "0").toList());
+        this.score = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
+        this.count = result.size();
+        this.result = String.join("|", result.stream().map(aBoolean -> (aBoolean) ? "1" : "0").toList());
     }
 }

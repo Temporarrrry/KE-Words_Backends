@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,12 +24,22 @@ public class QuizResponseDTO {
     @NotBlank
     private List<String> english;
 
+    private int score;
+
+    private int count;
+
+    private LocalDate date;
+
     private List<Boolean> result;
 
     public QuizResponseDTO(Quiz quiz) {
         this.id = quiz.getId();
         this.userId = quiz.getUserId();
         this.english = Arrays.asList(quiz.getEnglish().split("\\|")) ;
-        this.result = Arrays.stream(quiz.getResult().split("")).map(s -> s.equals("1")).toList();
+        this.date = quiz.getDate();
+        this.result = Arrays.stream(quiz.getResult().split("\\|")).map(s -> s.equals("1")).toList();
+        this.score = Long.valueOf(Arrays.stream(quiz.getResult().split("")).map(s -> s.equals("1"))
+                .filter(Boolean::booleanValue).count()).intValue();
+        this.count = Long.valueOf(this.result.size()).intValue();
     }
 }

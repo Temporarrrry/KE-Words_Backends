@@ -66,6 +66,9 @@ dependencies {
 
 	//https://stackoverflow.com/questions/51384547/facing-hibernate-error-caused-by-java-lang-classnotfoundexception-net-bytebud
 	compileOnly 'net.bytebuddy:byte-buddy:1.14.5'
+
+	// localdate의 직렬화/역직렬화를 위해
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

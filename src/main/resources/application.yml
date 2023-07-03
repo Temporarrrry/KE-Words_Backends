@@ -25,6 +25,10 @@ spring:
             host: localhost
             port: 6379
 
+    jackson:
+        serialization:
+          write-date-keys-as-timestamps: false
+
 
 
 
@@ -34,8 +38,8 @@ jwt:
         GettingHeaderName: 'Authorization'
         SendingHeaderName: 'accessToken'
         secret: 'KEWordsSecretAccessKey'
-        #expirationMs: 900000 # 1000 * 60 * 15 -> 15 minutes
-        expirationMs: 30000 # 1000 * 30 -> 30 seconds for test, 여기를 수정하면 accessToken의 값도 수정해야함
+        expirationMs: 900000 # 1000 * 60 * 15 -> 15 minutes
+        #expirationMs: 30000 # 1000 * 30 -> 30 seconds for test, 여기를 수정하면 accessToken의 값도 수정해야함
     refreshToken:
         headerName: 'refreshToken'
         secret: 'KEWordsSecretRefreshKey'
