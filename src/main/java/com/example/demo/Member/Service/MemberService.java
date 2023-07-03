@@ -26,4 +26,6 @@ public interface MemberService extends UserDetailsService {
     Optional<Long> findIdByUserEmail(String userEmail);
 
     MemberResponseDTO findMember(MemberRequestDTO memberRequestDTO);
+
+    void changePasswordByUserEmail(String userEmail, String newPassword);
 }

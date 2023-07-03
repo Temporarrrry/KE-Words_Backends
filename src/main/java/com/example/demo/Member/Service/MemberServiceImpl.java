@@ -111,4 +111,10 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByUserEmail(userEmail).map(Member::getId);
     }
 
+    @Override
+    public void changePasswordByUserEmail(String userEmail, String newPassword) {
+        Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
+        member.setPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
 }
