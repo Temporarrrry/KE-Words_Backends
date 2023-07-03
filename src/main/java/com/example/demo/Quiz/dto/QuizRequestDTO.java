@@ -19,7 +19,7 @@ public class QuizRequestDTO {
     @NotBlank
     private Long userId;
 
-    private LocalDate date;
+    private LocalDate quizDate;
 
     @NotBlank
     private List<String> english;
@@ -29,7 +29,7 @@ public class QuizRequestDTO {
     public Quiz toEntity(){
         return Quiz.builder()
                 .userId(userId)
-                .date(date)
+                .quizDate(quizDate)
                 .english(english)
                 .result(result)
                 .build();

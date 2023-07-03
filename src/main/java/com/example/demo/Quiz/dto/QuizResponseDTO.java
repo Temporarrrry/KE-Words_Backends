@@ -28,7 +28,7 @@ public class QuizResponseDTO {
 
     private int count;
 
-    private LocalDate date;
+    private LocalDate quizDate;
 
     private List<Boolean> result;
 
@@ -36,7 +36,7 @@ public class QuizResponseDTO {
         this.id = quiz.getId();
         this.userId = quiz.getUserId();
         this.english = Arrays.asList(quiz.getEnglish().split("\\|")) ;
-        this.date = quiz.getDate();
+        this.quizDate = quiz.getQuizDate();
         this.result = Arrays.stream(quiz.getResult().split("\\|")).map(s -> s.equals("1")).toList();
         this.score = Long.valueOf(Arrays.stream(quiz.getResult().split("")).map(s -> s.equals("1"))
                 .filter(Boolean::booleanValue).count()).intValue();

@@ -23,7 +23,7 @@ public class Quiz extends BaseTimeEntity {
     @Column(nullable = false)
     private long userId;
 
-    private LocalDate date;
+    private LocalDate quizDate;
 
     @Column(nullable = false)
     private String english;
@@ -36,9 +36,9 @@ public class Quiz extends BaseTimeEntity {
 
 
     @Builder
-    public Quiz(Long userId, LocalDate date, List<String> english, List<Boolean> result) {
+    public Quiz(Long userId, LocalDate quizDate, List<String> english, List<Boolean> result) {
         this.userId = userId;
-        this.date = date;
+        this.quizDate = quizDate;
         this.english = String.join("|", english);
         this.score = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
         this.count = result.size();

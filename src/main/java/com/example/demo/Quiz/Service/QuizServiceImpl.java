@@ -28,7 +28,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public void saveQuiz(QuizRequestDTO quizRequestDTO) {
-        quizRequestDTO.setDate(LocalDate.now());
+        quizRequestDTO.setQuizDate(LocalDate.now());
         quizRepository.save(quizRequestDTO.toEntity());
     }
 
