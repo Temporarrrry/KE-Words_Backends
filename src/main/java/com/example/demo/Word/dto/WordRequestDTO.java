@@ -2,16 +2,12 @@ package com.example.demo.Word.dto;
 
 import com.example.demo.Word.Entity.Word;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Setter
-@Getter
-@NoArgsConstructor // authenticationFilter에서 mapper.readValue를 위해서
+@Data
+@NoArgsConstructor // @RequestBody를 위해서는 기본 생성자가 필요하다.
 @AllArgsConstructor
 public class WordRequestDTO {
     @NotBlank

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,12 +33,12 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public void saveQuiz(QuizRequestDTO quizRequestDTO) {
-        quizRequestDTO.setQuizDate(LocalDate.now());
         quizRepository.save(quizRequestDTO.toEntity());
     }
 
     @Override
-    public void deleteQuizById(Long id) {
+    public void deleteQuizById(Long id) throws QuizNotExistException {
+        if (!quizRepository.existsById(id)) throw new QuizNotExistException();
         quizRepository.deleteById(id);
     }
 

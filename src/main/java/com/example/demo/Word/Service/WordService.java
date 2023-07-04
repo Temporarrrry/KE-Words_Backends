@@ -10,6 +10,8 @@ public interface WordService {
     void saveWord(WordRequestDTO wordRequestDTO);
     void deleteWord(WordRequestDTO wordRequestDTO);
 
+    boolean isExist(WordRequestDTO wordRequestDTO);
+
     WordResponseDTO findByEnglish(String english);
     List<WordResponseDTO> findWordsByRandom(int count);
 }

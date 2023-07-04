@@ -6,13 +6,14 @@ import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Jwt.dto.LogoutAccessTokenRequestDTO;
 import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.PrincipalDetails;
-import com.example.demo.Member.Entity.Role;
+import com.example.demo.Member.Exception.MemberExistException;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Repository.MemberRepository;
-import com.example.demo.Member.dto.MemberRequestDTO;
 import com.example.demo.Member.dto.MemberInfoResponseDTO;
+import com.example.demo.Member.dto.MemberRequestDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,14 +48,11 @@ public class MemberServiceImpl implements MemberService {
     //CREATE
 
     @Override
-    public boolean register(MemberRequestDTO memberRequestDTO) {
-        if (userEmailDupCheck(memberRequestDTO.getUserEmail())) return false;
+    public void register(MemberRequestDTO memberRequestDTO) throws MemberExistException {
+        if (userEmailDupCheck(memberRequestDTO.getUserEmail())) throw new MemberExistException();
 
-        Member member = memberRequestDTO.toEntity();
-        member.setPassword(passwordEncoder.encode(member.getPassword()));
-        member.setRole(Role.ROLE_MEMBER);
-        memberRepository.save(member);
-        return true;
+        memberRequestDTO.setPassword(passwordEncoder.encode(memberRequestDTO.getPassword()));
+        memberRepository.save(memberRequestDTO.toEntity());
     }
 
     @Override
@@ -91,10 +89,12 @@ public class MemberServiceImpl implements MemberService {
 
     //DELETE
     @Override
-    public boolean resign(String accessToken) {
+    public void resign(String accessToken) throws MemberNotExistException {
         logout(accessToken);
-        memberRepository.deleteByUserEmail(jwtTokenProvider.getUserEmailByAccessToken(accessToken));
-        return true;
+        String userEmail = jwtTokenProvider.getUserEmailByAccessToken(accessToken);
+        if (memberRepository.existsByUserEmail(userEmail)) throw new MemberNotExistException();
+
+        memberRepository.deleteByUserEmail(userEmail);
     }
 
     public MemberInfoResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
@@ -112,9 +112,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void changePasswordByUserEmail(String userEmail, String newPassword) {
+    public void changePasswordByUserEmail(String userEmail, String newPassword) throws MemberNotExistException {
         Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
         member.setPassword(passwordEncoder.encode(newPassword));
         memberRepository.save(member);
+    }
+
+    @Override
+    public Long findIdByAuthentication(Authentication authentication) throws MemberNotExistException {
+        return findIdByUserEmail(((String) authentication.getPrincipal())).orElseThrow(MemberNotExistException::new);
     }
 }

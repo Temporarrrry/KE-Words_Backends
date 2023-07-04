@@ -1,6 +1,5 @@
 package com.example.demo.Quiz.Controller;
 
-import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.Service.QuizService;
 import com.example.demo.Quiz.dto.QuizEnglishProblemResponseDTO;
@@ -29,8 +28,7 @@ public class QuizController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveQuiz")
     public ResponseEntity<Void> saveQuizResult(Authentication authentication, @RequestBody QuizRequestDTO quizRequestDTO) {
-        Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
-                .orElseThrow(MemberNotExistException::new);
+        Long userId = memberService.findIdByAuthentication(authentication);
         if (!Objects.equals(quizRequestDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         quizService.saveQuiz(quizRequestDTO);
@@ -39,8 +37,7 @@ public class QuizController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/deleteQuiz")
     public ResponseEntity<Void> deleteQuizResult(Authentication authentication, @RequestParam(value = "id") Long id) {
-        Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
-                .orElseThrow(MemberNotExistException::new);
+        Long userId = memberService.findIdByAuthentication(authentication);
         if (!Objects.equals(quizService.findById(id).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         quizService.deleteQuizById(id);
@@ -61,8 +58,7 @@ public class QuizController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/findById")
     public ResponseEntity<QuizResponseDTO> findById(Authentication authentication, @RequestParam(value = "id") Long id) {
-        Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
-                .orElseThrow(MemberNotExistException::new);
+        Long userId = memberService.findIdByAuthentication(authentication);
         QuizResponseDTO quizResponseDTO = quizService.findById(id);
 
         if (!Objects.equals(quizResponseDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -72,8 +68,7 @@ public class QuizController {
     @RequestMapping(method = RequestMethod.GET, value = "/findAllByUserId")
     public ResponseEntity<List<QuizResponseDTO>> findAllByUserId(Authentication authentication,
                                                                  @PageableDefault(size = 10) Pageable pageable) {
-        Long userId = memberService.findIdByUserEmail(((String) authentication.getPrincipal()))
-                .orElseThrow(MemberNotExistException::new);
+        Long userId = memberService.findIdByAuthentication(authentication);
         return new ResponseEntity<>(quizService.findAllByUserId(userId, pageable).getContent(), HttpStatus.OK);
     }
 }

@@ -29,7 +29,7 @@ public class QuizRequestDTO {
     public Quiz toEntity(){
         return Quiz.builder()
                 .userId(userId)
-                .quizDate(quizDate)
+                .quizDate(LocalDate.now())
                 .english(english)
                 .result(result)
                 .build();

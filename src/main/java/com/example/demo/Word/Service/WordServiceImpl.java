@@ -1,5 +1,7 @@
 package com.example.demo.Word.Service;
 
+import com.example.demo.Word.Exception.WordExistException;
+import com.example.demo.Word.Exception.WordNotExistException;
 import com.example.demo.Word.Repository.WordRepository;
 import com.example.demo.Word.dto.WordRequestDTO;
 import com.example.demo.Word.dto.WordResponseDTO;
@@ -17,17 +19,24 @@ public class WordServiceImpl implements WordService {
         this.wordRepository = wordRepository;
     }
     @Override
-    public void saveWord(WordRequestDTO wordRequestDTO) {
+    public void saveWord(WordRequestDTO wordRequestDTO) throws WordExistException {
+        if (isExist(wordRequestDTO)) throw new WordExistException();
         wordRepository.save(wordRequestDTO.toEntity());
     }
     @Override
-    public void deleteWord(WordRequestDTO wordRequestDTO) {
+    public void deleteWord(WordRequestDTO wordRequestDTO) throws WordNotExistException {
+        if (!isExist(wordRequestDTO)) throw new WordNotExistException();
         wordRepository.deleteByEnglish(wordRequestDTO.getEnglish());
     }
 
     @Override
-    public WordResponseDTO findByEnglish(String english) {
-        return new WordResponseDTO(wordRepository.findByEnglish(english).orElseThrow());
+    public boolean isExist(WordRequestDTO wordRequestDTO) {
+        return wordRepository.existsByEnglish(wordRequestDTO.getEnglish());
+    }
+
+    @Override
+    public WordResponseDTO findByEnglish(String english) throws WordNotExistException {
+        return new WordResponseDTO(wordRepository.findByEnglish(english).orElseThrow(WordNotExistException::new));
     }
 
     @Override

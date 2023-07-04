@@ -1,6 +1,7 @@
 package com.example.demo.Member.dto;
 
 import com.example.demo.Member.Entity.Member;
+import com.example.demo.Member.Entity.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class MemberRequestDTO {
         return Member.builder()
                 .userEmail(userEmail)
                 .password(password)
+                .role(Role.ROLE_MEMBER)
                 .build();
     }
 }

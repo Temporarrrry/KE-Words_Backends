@@ -16,6 +16,8 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     void deleteById(Long id);
 
+    boolean existsById(Long id);
+
     Optional<Quiz> findById(Long id);
 
     Page<Quiz> findAllByUserId(Long userId, Pageable pageable);

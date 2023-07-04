@@ -12,6 +12,11 @@ public class MemberExceptionHandler {
         return new ResponseEntity<>("로그인에 실패하였습니다.", HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(MemberExistException.class)
+    public ResponseEntity<String> memberExist(MemberExistException e) {
+        return new ResponseEntity<>("이미 존재하는 회원입니다.", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MemberNotExistException.class)
     public ResponseEntity<String> memberNotExist(MemberNotExistException e) {
         return new ResponseEntity<>("존재하지 않는 회원입니다.", HttpStatus.BAD_REQUEST);

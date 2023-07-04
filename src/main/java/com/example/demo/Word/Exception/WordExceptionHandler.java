@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class WordExceptionHandler {
 
+    @ExceptionHandler(WordExistException.class)
+    public ResponseEntity<String> wordExist(WordExistException e) {
+        return new ResponseEntity<>("이미 존재하는 단어입니다.", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(WordNotExistException.class)
     public ResponseEntity<String> wordNotExist(WordNotExistException e) {
         return new ResponseEntity<>("존재하지 않는 단어입니다.", HttpStatus.BAD_REQUEST);

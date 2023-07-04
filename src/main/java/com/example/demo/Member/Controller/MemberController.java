@@ -27,8 +27,8 @@ public class MemberController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {
-        if (memberService.register(memberRequestDTO)) return new ResponseEntity<>(HttpStatus.CREATED);
-        else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        memberService.register(memberRequestDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
@@ -38,15 +38,14 @@ public class MemberController {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);
 
-        if (memberService.resign(accessToken)) return new ResponseEntity<>(HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        memberService.resign(accessToken);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     //READ
 
     @RequestMapping(method = RequestMethod.GET, value = "/userEmailDuplicatedCheck")
     public ResponseEntity<Void> userEmailDuplicatedCheck(@RequestParam(value = "email") String email) {
-        if (memberService.userEmailDupCheck(email))
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        if (memberService.userEmailDupCheck(email)) return new ResponseEntity<>(HttpStatus.CONFLICT);
         else return new ResponseEntity<>(HttpStatus.OK);
     }
 
