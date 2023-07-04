@@ -10,7 +10,7 @@ import com.example.demo.Member.Entity.Role;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Repository.MemberRepository;
 import com.example.demo.Member.dto.MemberRequestDTO;
-import com.example.demo.Member.dto.MemberResponseDTO;
+import com.example.demo.Member.dto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -97,10 +97,10 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
-    public MemberResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
+    public MemberInfoResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
         Member member = memberRepository.findByUserEmail(memberRequestDTO.getUserEmail())
                 .orElseThrow(MemberNotExistException::new);
-        return new MemberResponseDTO(member);
+        return new MemberInfoResponseDTO(member);
     }
 
 

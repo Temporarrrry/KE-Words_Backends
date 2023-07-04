@@ -4,7 +4,7 @@ import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.dto.MemberRequestDTO;
-import com.example.demo.Member.dto.MemberResponseDTO;
+import com.example.demo.Member.dto.MemberInfoResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -67,12 +67,12 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.GET, value = "/info")
-    public ResponseEntity<MemberResponseDTO> getMemberInform(Authentication authentication, @RequestParam String email) throws Exception {
+    public ResponseEntity<MemberInfoResponseDTO> getMemberInform(Authentication authentication, @RequestParam String email) throws Exception {
         String userEmail = ((String) authentication.getPrincipal());
         if (!Objects.equals(userEmail, email)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        MemberResponseDTO memberResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
-        return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
+        MemberInfoResponseDTO memberInfoResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
+        return new ResponseEntity<>(memberInfoResponseDTO, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/changePassword")

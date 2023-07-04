@@ -7,15 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResponseDTO {
+public class MemberInfoResponseDTO {
     @NotBlank
     private String userEmail; //TODO response 정보 수정해야함
 
-    public MemberResponseDTO(Member member) {
+    private LocalDate createdAt;
+
+    public MemberInfoResponseDTO(Member member) {
         this.userEmail = member.getUserEmail();
+        this.createdAt = member.getCreateTime().toLocalDate();
     }
 }
