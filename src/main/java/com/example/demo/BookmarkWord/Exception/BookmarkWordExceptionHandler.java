@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class BookmarkWordExceptionHandler {
 
+    @ExceptionHandler(WordNotExistToBookmarkException.class)
+    public ResponseEntity<String> wordNotExistToBookmark(WordNotExistToBookmarkException e) {
+        return new ResponseEntity<>("존재하지 않는 단어를 북마크할 수 없습니다.", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(BookmarkWordExistException.class)
     public ResponseEntity<String> wordExist(BookmarkWordExistException e) {
         return new ResponseEntity<>("이미 존재하는 북마크 단어입니다.", HttpStatus.BAD_REQUEST);

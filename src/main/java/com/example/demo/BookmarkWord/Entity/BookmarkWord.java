@@ -1,7 +1,6 @@
 package com.example.demo.BookmarkWord.Entity;
 
 import com.example.demo.Common.Entity.BaseTimeEntity;
-import com.example.demo.BookmarkWord.Extra.BookmarkWordPk;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,4 +1,4 @@
-package com.example.demo.BookmarkWord.Extra;
+package com.example.demo.BookmarkWord.Entity;
 
 import lombok.Data;
 
