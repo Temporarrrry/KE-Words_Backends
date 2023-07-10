@@ -10,6 +10,7 @@ import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.PrincipalDetails;
 import com.example.demo.Member.Exception.MemberExistException;
 import com.example.demo.Member.Exception.MemberNotExistException;
+import com.example.demo.Member.Exception.PasswordNotMatchException;
 import com.example.demo.Member.Repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Bean;
@@ -87,13 +88,20 @@ public class MemberServiceImpl implements MemberService {
         refreshTokenService.deleteByUserEmail(jwtTokenProvider.getUserEmailByAccessToken(accessToken));
     }
 
+    private Member findByUserEmail(String userEmail) {
+        return memberRepository.findByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
+    }
+
     //DELETE
     @Override
-    public void resign(String accessToken) throws MemberNotExistException {
-        logout(accessToken);
+    public void resign(String accessToken, String password) throws MemberNotExistException, PasswordNotMatchException {
         String userEmail = jwtTokenProvider.getUserEmailByAccessToken(accessToken);
         if (memberRepository.existsByUserEmail(userEmail)) throw new MemberNotExistException();
 
+        Member member = findByUserEmail(userEmail);
+        if (!passwordEncoder.matches(password, member.getPassword())) throw new PasswordNotMatchException();
+
+        logout(accessToken);
         memberRepository.deleteByUserEmail(userEmail);
     }
 

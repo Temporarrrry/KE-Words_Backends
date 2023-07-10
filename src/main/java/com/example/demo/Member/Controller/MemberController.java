@@ -3,6 +3,7 @@ package com.example.demo.Member.Controller;
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.DTO.MemberChangePasswordRequestDTO;
+import com.example.demo.Member.DTO.MemberResignRequestDTO;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.DTO.MemberInfoResponseDTO;
@@ -35,11 +36,11 @@ public class MemberController {
 
     @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
-    public ResponseEntity<Void> resign(HttpServletRequest request) {
+    public ResponseEntity<Void> resign(HttpServletRequest request, @RequestBody MemberResignRequestDTO memberResignRequestDTO) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);
 
-        memberService.resign(accessToken);
+        memberService.resign(accessToken, memberResignRequestDTO.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
     //READ
@@ -56,7 +57,7 @@ public class MemberController {
         return new ResponseEntity<>(memberService.login(memberRequestDTO), HttpStatus.OK);
     }*/
 
-    @RequestMapping(method = RequestMethod.POST, value = "/logout") // spring securit의 logout은 기본적으로 POST
+    @RequestMapping(method = RequestMethod.POST, value = "/logout") // spring security의 logout은 기본적으로 POST
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);

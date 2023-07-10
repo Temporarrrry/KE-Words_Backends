@@ -1,35 +1,25 @@
 package com.example.demo.Quiz.WordQuiz.DTO;
 
-import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
-public class WordQuizRequestDTO {
-
+public class SaveWordQuizRequestDTO {
     @NotBlank
-    private Long userId;
-
-    private LocalDate quizDate;
-
-    @NotBlank
-    private List<Long> wordIds;
+    private List<Long> wordQuizIds;
 
     private List<List<String>> userKoreanAnswer;
 
-    public WordQuiz toEntity(List<Boolean> result){
-        return WordQuiz.builder()
+    public WordQuizRequestDTO toInnerDTO(Long userId) {
+        return WordQuizRequestDTO.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
-                .wordIds(wordIds)
-                .result(result)
+                .wordIds(wordQuizIds)
                 .build();
     }
 }

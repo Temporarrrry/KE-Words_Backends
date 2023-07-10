@@ -23,6 +23,11 @@ public class MemberExceptionHandler {
         return new ResponseEntity<>("존재하지 않는 회원입니다.", HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public ResponseEntity<String> passwordNotMatch(PasswordNotMatchException e) {
+        return new ResponseEntity<>("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> unHandledError(Exception e) {
         e.printStackTrace();

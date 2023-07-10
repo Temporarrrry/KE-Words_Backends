@@ -1,8 +1,9 @@
 package com.example.demo.Quiz.WordQuiz.Controller;
 
 import com.example.demo.Member.Service.MemberService;
+import com.example.demo.Quiz.WordQuiz.DTO.DeleteWordQuizRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.SaveWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemResponseDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Service.WordQuizService;
 import lombok.RequiredArgsConstructor;
@@ -25,25 +26,25 @@ public class WordQuizController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody WordQuizRequestDTO wordQuizRequestDTO) {
+    public ResponseEntity<Void> saveQuizResult(@RequestBody SaveWordQuizRequestDTO saveWordQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        if (!Objects.equals(wordQuizRequestDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        wordQuizService.saveQuiz(wordQuizRequestDTO);
+        wordQuizService.saveQuiz(saveWordQuizRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteQuizResult(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<Void> deleteQuizResult(@RequestBody DeleteWordQuizRequestDTO deleteWordQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        if (!Objects.equals(wordQuizService.findById(id).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (!Objects.equals(wordQuizService.findById(deleteWordQuizRequestDTO.getWordQuizId()).getUserId(), userId))
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        wordQuizService.deleteQuizById(id);
+        wordQuizService.deleteQuiz(deleteWordQuizRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/generateEnglishQuiz")
-    public ResponseEntity<WordQuizProblemResponseDTO> generateEnglishQuizProblem(@RequestParam(value = "count") int count) {
+    @RequestMapping(method = RequestMethod.GET, value = "/generateWordQuiz")
+    public ResponseEntity<WordQuizProblemResponseDTO> generateWordQuizProblem(@RequestParam(value = "count") int count) {
         return new ResponseEntity<>(wordQuizService.generateEnglishWordQuiz(count), HttpStatus.OK);
     }
 

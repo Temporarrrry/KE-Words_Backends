@@ -1,5 +1,6 @@
 package com.example.demo.Quiz.SentenceQuiz.Service;
 
+import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblem;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.OrderingQuiz.OrderingQuizProblem;
@@ -8,6 +9,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizNotExistException;
+import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceTooShortException;
 import com.example.demo.Quiz.SentenceQuiz.Repository.SentenceQuizRepository;
 import com.example.demo.Sentence.DTO.SentenceResponseDTO;
 import com.example.demo.Sentence.Service.SentenceService;
@@ -44,12 +46,12 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    public void deleteQuizById(Long id) {
-        sentenceQuizRepository.deleteById(id);
+    public void deleteQuiz(DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
+        sentenceQuizRepository.deleteById(deleteSentenceQuizRequestDTO.getSentenceQuizId());
     }
 
     @Override
-    public FillingQuizProblemsResponseDTO generateFillingSentenceQuiz(int count) {
+    public FillingQuizProblemsResponseDTO generateFillingSentenceQuiz(int count) throws SentenceTooShortException {
         Random random = new Random();
 
         List<SentenceResponseDTO> sentenceResponseDTOs = sentenceService.findByRandom(count);
@@ -60,6 +62,9 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
             List<String> originalSentence = Arrays.asList(sentenceResponseDTO.getEnglish().split(" "));
 
             int sentenceSize = originalSentence.size();
+
+            if (sentenceSize < 2) throw new SentenceTooShortException(); // 문장이 너무 짧으면 예외 발생
+
             System.out.println("sentenceSize = " + sentenceSize);
 
             List<String> blankedSentence = new ArrayList<>(originalSentence);

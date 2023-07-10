@@ -1,9 +1,10 @@
 package com.example.demo.Word.BookmarkWord.Controller;
 
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordRequestDTO;
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordResponseDTO;
-import com.example.demo.Word.BookmarkWord.Service.BookmarkWordService;
 import com.example.demo.Member.Service.MemberService;
+import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordResponseDTO;
+import com.example.demo.Word.BookmarkWord.DTO.DeleteBookmarkWordRequestDTO;
+import com.example.demo.Word.BookmarkWord.DTO.SaveBookmarkWordRequestDTO;
+import com.example.demo.Word.BookmarkWord.Service.BookmarkWordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,18 +23,16 @@ public class BookmarkWordController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveBookmarkWord(@RequestBody BookmarkWordRequestDTO bookmarkWordRequestDTO) {
+    public ResponseEntity<Void> saveBookmarkWord(@RequestBody SaveBookmarkWordRequestDTO saveBookmarkWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        bookmarkWordRequestDTO.setUserId(userId);
-        bookmarkWordService.saveBookmarkWord(bookmarkWordRequestDTO);
+        bookmarkWordService.saveBookmarkWord(saveBookmarkWordRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteBookmarkWord(@RequestBody BookmarkWordRequestDTO bookmarkWordRequestDTO) {
+    public ResponseEntity<Void> deleteBookmarkWord(@RequestBody DeleteBookmarkWordRequestDTO deleteBookmarkWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        bookmarkWordRequestDTO.setUserId(userId);
-        bookmarkWordService.deleteBookmarkWord(bookmarkWordRequestDTO);
+        bookmarkWordService.deleteBookmarkWord(deleteBookmarkWordRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

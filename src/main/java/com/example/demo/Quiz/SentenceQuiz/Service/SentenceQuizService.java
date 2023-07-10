@@ -1,5 +1,6 @@
 package com.example.demo.Quiz.SentenceQuiz.Service;
 
+import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.OrderingQuiz.OrderingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
@@ -10,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 public interface SentenceQuizService {
 
     void saveQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO);
-    void deleteQuizById(Long id);
+    void deleteQuiz(DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO);
 
     FillingQuizProblemsResponseDTO generateFillingSentenceQuiz(int count);
 

@@ -14,6 +14,12 @@ public class SentenceQuizExceptionHandler {
         return new ResponseEntity<>("존재하지 않는 퀴즈입니다.", HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(SentenceTooShortException.class)
+    public ResponseEntity<String> sentenceTooShort(SentenceTooShortException e) {
+        return new ResponseEntity<>("문장이 너무 짧습니다.", HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> unHandledError(Exception e) {
         e.printStackTrace();

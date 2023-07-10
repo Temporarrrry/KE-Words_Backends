@@ -19,7 +19,7 @@ public interface MemberService extends UserDetailsService {
 
     void logout(String accessToken);
 
-    void resign(String accessToken);
+    void resign(String accessToken, String password);
 
     boolean userEmailDupCheck(String userEmail);
 

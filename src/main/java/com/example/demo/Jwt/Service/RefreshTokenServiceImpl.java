@@ -20,10 +20,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public void saveOrUpdate(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        String refreshToken = refreshTokenRequestDTO.getRefreshToken();
+
         refreshTokenRedisRepository.save(RefreshToken.builder()
-                .userEmail(refreshTokenRequestDTO.getUserEmail())
-                .refreshToken(refreshTokenRequestDTO.getRefreshToken())
-                .expiration(refreshTokenRequestDTO.getExpiration()).build());
+                .userEmail(jwtTokenProvider.getUserEmailByRefreshToken(refreshToken))
+                .refreshToken(refreshToken)
+                .expiration(jwtTokenProvider.getRemainingTimeByRefreshToken(refreshToken)).build());
     }
 
     @Override
@@ -37,7 +39,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
     }
 
-    public JwtToken reIssueTokens(String refreshToken) throws RefreshTokenNotExistException {
+    public JwtToken reIssueTokens(RefreshTokenRequestDTO refreshTokenRequestDTO) throws RefreshTokenNotExistException {
+        String refreshToken = refreshTokenRequestDTO.getRefreshToken();
+
         jwtTokenProvider.validateRefreshToken(refreshToken);
 
         Long userId = jwtTokenProvider.getUserIdByRefreshToken(refreshToken);

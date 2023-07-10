@@ -1,9 +1,10 @@
 package com.example.demo.Quiz.SentenceQuiz.Controller;
 
 import com.example.demo.Member.Service.MemberService;
+import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.OrderingQuiz.OrderingQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.SaveSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Service.SentenceQuizService;
 import lombok.RequiredArgsConstructor;
@@ -26,20 +27,20 @@ public class SentenceQuizController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody SentenceQuizRequestDTO sentenceQuizRequestDTO) {
+    public ResponseEntity<Void> saveQuizResult(@RequestBody SaveSentenceQuizRequestDTO saveSentenceQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        if (!Objects.equals(sentenceQuizRequestDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        sentenceQuizService.saveQuiz(sentenceQuizRequestDTO);
+        sentenceQuizService.saveQuiz(saveSentenceQuizRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteQuizResult(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<Void> deleteQuizResult(@RequestBody DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        if (!Objects.equals(sentenceQuizService.findById(id).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        Long sentenceQuizId = deleteSentenceQuizRequestDTO.getSentenceQuizId();
+        if (!Objects.equals(sentenceQuizService.findById(sentenceQuizId).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        sentenceQuizService.deleteQuizById(id);
+        sentenceQuizService.deleteQuiz(deleteSentenceQuizRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -18,9 +18,7 @@ public class RefreshTokenController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/reIssue")
     public ResponseEntity<JwtToken> reIssueAccessToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) throws RefreshTokenExpiredException {
-        String refreshToken = refreshTokenRequestDTO.getRefreshToken();
-
-        JwtToken jwtToken = refreshTokenService.reIssueTokens(refreshToken);
+        JwtToken jwtToken = refreshTokenService.reIssueTokens(refreshTokenRequestDTO);
         return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }
 }

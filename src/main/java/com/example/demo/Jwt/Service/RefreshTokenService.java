@@ -13,5 +13,5 @@ public interface RefreshTokenService {
 
     String findByUserEmail(String userEmail);
 
-    JwtToken reIssueTokens(String refreshToken) throws RefreshTokenExpiredException;
+    JwtToken reIssueTokens(RefreshTokenRequestDTO refreshTokenRequestDTO) throws RefreshTokenExpiredException;
 }

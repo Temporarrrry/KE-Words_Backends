@@ -78,9 +78,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = jwtTokenProvider.createAccessToken(userId, userEmail);
         String refreshToken = jwtTokenProvider.createRefreshToken(userId, userEmail);
 
-        refreshTokenService.saveOrUpdate(
-                new RefreshTokenRequestDTO(userEmail, refreshToken, jwtTokenProvider.getRemainingTimeByRefreshToken(refreshToken))
-        ); // 새로 발급한 refreshToken 저장
+        refreshTokenService.saveOrUpdate(new RefreshTokenRequestDTO(refreshToken)); // 새로 발급한 refreshToken 저장
 
 
         // body에 tokens
