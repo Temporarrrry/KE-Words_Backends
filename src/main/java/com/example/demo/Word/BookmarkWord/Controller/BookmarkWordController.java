@@ -29,7 +29,7 @@ public class BookmarkWordController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
     public ResponseEntity<Void> deleteBookmarkWord(@RequestBody DeleteBookmarkWordRequestDTO deleteBookmarkWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         bookmarkWordService.deleteBookmarkWord(deleteBookmarkWordRequestDTO.toInnerDTO(userId));
