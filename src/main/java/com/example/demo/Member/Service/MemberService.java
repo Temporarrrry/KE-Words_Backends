@@ -1,8 +1,7 @@
 package com.example.demo.Member.Service;
 
-import com.example.demo.Member.dto.MemberRequestDTO;
-import com.example.demo.Member.dto.MemberInfoResponseDTO;
-import org.springframework.security.core.Authentication;
+import com.example.demo.Member.DTO.MemberInfoResponseDTO;
+import com.example.demo.Member.DTO.MemberRequestDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,5 +29,5 @@ public interface MemberService extends UserDetailsService {
 
     void changePasswordByUserEmail(String userEmail, String newPassword);
 
-    Long findIdByAuthentication(Authentication authentication);
+    Long findIdByAuthentication();
 }

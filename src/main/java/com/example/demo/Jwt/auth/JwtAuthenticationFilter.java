@@ -1,11 +1,11 @@
 package com.example.demo.Jwt.auth;
 
 import com.example.demo.Jwt.Service.RefreshTokenService;
-import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
+import com.example.demo.Jwt.DTO.RefreshTokenRequestDTO;
 import com.example.demo.Member.Entity.PrincipalDetails;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Member.dto.MemberRequestDTO;
+import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

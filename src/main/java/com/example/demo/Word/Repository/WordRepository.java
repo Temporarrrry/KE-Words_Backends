@@ -12,10 +12,12 @@ import java.util.Optional;
 @Repository
 public interface WordRepository extends JpaRepository<Word, String> {
 
-    @Override
-    <S extends Word> S save(S entity);
+    /*@Override
+    <S extends Word> S save(S entity);*/
 
-    void deleteByEnglish(String english);
+    //void deleteByEnglish(String english);
+
+    Optional<Word> findById(Long id);
 
     Optional<Word> findByEnglish(String english);
 

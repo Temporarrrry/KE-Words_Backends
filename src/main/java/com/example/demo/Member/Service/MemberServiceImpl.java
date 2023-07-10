@@ -1,19 +1,19 @@
 package com.example.demo.Member.Service;
 
+import com.example.demo.Jwt.DTO.LogoutAccessTokenRequestDTO;
 import com.example.demo.Jwt.Service.LogoutAccessTokenService;
 import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
-import com.example.demo.Jwt.dto.LogoutAccessTokenRequestDTO;
+import com.example.demo.Member.DTO.MemberInfoResponseDTO;
+import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.PrincipalDetails;
 import com.example.demo.Member.Exception.MemberExistException;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Repository.MemberRepository;
-import com.example.demo.Member.dto.MemberInfoResponseDTO;
-import com.example.demo.Member.dto.MemberRequestDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -119,7 +119,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Long findIdByAuthentication(Authentication authentication) throws MemberNotExistException {
-        return findIdByUserEmail(((String) authentication.getPrincipal())).orElseThrow(MemberNotExistException::new);
+    public Long findIdByAuthentication() throws MemberNotExistException {
+        String userEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return findIdByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
     }
 }

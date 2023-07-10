@@ -3,8 +3,8 @@ package com.example.demo.Member.Controller;
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Member.dto.MemberRequestDTO;
-import com.example.demo.Member.dto.MemberInfoResponseDTO;
+import com.example.demo.Member.DTO.MemberRequestDTO;
+import com.example.demo.Member.DTO.MemberInfoResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -55,7 +55,7 @@ public class MemberController {
         return new ResponseEntity<>(memberService.login(memberRequestDTO), HttpStatus.OK);
     }*/
 
-    @RequestMapping(method = RequestMethod.POST, value = "/logout")
+    @RequestMapping(method = RequestMethod.POST, value = "/logout") // spring securit의 logout은 기본적으로 POST
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);

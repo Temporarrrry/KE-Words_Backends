@@ -1,7 +1,7 @@
 package com.example.demo.Jwt.Controller;
 
 import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
-import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
+import com.example.demo.Jwt.DTO.RefreshTokenRequestDTO;
 import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Jwt.auth.JwtToken;
 import lombok.RequiredArgsConstructor;

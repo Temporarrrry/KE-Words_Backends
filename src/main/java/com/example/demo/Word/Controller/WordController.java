@@ -1,8 +1,7 @@
 package com.example.demo.Word.Controller;
 
+import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Service.WordService;
-import com.example.demo.Word.dto.WordRequestDTO;
-import com.example.demo.Word.dto.WordResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +17,22 @@ public class WordController {
     private final WordService wordService;
 
     //@Secured("ROLE_ADMIN")
-    @RequestMapping(method = RequestMethod.POST, value = "/saveWord")
+    /*@RequestMapping(method = RequestMethod.POST, value = "/save")
     public ResponseEntity<Void> saveWord(@RequestBody WordRequestDTO wordRequestDTO) {
         wordService.saveWord(wordRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
+    }*/
 
     //@Secured("ROLE_ADMIN")
-    @RequestMapping(method = RequestMethod.POST, value = "/deleteWord")
+    /*@RequestMapping(method = RequestMethod.POST, value = "/delete")
     public ResponseEntity<Void> deleteWord(@RequestBody WordRequestDTO wordRequestDTO) {
         wordService.deleteWord(wordRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
+    }*/
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findById")
+    public ResponseEntity<WordResponseDTO> findById(@RequestParam(value = "id") Long id) {
+        return new ResponseEntity<>(wordService.findById(id), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByEnglish")

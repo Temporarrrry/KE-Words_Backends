@@ -5,7 +5,7 @@ import com.example.demo.Jwt.Exception.RefreshTokenNotExistException;
 import com.example.demo.Jwt.Repository.RefreshTokenRedisRepository;
 import com.example.demo.Jwt.auth.JwtToken;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
-import com.example.demo.Jwt.dto.RefreshTokenRequestDTO;
+import com.example.demo.Jwt.DTO.RefreshTokenRequestDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

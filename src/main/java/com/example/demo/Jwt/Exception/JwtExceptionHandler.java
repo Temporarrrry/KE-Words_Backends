@@ -1,11 +1,12 @@
 package com.example.demo.Jwt.Exception;
 
+import com.example.demo.Jwt.Controller.RefreshTokenController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackageClasses = RefreshTokenController.class)
 public class JwtExceptionHandler {
     @ExceptionHandler(TokenNotValidException.class)
     public ResponseEntity<String> TokenNotValid(TokenNotValidException e) {

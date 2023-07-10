@@ -2,7 +2,7 @@ package com.example.demo.Jwt.Service;
 
 
 import com.example.demo.Jwt.Entity.LogoutAccessToken;
-import com.example.demo.Jwt.dto.LogoutAccessTokenRequestDTO;
+import com.example.demo.Jwt.DTO.LogoutAccessTokenRequestDTO;
 
 import java.util.Optional;
 
