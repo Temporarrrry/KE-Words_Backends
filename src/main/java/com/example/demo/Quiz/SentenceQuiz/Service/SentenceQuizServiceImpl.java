@@ -67,7 +67,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
             int blankCount = random.nextInt(sentenceSize / 4, sentenceSize / 2);
             blankCount = Math.max(blankCount, 1);
 
-            //TODO 개수 오류
             HashSet<Integer> blankIndex = new HashSet<>();
             while (blankIndex.size() < blankCount) {
                 blankIndex.add(random.nextInt(sentenceSize));

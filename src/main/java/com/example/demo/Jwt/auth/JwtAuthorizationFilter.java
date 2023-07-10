@@ -44,17 +44,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
 
-            String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
+            //TODO test를 위해서 임시로 사용자 정보 X
+            /*String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                     .orElseThrow(AccessTokenNotExistException::new);
 
             // logout된 token일 경우 TokenNotValidException
             // accessToken이 만료된 경우 AccessTokenExpiredException
             // accessToken이 만료되지 않은 경우 계속 진행
-            jwtTokenProvider.validateAccessToken(accessToken);
+            jwtTokenProvider.validateAccessToken(accessToken);*/
 
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(
-                        jwtTokenProvider.getUserEmailByAccessToken(accessToken), null
+                        "admin"/*jwtTokenProvider.getUserEmailByAccessToken(accessToken)*/, null
                     )
             );
 
