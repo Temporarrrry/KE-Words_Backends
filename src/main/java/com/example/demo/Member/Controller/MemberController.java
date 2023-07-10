@@ -2,6 +2,7 @@ package com.example.demo.Member.Controller;
 
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
+import com.example.demo.Member.DTO.MemberChangePasswordRequestDTO;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.DTO.MemberInfoResponseDTO;
@@ -75,8 +76,11 @@ public class MemberController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/changePassword")
-    public ResponseEntity<Void> changePassword(Authentication authentication, @RequestParam String newPassword) {
+    public ResponseEntity<Void> changePassword(Authentication authentication,
+                                               @RequestBody MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
         String userEmail = ((String) authentication.getPrincipal());
+        String newPassword = memberChangePasswordRequestDTO.getNewPassword();
+
         memberService.changePasswordByUserEmail(userEmail, newPassword);
         return new ResponseEntity<>(HttpStatus.OK);
     }
