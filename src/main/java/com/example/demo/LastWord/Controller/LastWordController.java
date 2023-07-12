@@ -27,7 +27,7 @@ public class LastWordController {
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
     public void delete() {
         Long userId = memberService.findIdByAuthentication();
-        lastWordService.save(new LastWordRequestDTO(userId));
+        lastWordService.delete(new LastWordRequestDTO(userId));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByUserId")
