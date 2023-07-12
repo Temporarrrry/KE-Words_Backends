@@ -60,8 +60,8 @@ public class WordController {
         return new ResponseEntity<>(wordService.findAll(pageable).getContent(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/findLastPage")
-    public ResponseEntity<PageNumberResponseDTO> findLastPage(@PageableDefault(size = 5) Pageable pageable) {
-        return new ResponseEntity<>(wordService.findLastPage(pageable), HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.GET, value = "/findLastPageNumber")
+    public ResponseEntity<PageNumberResponseDTO> findLastPageNumber(@PageableDefault(size = 5) Pageable pageable) {
+        return new ResponseEntity<>(wordService.findLastPageNumber(pageable), HttpStatus.OK);
     }
 }

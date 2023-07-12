@@ -101,7 +101,7 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public PageNumberResponseDTO findLastPage(Pageable pageable) throws WordNotExistException {
+    public PageNumberResponseDTO findLastPageNumber(Pageable pageable) throws WordNotExistException {
         Long userId = memberService.findIdByAuthentication();
         Long wordId = lastWordService.findByUserId(userId).getWordId();
 

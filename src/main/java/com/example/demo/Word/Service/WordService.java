@@ -23,5 +23,5 @@ public interface WordService {
 
     Page<WordResponseDTO> findAll(Pageable pageable);
 
-    PageNumberResponseDTO findLastPage(Pageable pageable);
+    PageNumberResponseDTO findLastPageNumber(Pageable pageable);
 }
