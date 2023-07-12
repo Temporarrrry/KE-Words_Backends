@@ -1,8 +1,8 @@
 package com.example.demo.Word.Service;
 
-import com.example.demo.BookmarkWord.DTO.BookmarkWordRequestDTO;
-import com.example.demo.BookmarkWord.Service.BookmarkWordService;
-import com.example.demo.LastWord.Service.LastWordService;
+import com.example.demo.Word.AddOn.BookmarkWord.DTO.BookmarkWordRequestDTO;
+import com.example.demo.Word.AddOn.BookmarkWord.Service.BookmarkWordService;
+import com.example.demo.Word.AddOn.LastWord.Service.LastWordService;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Word.DTO.PageNumberResponseDTO;
 import com.example.demo.Word.DTO.WordResponseDTO;
