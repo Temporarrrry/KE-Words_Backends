@@ -35,7 +35,7 @@ public class MemberController {
 
 
     @Secured("ROLE_MEMBER")
-    @RequestMapping(method = RequestMethod.DELETE, value = "/resign")
+    @RequestMapping(method = RequestMethod.POST, value = "/resign")
     public ResponseEntity<Void> resign(HttpServletRequest request, @RequestBody MemberResignRequestDTO memberResignRequestDTO) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);

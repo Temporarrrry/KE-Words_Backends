@@ -34,7 +34,7 @@ public class SentenceQuizController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
+    @RequestMapping(method = RequestMethod.POST, value = "/delete")
     public ResponseEntity<Void> deleteQuizResult(@RequestBody DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         Long sentenceQuizId = deleteSentenceQuizRequestDTO.getSentenceQuizId();

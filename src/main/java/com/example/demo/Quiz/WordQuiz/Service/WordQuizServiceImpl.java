@@ -1,6 +1,5 @@
 package com.example.demo.Quiz.WordQuiz.Service;
 
-import com.example.demo.Quiz.WordQuiz.DTO.DeleteWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
@@ -58,8 +57,7 @@ public class WordQuizServiceImpl implements WordQuizService {
     }
 
     @Override
-    public void deleteQuiz(DeleteWordQuizRequestDTO deleteWordQuizRequestDTO) throws WordQuizNotExistException {
-        Long wordQuizId = deleteWordQuizRequestDTO.getWordQuizId();
+    public void deleteQuiz(Long wordQuizId) throws WordQuizNotExistException {
         if (!wordQuizRepository.existsById(wordQuizId)) throw new WordQuizNotExistException();
         wordQuizRepository.deleteById(wordQuizId);
     }

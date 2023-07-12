@@ -33,13 +33,14 @@ public class WordQuizController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/delete")
+    @RequestMapping(method = RequestMethod.POST, value = "/delete")
     public ResponseEntity<Void> deleteQuizResult(@RequestBody DeleteWordQuizRequestDTO deleteWordQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        if (!Objects.equals(wordQuizService.findById(deleteWordQuizRequestDTO.getWordQuizId()).getUserId(), userId))
+        Long wordQuizId = deleteWordQuizRequestDTO.getWordQuizId();
+        if (!Objects.equals(wordQuizService.findById(wordQuizId).getUserId(), userId))
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        wordQuizService.deleteQuiz(deleteWordQuizRequestDTO);
+        wordQuizService.deleteQuiz(wordQuizId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
