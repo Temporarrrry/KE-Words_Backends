@@ -18,10 +18,10 @@ public class LastWordController {
     private final LastWordService lastWordService;
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> save(@RequestBody SaveLastWordRequestDTO saveLastWordRequestDTO) {
+    @RequestMapping(method = RequestMethod.POST, value = "/saveOrUpdate")
+    public ResponseEntity<Void> saveOrUpdate(@RequestBody SaveLastWordRequestDTO saveLastWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        lastWordService.save(saveLastWordRequestDTO.toInnerDTO(userId));
+        lastWordService.saveOrUpdate(saveLastWordRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -6,7 +6,6 @@ import com.example.demo.LastWord.Entity.LastWord;
 import com.example.demo.LastWord.Exception.LastWordNotExistException;
 import com.example.demo.LastWord.Repository.LastWordRepository;
 import com.example.demo.Word.Exception.WordNotExistException;
-import com.example.demo.Word.Service.WordService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,26 +17,21 @@ public class LastWordServiceImpl implements LastWordService {
 
     private final LastWordRepository lastWordRepository;
 
-    private final WordService wordService;
 
     @Override
-    public void save(LastWordRequestDTO lastWordRequestDTO) throws WordNotExistException {
-        if (!wordService.isExistById(lastWordRequestDTO.getWordId()))
-            throw new WordNotExistException();
+    public void saveOrUpdate(LastWordRequestDTO lastWordRequestDTO) throws WordNotExistException {
+        lastWordRepository.findByUserId(lastWordRequestDTO.getUserId()).ifPresentOrElse(
+                lastWord -> lastWord.setWordId(lastWordRequestDTO.getWordId()),
+                () -> lastWordRepository.save(lastWordRequestDTO.toEntity())
+        );
+
+
         lastWordRepository.save(lastWordRequestDTO.toEntity());
     }
 
     @Override
     public void delete(LastWordRequestDTO lastWordRequestDTO) {
         lastWordRepository.deleteByUserId(lastWordRequestDTO.getUserId());
-    }
-
-    @Override
-    public void update(LastWordRequestDTO lastWordRequestDTO) {
-        LastWord lastWord = lastWordRepository.findByUserId(lastWordRequestDTO.getUserId())
-                .orElseThrow(LastWordNotExistException::new);
-
-        lastWord.setWordId(lastWord.getWordId()); //자동으로 update됨
     }
 
     @Override

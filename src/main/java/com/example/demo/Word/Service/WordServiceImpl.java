@@ -2,13 +2,17 @@ package com.example.demo.Word.Service;
 
 import com.example.demo.BookmarkWord.DTO.BookmarkWordRequestDTO;
 import com.example.demo.BookmarkWord.Service.BookmarkWordService;
+import com.example.demo.LastWord.Service.LastWordService;
 import com.example.demo.Member.Service.MemberService;
+import com.example.demo.Word.DTO.PageNumberResponseDTO;
 import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Entity.Word;
 import com.example.demo.Word.Exception.WordNotExistException;
 import com.example.demo.Word.Repository.WordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +26,8 @@ public class WordServiceImpl implements WordService {
     private final BookmarkWordService bookmarkWordService;
 
     private final MemberService memberService;
+
+    private final LastWordService lastWordService;
 
     /*@Override
     public void saveWord(WordRequestDTO wordRequestDTO) throws WordExistException {
@@ -59,6 +65,8 @@ public class WordServiceImpl implements WordService {
         );
     }
 
+
+
     @Override
     public List<WordResponseDTO> findWordsByRandom(int count) {
         Long userId = memberService.findIdByAuthentication();
@@ -71,5 +79,33 @@ public class WordServiceImpl implements WordService {
                                 bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
                         )
                 ).toList();
+    }
+
+    @Override
+    public PageNumberResponseDTO findPageNumberById(Long id, int pageSize) throws WordNotExistException {
+        if (!wordRepository.existsById(id)) throw new WordNotExistException();
+        int indexById = wordRepository.findIndexById(id);
+        return new PageNumberResponseDTO(indexById / pageSize);
+    }
+
+    @Override
+    public Page<WordResponseDTO> findAll(Pageable pageable) {
+        Long userId = memberService.findIdByAuthentication();
+
+        return wordRepository.findAll(pageable).map(
+                word -> new WordResponseDTO(
+                        word,
+                        bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
+                )
+        );
+    }
+
+    @Override
+    public PageNumberResponseDTO findLastPage(Pageable pageable) throws WordNotExistException {
+        Long userId = memberService.findIdByAuthentication();
+        Long wordId = lastWordService.findByUserId(userId).getWordId();
+
+        int pageNumberById = findPageNumberById(wordId, pageable.getPageSize()).getPageNumber();
+        return new PageNumberResponseDTO(pageNumberById);
     }
 }

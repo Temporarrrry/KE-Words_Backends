@@ -1,14 +1,13 @@
 package com.example.demo.LastWord.Repository;
 
 import com.example.demo.LastWord.Entity.LastWord;
-import com.example.demo.LastWord.Entity.LastWordPk;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface LastWordRepository extends JpaRepository<LastWord, LastWordPk> {
+public interface LastWordRepository extends JpaRepository<LastWord, Long> {
 
     @Override
     <S extends LastWord> S save(S entity);
