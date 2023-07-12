@@ -14,6 +14,10 @@ public class LastWordRequestDTO {
     @NotBlank
     private Long wordId;
 
+    public LastWordRequestDTO(Long userId) {
+        this.userId = userId;
+    }
+
     public LastWord toEntity() {
         return new LastWord(userId, wordId);
     }

@@ -1,6 +1,6 @@
 package com.example.demo.LastWord.Controller;
 
-import com.example.demo.LastWord.DTO.DeleteLastWordRequestDTO;
+import com.example.demo.LastWord.DTO.LastWordRequestDTO;
 import com.example.demo.LastWord.DTO.LastWordResponseDTO;
 import com.example.demo.LastWord.DTO.SaveLastWordRequestDTO;
 import com.example.demo.LastWord.Service.LastWordService;
@@ -25,9 +25,9 @@ public class LastWordController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public void delete(@RequestBody DeleteLastWordRequestDTO deleteLastWordRequestDTO) {
+    public void delete() {
         Long userId = memberService.findIdByAuthentication();
-        lastWordService.save(deleteLastWordRequestDTO.toInnerDTO(userId));
+        lastWordService.save(new LastWordRequestDTO(userId));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByUserId")
