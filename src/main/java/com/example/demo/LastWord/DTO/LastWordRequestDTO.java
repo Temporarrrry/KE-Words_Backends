@@ -1,6 +1,6 @@
-package com.example.demo.Word.BookmarkWord.DTO;
+package com.example.demo.LastWord.DTO;
 
-import com.example.demo.Word.BookmarkWord.Entity.BookmarkWord;
+import com.example.demo.LastWord.Entity.LastWord;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookmarkWordRequestDTO {
+public class LastWordRequestDTO {
     private Long userId;
     @NotBlank
     private Long wordId;
 
-    public BookmarkWord toEntity() {
-        return new BookmarkWord(userId, wordId);
+    public LastWord toEntity() {
+        return new LastWord(userId, wordId);
     }
 }

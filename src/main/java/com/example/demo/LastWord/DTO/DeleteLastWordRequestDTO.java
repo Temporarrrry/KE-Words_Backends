@@ -1,4 +1,4 @@
-package com.example.demo.Word.BookmarkWord.DTO;
+package com.example.demo.LastWord.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteBookmarkWordRequestDTO {
+public class DeleteLastWordRequestDTO {
     @NotBlank
     private Long wordId;
 
-    public BookmarkWordRequestDTO toInnerDTO(Long userId) {
-        return new BookmarkWordRequestDTO(userId, wordId);
+    public LastWordRequestDTO toInnerDTO(Long userId) {
+        return new LastWordRequestDTO(userId, wordId);
     }
 }

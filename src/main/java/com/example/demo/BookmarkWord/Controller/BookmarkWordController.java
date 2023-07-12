@@ -1,10 +1,10 @@
-package com.example.demo.Word.BookmarkWord.Controller;
+package com.example.demo.BookmarkWord.Controller;
 
+import com.example.demo.BookmarkWord.DTO.BookmarkWordResponseDTO;
+import com.example.demo.BookmarkWord.DTO.DeleteBookmarkWordRequestDTO;
+import com.example.demo.BookmarkWord.DTO.SaveBookmarkWordRequestDTO;
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordResponseDTO;
-import com.example.demo.Word.BookmarkWord.DTO.DeleteBookmarkWordRequestDTO;
-import com.example.demo.Word.BookmarkWord.DTO.SaveBookmarkWordRequestDTO;
-import com.example.demo.Word.BookmarkWord.Service.BookmarkWordService;
+import com.example.demo.BookmarkWord.Service.BookmarkWordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

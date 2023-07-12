@@ -1,7 +1,7 @@
-package com.example.demo.Word.BookmarkWord.Service;
+package com.example.demo.BookmarkWord.Service;
 
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordRequestDTO;
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordResponseDTO;
+import com.example.demo.BookmarkWord.DTO.BookmarkWordRequestDTO;
+import com.example.demo.BookmarkWord.DTO.BookmarkWordResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

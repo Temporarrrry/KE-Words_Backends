@@ -1,7 +1,7 @@
-package com.example.demo.Word.BookmarkWord.Repository;
+package com.example.demo.BookmarkWord.Repository;
 
-import com.example.demo.Word.BookmarkWord.Entity.BookmarkWord;
-import com.example.demo.Word.BookmarkWord.Entity.BookmarkWordPk;
+import com.example.demo.BookmarkWord.Entity.BookmarkWord;
+import com.example.demo.BookmarkWord.Entity.BookmarkWordPk;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

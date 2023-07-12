@@ -21,7 +21,7 @@ public interface WordRepository extends JpaRepository<Word, String> {
 
     Optional<Word> findByEnglish(String english);
 
-    boolean existsByEnglish(String english);
+    boolean existsById(Long wordId);
 
     @Query(value = "select * from word order by RAND() limit :count", nativeQuery = true)
     List<Word> findWordsByRandom(@Param("count") int count);

@@ -1,10 +1,10 @@
-package com.example.demo.Word.BookmarkWord.Service;
+package com.example.demo.BookmarkWord.Service;
 
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordRequestDTO;
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordResponseDTO;
-import com.example.demo.Word.BookmarkWord.Exception.BookmarkWordExistException;
-import com.example.demo.Word.BookmarkWord.Exception.BookmarkWordNotExistException;
-import com.example.demo.Word.BookmarkWord.Repository.BookmarkWordRepository;
+import com.example.demo.BookmarkWord.DTO.BookmarkWordResponseDTO;
+import com.example.demo.BookmarkWord.Exception.BookmarkWordExistException;
+import com.example.demo.BookmarkWord.Exception.BookmarkWordNotExistException;
+import com.example.demo.BookmarkWord.Repository.BookmarkWordRepository;
+import com.example.demo.BookmarkWord.DTO.BookmarkWordRequestDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

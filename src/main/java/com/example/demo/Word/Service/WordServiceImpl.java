@@ -1,9 +1,8 @@
 package com.example.demo.Word.Service;
 
-import com.example.demo.Word.BookmarkWord.DTO.BookmarkWordRequestDTO;
-import com.example.demo.Word.BookmarkWord.Service.BookmarkWordService;
+import com.example.demo.BookmarkWord.DTO.BookmarkWordRequestDTO;
+import com.example.demo.BookmarkWord.Service.BookmarkWordService;
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Word.DTO.WordRequestDTO;
 import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Entity.Word;
 import com.example.demo.Word.Exception.WordNotExistException;
@@ -36,8 +35,8 @@ public class WordServiceImpl implements WordService {
     }*/
 
     @Override
-    public boolean isExist(WordRequestDTO wordRequestDTO) {
-        return wordRepository.existsByEnglish(wordRequestDTO.getEnglish());
+    public boolean isExistById(Long wordId) {
+        return wordRepository.existsById(wordId);
     }
 
     @Override

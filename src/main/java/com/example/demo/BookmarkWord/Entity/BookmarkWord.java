@@ -1,4 +1,4 @@
-package com.example.demo.Word.BookmarkWord.Entity;
+package com.example.demo.BookmarkWord.Entity;
 
 import com.example.demo.Common.Entity.BaseTimeEntity;
 import jakarta.persistence.Column;

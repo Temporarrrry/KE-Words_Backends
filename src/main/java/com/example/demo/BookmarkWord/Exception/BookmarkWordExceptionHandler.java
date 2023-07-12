@@ -1,6 +1,6 @@
-package com.example.demo.Word.BookmarkWord.Exception;
+package com.example.demo.BookmarkWord.Exception;
 
-import com.example.demo.Word.BookmarkWord.Controller.BookmarkWordController;
+import com.example.demo.BookmarkWord.Controller.BookmarkWordController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

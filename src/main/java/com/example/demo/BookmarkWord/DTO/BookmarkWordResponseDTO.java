@@ -1,4 +1,4 @@
-package com.example.demo.Word.BookmarkWord.DTO;
+package com.example.demo.BookmarkWord.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

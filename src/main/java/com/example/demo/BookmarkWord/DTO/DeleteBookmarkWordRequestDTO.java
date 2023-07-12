@@ -1,6 +1,5 @@
-package com.example.demo.Word.BookmarkWord.DTO;
+package com.example.demo.BookmarkWord.DTO;
 
-import com.example.demo.Word.BookmarkWord.Entity.BookmarkWord;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveBookmarkWordRequestDTO {
+public class DeleteBookmarkWordRequestDTO {
     @NotBlank
     private Long wordId;
 
