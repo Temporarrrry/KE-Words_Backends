@@ -19,15 +19,17 @@ public class LastWordController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public void save(@RequestBody SaveLastWordRequestDTO saveLastWordRequestDTO) {
+    public ResponseEntity<Void> save(@RequestBody SaveLastWordRequestDTO saveLastWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         lastWordService.save(saveLastWordRequestDTO.toInnerDTO(userId));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public void delete() {
+    public ResponseEntity<Void> delete() {
         Long userId = memberService.findIdByAuthentication();
         lastWordService.delete(new LastWordRequestDTO(userId));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByUserId")
