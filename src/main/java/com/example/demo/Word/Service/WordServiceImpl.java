@@ -1,9 +1,10 @@
 package com.example.demo.Word.Service;
 
+import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Word.AddOn.BookmarkWord.DTO.BookmarkWordRequestDTO;
 import com.example.demo.Word.AddOn.BookmarkWord.Service.BookmarkWordService;
+import com.example.demo.Word.AddOn.LastWord.DTO.LastWordRequestDTO;
 import com.example.demo.Word.AddOn.LastWord.Service.LastWordService;
-import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Word.DTO.PageNumberResponseDTO;
 import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Entity.Word;
@@ -92,12 +93,20 @@ public class WordServiceImpl implements WordService {
     public Page<WordResponseDTO> findAll(Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
 
-        return wordRepository.findAll(pageable).map(
+        Page<WordResponseDTO> words = wordRepository.findAll(pageable).map(
                 word -> new WordResponseDTO(
                         word,
                         bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
                 )
         );
+
+        // 마지막 단어 저장
+        if (words.hasContent()) { // page 내에 단어가 존재할 때
+            Long firstId = words.getContent().get(0).getId();
+            lastWordService.saveOrUpdate(new LastWordRequestDTO(userId, firstId));
+        }
+
+        return words;
     }
 
     @Override
