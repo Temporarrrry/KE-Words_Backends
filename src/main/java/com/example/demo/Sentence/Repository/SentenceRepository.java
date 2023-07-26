@@ -1,6 +1,8 @@
 package com.example.demo.Sentence.Repository;
 
 import com.example.demo.Sentence.Entity.Sentence;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,7 +27,7 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long> {
     @Query(value = "select * from sentence order by RAND() limit :count", nativeQuery = true)
     List<Sentence> findByRandom(@Param("count") int count);
 
-
+    Page<Sentence> findAll(Pageable pageable);
 
     boolean existsByEnglish(String english);
 }

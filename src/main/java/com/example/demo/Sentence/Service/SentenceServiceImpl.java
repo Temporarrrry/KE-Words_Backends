@@ -6,6 +6,8 @@ import com.example.demo.Sentence.Entity.Sentence;
 import com.example.demo.Sentence.Exception.SentenceNotExistException;
 import com.example.demo.Sentence.Repository.SentenceRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,5 +52,10 @@ public class SentenceServiceImpl implements SentenceService {
     @Override
     public List<SentenceResponseDTO> findByRandom(int count) {
         return sentenceRepository.findByRandom(count).stream().map(SentenceResponseDTO::new).toList();
+    }
+
+    @Override
+    public Page<SentenceResponseDTO> findAll(Pageable pageable) {
+        return sentenceRepository.findAll(pageable).map(SentenceResponseDTO::new);
     }
 }
