@@ -20,9 +20,12 @@ public class SentenceResponseDTO {
     @NotBlank
     private String korean;
 
-    public SentenceResponseDTO(Sentence sentence) {
+    boolean isBookmarked;
+
+    public SentenceResponseDTO(Sentence sentence, boolean isBookmarked) {
         this.id = sentence.getId();
         this.english = sentence.getEnglish();
         this.korean = sentence.getKorean();
+        this.isBookmarked = isBookmarked;
     }
 }

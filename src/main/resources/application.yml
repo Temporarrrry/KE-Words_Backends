@@ -50,6 +50,7 @@ Cors:
     AllowedHeaders: '*'
     AllowedMethods: '*'
 
-
+springdoc:
+    show-login-endpoint: true
 
 debug: true
