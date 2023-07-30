@@ -23,10 +23,10 @@ public class OrderingQuizProblem {
     private List<String> shuffledEnglish;
 
     @NotBlank
-    private String korean;
+    private List<String> korean;
 
     @Builder
-    public OrderingQuizProblem(Long sentenceId, List<String> originalEnglish, List<String> shuffledEnglish, String korean) {
+    public OrderingQuizProblem(Long sentenceId, List<String> originalEnglish, List<String> shuffledEnglish, List<String> korean) {
         this.sentenceId = sentenceId;
         this.originalEnglish = originalEnglish;
         this.shuffledEnglish = shuffledEnglish;

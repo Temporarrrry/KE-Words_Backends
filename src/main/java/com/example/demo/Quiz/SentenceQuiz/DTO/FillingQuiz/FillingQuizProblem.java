@@ -22,10 +22,10 @@ public class FillingQuizProblem {
     private List<String> blankedEnglish;
 
     @NotBlank
-    private String korean;
+    private List<String> korean;
 
     @Builder
-    public FillingQuizProblem(Long sentenceId, List<String> originalEnglish, List<String> blankedEnglish, String korean) {
+    public FillingQuizProblem(Long sentenceId, List<String> originalEnglish, List<String> blankedEnglish, List<String> korean) {
         this.sentenceId = sentenceId;
         this.originalEnglish = originalEnglish;
         this.blankedEnglish = blankedEnglish;
