@@ -96,7 +96,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void resign(String accessToken, String password) throws MemberNotExistException, PasswordNotMatchException {
         String userEmail = jwtTokenProvider.getUserEmailByAccessToken(accessToken);
-        if (memberRepository.existsByUserEmail(userEmail)) throw new MemberNotExistException();
+        if (!memberRepository.existsByUserEmail(userEmail)) throw new MemberNotExistException();
 
         Member member = findByUserEmail(userEmail);
         if (!passwordEncoder.matches(password, member.getPassword())) throw new PasswordNotMatchException();
