@@ -4,6 +4,9 @@ import com.example.demo.Jwt.Exception.AccessTokenExpiredException;
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
 import com.example.demo.Jwt.Exception.TokenNotValidException;
+import com.example.demo.Member.Entity.Member;
+import com.example.demo.Member.Entity.PrincipalDetails;
+import com.example.demo.Member.Service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +19,7 @@ import org.springframework.web.cors.CorsProcessor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -25,10 +29,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final CorsConfigurationSource corsConfigurationSource;
 
-    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, CorsProcessor corsProcessor, CorsConfigurationSource corsConfigurationSource) {
+    private final MemberService memberService;
+
+    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, CorsProcessor corsProcessor, CorsConfigurationSource corsConfigurationSource, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.corsProcessor = corsProcessor;
         this.corsConfigurationSource = corsConfigurationSource;
+        this.memberService = memberService;
     }
 
     @Override
@@ -53,9 +60,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // accessToken이 만료되지 않은 경우 계속 진행
             jwtTokenProvider.validateAccessToken(accessToken);*/
 
+            String userEmail = "admin";//jwtTokenProvider.getUserEmailByAccessToken(accessToken)
+
+            Optional<Member> findMember = memberService.findByUserEmail(userEmail);
+
+
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(
-                        "admin"/*jwtTokenProvider.getUserEmailByAccessToken(accessToken)*/, null
+                            userEmail,
+                            null,
+                            findMember // 이 곳에서 role을 등록해야 @PreAuthorize에서 사용 가능
+                                    .map(PrincipalDetails::new)
+                                    .orElseThrow(TokenNotValidException::new)
+                                    .getAuthorities()
                     )
             );
 

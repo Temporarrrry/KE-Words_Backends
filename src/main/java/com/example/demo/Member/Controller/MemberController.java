@@ -3,15 +3,15 @@ package com.example.demo.Member.Controller;
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
 import com.example.demo.Member.DTO.MemberChangePasswordRequestDTO;
+import com.example.demo.Member.DTO.MemberInfoResponseDTO;
+import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.DTO.MemberResignRequestDTO;
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Member.DTO.MemberRequestDTO;
-import com.example.demo.Member.DTO.MemberInfoResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +34,6 @@ public class MemberController {
     }
 
 
-    @Secured("ROLE_MEMBER")
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
     public ResponseEntity<Void> resign(HttpServletRequest request, @RequestBody MemberResignRequestDTO memberResignRequestDTO) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
@@ -66,7 +65,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Secured("ROLE_MEMBER")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, value = "/info")
     public ResponseEntity<MemberInfoResponseDTO> getMemberInform(Authentication authentication, @RequestParam String email) throws Exception {
         String userEmail = ((String) authentication.getPrincipal());

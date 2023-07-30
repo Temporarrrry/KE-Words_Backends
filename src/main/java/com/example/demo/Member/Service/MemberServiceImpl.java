@@ -88,8 +88,8 @@ public class MemberServiceImpl implements MemberService {
         refreshTokenService.deleteByUserEmail(jwtTokenProvider.getUserEmailByAccessToken(accessToken));
     }
 
-    private Member findByUserEmail(String userEmail) {
-        return memberRepository.findByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
+    public Optional<Member> findByUserEmail(String userEmail) {
+        return memberRepository.findByUserEmail(userEmail);
     }
 
     //DELETE
@@ -98,7 +98,8 @@ public class MemberServiceImpl implements MemberService {
         String userEmail = jwtTokenProvider.getUserEmailByAccessToken(accessToken);
         if (!memberRepository.existsByUserEmail(userEmail)) throw new MemberNotExistException();
 
-        Member member = findByUserEmail(userEmail);
+        Member member = findByUserEmail(userEmail)
+                .orElseThrow(MemberNotExistException::new);
         if (!passwordEncoder.matches(password, member.getPassword())) throw new PasswordNotMatchException();
 
         logout(accessToken);
