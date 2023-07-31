@@ -7,6 +7,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.OrderingQuiz.OrderingQuizProblemsR
 import com.example.demo.Quiz.SentenceQuiz.DTO.SaveSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Service.SentenceQuizService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,7 +27,7 @@ public class SentenceQuizController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody SaveSentenceQuizRequestDTO saveSentenceQuizRequestDTO) {
+    public ResponseEntity<Void> saveQuizResult(@RequestBody @Valid SaveSentenceQuizRequestDTO saveSentenceQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
 
         sentenceQuizService.saveQuiz(saveSentenceQuizRequestDTO.toInnerDTO(userId));
@@ -34,7 +35,7 @@ public class SentenceQuizController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteQuizResult(@RequestBody DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
+    public ResponseEntity<Void> deleteQuizResult(@RequestBody @Valid DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         Long sentenceQuizId = deleteSentenceQuizRequestDTO.getSentenceQuizId();
         if (!Objects.equals(sentenceQuizService.findById(sentenceQuizId).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);

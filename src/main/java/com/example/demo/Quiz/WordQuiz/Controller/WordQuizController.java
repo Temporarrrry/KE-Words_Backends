@@ -6,6 +6,7 @@ import com.example.demo.Quiz.WordQuiz.DTO.SaveWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Service.WordQuizService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +26,7 @@ public class WordQuizController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody SaveWordQuizRequestDTO saveWordQuizRequestDTO) {
+    public ResponseEntity<Void> saveQuizResult(@RequestBody @Valid SaveWordQuizRequestDTO saveWordQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
 
         wordQuizService.saveQuiz(saveWordQuizRequestDTO.toInnerDTO(userId));
@@ -33,7 +34,7 @@ public class WordQuizController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteQuizResult(@RequestBody DeleteWordQuizRequestDTO deleteWordQuizRequestDTO) {
+    public ResponseEntity<Void> deleteQuizResult(@RequestBody @Valid DeleteWordQuizRequestDTO deleteWordQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         Long wordQuizId = deleteWordQuizRequestDTO.getWordQuizId();
         if (!Objects.equals(wordQuizService.findById(wordQuizId).getUserId(), userId))

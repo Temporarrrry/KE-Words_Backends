@@ -5,10 +5,14 @@ import com.example.demo.Sentence.AddOn.LastSentence.DTO.LastSentenceRequestDTO;
 import com.example.demo.Sentence.AddOn.LastSentence.DTO.LastSentenceResponseDTO;
 import com.example.demo.Sentence.AddOn.LastSentence.DTO.SaveLastSentenceRequestDTO;
 import com.example.demo.Sentence.AddOn.LastSentence.Service.LastSentenceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/lastSentence")
@@ -18,7 +22,7 @@ public class LastSentenceController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveOrUpdate")
-    public ResponseEntity<Void> saveOrUpdate(@RequestBody SaveLastSentenceRequestDTO saveLastSentenceRequestDTO) {
+    public ResponseEntity<Void> saveOrUpdate(@RequestBody @Valid SaveLastSentenceRequestDTO saveLastSentenceRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         lastSentenceService.saveOrUpdate(saveLastSentenceRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);

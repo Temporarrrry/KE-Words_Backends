@@ -8,10 +8,10 @@ import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.DTO.MemberResignRequestDTO;
 import com.example.demo.Member.Service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,14 +27,14 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public ResponseEntity<Void> register(@RequestBody MemberRequestDTO memberRequestDTO) {
+    public ResponseEntity<Void> register(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
         memberService.register(memberRequestDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/resign")
-    public ResponseEntity<Void> resign(HttpServletRequest request, @RequestBody MemberResignRequestDTO memberResignRequestDTO) {
+    public ResponseEntity<Void> resign(HttpServletRequest request, @RequestBody @Valid MemberResignRequestDTO memberResignRequestDTO) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);
 
@@ -51,7 +51,7 @@ public class MemberController {
 
     //filter에서 진행
     /*@RequestMapping(method = RequestMethod.POST, value = "/login")
-    public ResponseEntity<MemberResponseDTO> login(@RequestBody MemberRequestDTO memberRequestDTO) {
+    public ResponseEntity<MemberResponseDTO> login(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
         return new ResponseEntity<>(memberService.login(memberRequestDTO), HttpStatus.OK);
     }*/
 
@@ -75,7 +75,7 @@ public class MemberController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/changePassword")
     public ResponseEntity<Void> changePassword(Authentication authentication,
-                                               @RequestBody MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
+                                               @RequestBody @Valid MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
         String userEmail = ((String) authentication.getPrincipal());
         String newPassword = memberChangePasswordRequestDTO.getNewPassword();
 

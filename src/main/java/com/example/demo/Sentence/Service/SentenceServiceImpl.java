@@ -2,7 +2,7 @@ package com.example.demo.Sentence.Service;
 
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Sentence.AddOn.BookmarkSentence.DTO.BookmarkSentenceRequestDTO;
-import com.example.demo.Sentence.AddOn.BookmarkSentence.Service.BookmarkSentenceService;
+import com.example.demo.Sentence.AddOn.LastSentence.Service.BookmarkSentenceService;
 import com.example.demo.Sentence.AddOn.LastSentence.DTO.LastSentenceRequestDTO;
 import com.example.demo.Sentence.AddOn.LastSentence.Service.LastSentenceService;
 import com.example.demo.Sentence.DTO.SentenceRequestDTO;

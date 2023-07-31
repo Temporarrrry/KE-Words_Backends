@@ -20,14 +20,14 @@ public class WordController {
 
     //@Secured("ROLE_ADMIN")
     /*@RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveWord(@RequestBody WordRequestDTO wordRequestDTO) {
+    public ResponseEntity<Void> saveWord(@RequestBody @Valid WordRequestDTO wordRequestDTO) {
         wordService.saveWord(wordRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }*/
 
     //@Secured("ROLE_ADMIN")
     /*@RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteWord(@RequestBody WordRequestDTO wordRequestDTO) {
+    public ResponseEntity<Void> deleteWord(@RequestBody @Valid WordRequestDTO wordRequestDTO) {
         wordService.deleteWord(wordRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }*/

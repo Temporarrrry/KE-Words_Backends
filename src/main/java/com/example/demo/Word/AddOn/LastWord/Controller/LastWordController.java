@@ -1,14 +1,18 @@
 package com.example.demo.Word.AddOn.LastWord.Controller;
 
+import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Word.AddOn.LastWord.DTO.LastWordRequestDTO;
 import com.example.demo.Word.AddOn.LastWord.DTO.LastWordResponseDTO;
 import com.example.demo.Word.AddOn.LastWord.DTO.SaveLastWordRequestDTO;
 import com.example.demo.Word.AddOn.LastWord.Service.LastWordService;
-import com.example.demo.Member.Service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/lastWord")
@@ -18,7 +22,7 @@ public class LastWordController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveOrUpdate")
-    public ResponseEntity<Void> saveOrUpdate(@RequestBody SaveLastWordRequestDTO saveLastWordRequestDTO) {
+    public ResponseEntity<Void> saveOrUpdate(@RequestBody @Valid SaveLastWordRequestDTO saveLastWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         lastWordService.saveOrUpdate(saveLastWordRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);

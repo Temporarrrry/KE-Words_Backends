@@ -20,14 +20,14 @@ public class SentenceController {
 
     //@Secured("ROLE_ADMIN")
     /*@RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveSentence(@RequestBody SentenceRequestDTO sentenceRequestDTO) {
+    public ResponseEntity<Void> saveSentence(@RequestBody @Valid SentenceRequestDTO sentenceRequestDTO) {
         sentenceService.saveSentence(sentenceRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }*/
 
     //@Secured("ROLE_ADMIN")
     /*@RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteSentence(@RequestBody SentenceRequestDTO sentenceRequestDTO) {
+    public ResponseEntity<Void> deleteSentence(@RequestBody @Valid SentenceRequestDTO sentenceRequestDTO) {
         sentenceService.deleteSentence((sentenceRequestDTO));
         return new ResponseEntity<>(HttpStatus.OK);
     }*/
