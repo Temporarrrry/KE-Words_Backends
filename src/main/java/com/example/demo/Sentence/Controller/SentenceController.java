@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(originPatterns = "http://**", maxAge = 3600) //TODO originPatterns 수정
 @RestController
 @RequestMapping("/api/sentence")
 @RequiredArgsConstructor

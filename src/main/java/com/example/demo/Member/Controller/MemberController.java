@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
-@CrossOrigin(originPatterns = "http://**", maxAge = 3600) //TODO originPatterns 수정
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -65,7 +64,6 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, value = "/info")
     public ResponseEntity<MemberInfoResponseDTO> getMemberInform(Authentication authentication, @RequestParam String email) throws Exception {
         String userEmail = ((String) authentication.getPrincipal());

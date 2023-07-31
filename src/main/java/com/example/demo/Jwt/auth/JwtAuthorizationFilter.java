@@ -11,11 +11,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsProcessor;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,17 +26,26 @@ import java.util.Optional;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final CorsProcessor corsProcessor;
-
-    private final CorsConfigurationSource corsConfigurationSource;
+    private final RequestMatcher excludeRequestMatcher;
 
     private final MemberService memberService;
 
-    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, CorsProcessor corsProcessor, CorsConfigurationSource corsConfigurationSource, MemberService memberService) {
+    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.corsProcessor = corsProcessor;
-        this.corsConfigurationSource = corsConfigurationSource;
         this.memberService = memberService;
+        this.excludeRequestMatcher = new OrRequestMatcher(
+                new AntPathRequestMatcher("/api/member/register", HttpMethod.POST.name()),
+                new AntPathRequestMatcher("/api/member/userEmailDuplicatedCheck", HttpMethod.GET.name()),
+
+                new AntPathRequestMatcher("/api/token/reIssue", HttpMethod.POST.name()),
+
+                new AntPathRequestMatcher("/", HttpMethod.GET.name()),
+
+                new AntPathRequestMatcher("/swagger-ui/**", HttpMethod.GET.name()),
+                new AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.name()),
+
+                new AntPathRequestMatcher("/assets/**", HttpMethod.GET.name())
+        );
     }
 
     @Override
@@ -43,13 +53,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             System.out.println("authorization 시작");
             System.out.println("url: " + request.getRequestURL());
-
-            //CORS 설정
-            CorsConfiguration corsConfiguration = corsConfigurationSource.getCorsConfiguration(request);
-            if (corsConfiguration != null) {
-                corsProcessor.processRequest(corsConfiguration, request, response);
-            }
-
 
             //TODO test를 위해서 임시로 사용자 정보 X
             /*String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
@@ -92,10 +95,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
 
-    /*@Override
+    @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String requestURL = request.getRequestURL().toString();
-        System.out.println("author requestURL: " + requestURL);
-        return !requestURL.startsWith(origin + "/api/");
-    }*/
+        return excludeRequestMatcher.matches(request);
+    }
 }

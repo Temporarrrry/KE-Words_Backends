@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface LogoutRedisRepository extends CrudRepository<LogoutAccessToken, Long> {
+public interface LogoutRedisRepository extends CrudRepository<LogoutAccessToken, String> {
     @Override
     <S extends LogoutAccessToken> S save(S entity);
 

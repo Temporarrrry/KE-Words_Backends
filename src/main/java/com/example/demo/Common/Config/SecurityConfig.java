@@ -19,13 +19,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsProcessor;
 
 @Configuration
 @EnableWebSecurity
@@ -42,7 +40,7 @@ public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
 
-    private final CorsProcessor corsProcessor;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -56,25 +54,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.ignoring().requestMatchers(
-                    "/api/member/register", "/api/member/userEmailDuplicatedCheck", // register,emailcheck 시에 security 미적용
-                    "/api/token/reIssue",
-                    "/swagger-ui/**", "/v3/api-docs/**", // swagger-ui 보안 미적용
-                    "/assets/**"
-            );
-        };
-    }
-
-
-    @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager,
-                                              CorsConfigurationSource corsConfigurationSource) throws Exception{
+    protected SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception{
 
         http
-                .cors()// cors 적용
-                    .and()
+                .cors(httpSecurityCorsConfigurer ->
+                        httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource)
+                )
+
                 .csrf().disable() // csrf 비활성화
                 .headers().frameOptions().disable()
                         .and()
@@ -88,7 +74,6 @@ public class SecurityConfig {
                 // 로그아웃 설정
                 .logout()
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/member/login") // 로그아웃 시 이동할 페이지 지정
                     .invalidateHttpSession(true) // 로그아웃 시 세션 제거
 
                     .and()
@@ -113,8 +98,6 @@ public class SecurityConfig {
                 .addFilterAfter(
                         new JwtAuthorizationFilter(
                                 jwtTokenProvider,
-                                corsProcessor,
-                                corsConfigurationSource,
                                 memberService
                         ),
                         UsernamePasswordAuthenticationFilter.class);
