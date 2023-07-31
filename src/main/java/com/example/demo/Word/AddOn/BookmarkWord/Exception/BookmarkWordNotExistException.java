@@ -1,11 +1,10 @@
 package com.example.demo.Word.AddOn.BookmarkWord.Exception;
 
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "북마크 단어가 존재하지 않습니다.")
-public class BookmarkWordNotExistException extends RuntimeException {
+public class BookmarkWordNotExistException extends RuntimeExceptionWithHttpStatus {
     public BookmarkWordNotExistException() {
-        super();
+        super("존재하지 않는 북마크 단어입니다.", HttpStatus.NOT_FOUND);
     }
 }

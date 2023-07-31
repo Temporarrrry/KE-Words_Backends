@@ -1,7 +1,10 @@
 package com.example.demo.Quiz.SentenceQuiz.Exception;
 
-public class SentenceTooShortException extends RuntimeException {
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
+import org.springframework.http.HttpStatus;
+
+public class SentenceTooShortException extends RuntimeExceptionWithHttpStatus {
     public SentenceTooShortException() {
-        super();
+        super("문장이 너무 짧습니다.", HttpStatus.BAD_REQUEST);
     }
 }

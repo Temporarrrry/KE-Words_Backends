@@ -1,7 +1,10 @@
 package com.example.demo.Word.AddOn.LastWord.Exception;
 
-public class LastWordNotExistException extends RuntimeException {
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
+import org.springframework.http.HttpStatus;
+
+public class LastWordNotExistException extends RuntimeExceptionWithHttpStatus {
     public LastWordNotExistException() {
-        super();
+        super("마지막으로 본 단어가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
     }
 }

@@ -1,7 +1,10 @@
 package com.example.demo.Word.Exception;
 
-public class WordNotExistException extends RuntimeException {
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
+import org.springframework.http.HttpStatus;
+
+public class WordNotExistException extends RuntimeExceptionWithHttpStatus {
     public WordNotExistException() {
-        super();
+        super("존재하지 않는 단어입니다.", HttpStatus.NOT_FOUND);
     }
 }

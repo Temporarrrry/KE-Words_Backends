@@ -1,7 +1,10 @@
 package com.example.demo.Sentence.Exception;
 
-public class SentenceNotExistException extends RuntimeException {
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
+import org.springframework.http.HttpStatus;
+
+public class SentenceNotExistException extends RuntimeExceptionWithHttpStatus {
     public SentenceNotExistException() {
-        super();
+        super("존재하지 않는 문장입니다.", HttpStatus.NOT_FOUND);
     }
 }

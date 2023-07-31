@@ -1,7 +1,10 @@
 package com.example.demo.Quiz.WordQuiz.Exception;
 
-public class WordQuizNotExistException extends RuntimeException {
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
+import org.springframework.http.HttpStatus;
+
+public class WordQuizNotExistException extends RuntimeExceptionWithHttpStatus {
     public WordQuizNotExistException() {
-        super();
+        super("존재하지 않는 퀴즈입니다.", HttpStatus.NOT_FOUND);
     }
 }

@@ -1,7 +1,10 @@
 package com.example.demo.Word.Exception;
 
-public class WordExistException extends RuntimeException {
+import com.example.demo.Common.Exception.RuntimeExceptionWithHttpStatus;
+import org.springframework.http.HttpStatus;
+
+public class WordExistException extends RuntimeExceptionWithHttpStatus {
     public WordExistException() {
-        super();
+        super("이미 존재하는 단어입니다.", HttpStatus.CONFLICT);
     }
 }
