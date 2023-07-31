@@ -11,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 import java.util.HashMap;
 
-
+@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final String accessTokenHeaderName;
     private final String refreshTokenHeaderName;
@@ -47,7 +48,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("attempt authentication");
+        log.info("attempt authentication");
         MemberRequestDTO memberRequestDTO = null;
 
         try {
@@ -68,8 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("authentication success");
-
+        log.info("authentication success");
         String userEmail = ((PrincipalDetails) authResult.getPrincipal()).getUsername();
 
         Long userId = memberService.findIdByUserEmail(userEmail)
@@ -99,7 +99,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
-        System.out.println("authentication fail");
+        log.info("authentication failed");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 }

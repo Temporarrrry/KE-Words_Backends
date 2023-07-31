@@ -65,8 +65,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
             if (sentenceSize < 2) throw new SentenceTooShortException(); // 문장이 너무 짧으면 예외 발생
 
-            System.out.println("sentenceSize = " + sentenceSize);
-
             List<String> blankedSentence = new ArrayList<>(originalSentence);
 
             int blankCount = random.nextInt(sentenceSize / 4, sentenceSize / 2);

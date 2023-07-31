@@ -2,7 +2,6 @@ package com.example.demo.Jwt.auth;
 
 import com.example.demo.Jwt.Exception.AccessTokenExpiredException;
 import com.example.demo.Jwt.Exception.AccessTokenNotExistException;
-import com.example.demo.Jwt.Exception.RefreshTokenExpiredException;
 import com.example.demo.Jwt.Exception.TokenNotValidException;
 import com.example.demo.Member.Entity.Member;
 import com.example.demo.Member.Entity.PrincipalDetails;
@@ -11,6 +10,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
-
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -51,8 +51,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            System.out.println("authorization 시작");
-            System.out.println("url: " + request.getRequestURL());
+            log.info("authorization 시작");
+            log.info("url: " + request.getRequestURL());
 
             //TODO test를 위해서 임시로 사용자 정보 X
             /*String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
@@ -81,16 +81,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             chain.doFilter(request, response); //filter 계속 진행
 
-        } catch (AccessTokenExpiredException | RefreshTokenExpiredException e){
-            System.out.println("TokenExpired: " + e.getMessage());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        } catch (TokenNotValidException | AccessTokenNotExistException e) { //
-            System.out.println("token not valid: " + e.getMessage());
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+        } catch (AccessTokenExpiredException e){
+            log.debug("AccessToken Expired: ", e);
+            response.sendError(e.getHttpStatus().value(), e.getMessage());
+        } catch (AccessTokenNotExistException e) {
+            log.debug("Token Not Exist: ", e);
+            response.sendError(e.getHttpStatus().value(), e.getMessage());
+        } catch (TokenNotValidException e) { //
+            log.warn("Token Not Valid: ", e);
+            response.sendError(e.getHttpStatus().value(), e.getMessage());
         } catch (Exception e) {
-            System.out.println("unhandled error: " + e.getMessage());
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "처리되지 않은 에러입니다.");
+            log.error("unhandled error: ", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "처리되지 않은 에러입니다.");
         }
     }
 
