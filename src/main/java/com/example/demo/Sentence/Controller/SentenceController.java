@@ -32,6 +32,11 @@ public class SentenceController {
         return new ResponseEntity<>(HttpStatus.OK);
     }*/
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findById")
+    public ResponseEntity<SentenceResponseDTO> findById(@RequestParam(value = "id") Long id) throws SentenceNotExistException {
+        return new ResponseEntity<>(sentenceService.findById(id), HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/findByEnglish")
     public ResponseEntity<SentenceResponseDTO> findByEnglish(@RequestParam(value = "english") String english) throws SentenceNotExistException {
         return new ResponseEntity<>(sentenceService.findByEnglish(english), HttpStatus.OK);
