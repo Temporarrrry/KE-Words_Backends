@@ -1,11 +1,10 @@
 package com.example.demo.Quiz.WordQuiz.Exception;
 
-import com.example.demo.Quiz.WordQuiz.Controller.WordQuizController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = WordQuizController.class)
+@RestControllerAdvice
 public class WordQuizExceptionHandler {
 
     @ExceptionHandler(WordQuizNotExistException.class)

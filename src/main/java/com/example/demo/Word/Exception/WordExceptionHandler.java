@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = WordExceptionHandler.class)
+@RestControllerAdvice
 public class WordExceptionHandler {
 
     @ExceptionHandler(WordExistException.class)

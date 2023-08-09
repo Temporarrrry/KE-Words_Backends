@@ -1,16 +1,17 @@
 package com.example.demo.Quiz.WordQuiz.DTO;
 
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class WordQuizRequestDTO {
 
@@ -18,15 +19,13 @@ public class WordQuizRequestDTO {
 
     private LocalDate quizDate;
 
-    private List<Long> wordIds;
-
-    private List<List<String>> userKoreanAnswer;
+    private List<WordQuizAnswerRequestDTO> userAnswers;
 
     public WordQuiz toEntity(List<Boolean> result){
         return WordQuiz.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
-                .wordIds(wordIds)
+                .wordIds(userAnswers.stream().map(WordQuizAnswerRequestDTO::getWordId).toList())
                 .result(result)
                 .build();
     }

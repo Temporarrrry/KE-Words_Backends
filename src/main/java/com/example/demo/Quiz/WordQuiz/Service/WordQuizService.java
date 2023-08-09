@@ -1,6 +1,6 @@
 package com.example.demo.Quiz.WordQuiz.Service;
 
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
 import org.springframework.data.domain.Page;
@@ -11,7 +11,7 @@ public interface WordQuizService {
     void saveQuiz(WordQuizRequestDTO wordQuizRequestDTO);
     void deleteQuiz(Long wordQuizId);
 
-    WordQuizProblemResponseDTO generateEnglishWordQuiz(int count);
+    WordQuizProblemsResponseDTO generateEnglishWordQuiz(int count);
 
     //KoreanWordQuizResponseDTO generateKoreanWordQuiz(int count);
 

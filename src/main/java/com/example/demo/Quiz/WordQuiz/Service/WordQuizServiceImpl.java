@@ -1,8 +1,7 @@
 package com.example.demo.Quiz.WordQuiz.Service;
 
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemResponseDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizRequestDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.*;
+import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizNotExistException;
 import com.example.demo.Quiz.WordQuiz.Repository.WordQuizRepository;
 import com.example.demo.Word.DTO.WordResponseDTO;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -47,11 +47,18 @@ public class WordQuizServiceImpl implements WordQuizService {
 
     @Override
     public void saveQuiz(WordQuizRequestDTO wordQuizRequestDTO) {
-        List<List<String>> answer = wordQuizRequestDTO.getWordIds()
-                .stream().map(word -> wordService.findById(word).getKorean()).toList();
+        List<WordQuizAnswerRequestDTO> userAnswers = wordQuizRequestDTO.getUserAnswers();
 
-        List<List<String>> userKoreanAnswer = wordQuizRequestDTO.getUserKoreanAnswer();
-        List<Boolean> score = scoring(answer, userKoreanAnswer);
+        List<List<String>> koreanAnswer = userAnswers
+                .stream().map(WordQuizAnswerRequestDTO::getWordId)
+                .map(id -> wordService.findById(id).getKorean())
+                .toList();
+
+        List<List<String>> userKoreanAnswers = userAnswers
+                .stream().map(WordQuizAnswerRequestDTO::getUserKoreanAnswer)
+                .toList();
+
+        List<Boolean> score = scoring(koreanAnswer, userKoreanAnswers);
 
         wordQuizRepository.save(wordQuizRequestDTO.toEntity(score));
     }
@@ -63,37 +70,27 @@ public class WordQuizServiceImpl implements WordQuizService {
     }
 
     @Override
-    public WordQuizProblemResponseDTO generateEnglishWordQuiz(int count) {
+    public WordQuizProblemsResponseDTO generateEnglishWordQuiz(int count) {
         List<WordResponseDTO> words = wordService.findWordsByRandom(count * 4);
-
-        List<String> englishes = words.stream().map(WordResponseDTO::getEnglish).toList();
 
         List<List<String>> koreans = words.stream().map(WordResponseDTO::getKorean).toList();
 
-        WordQuizProblemResponseDTO wordQuizProblemResponseDTO = new WordQuizProblemResponseDTO();
+        WordQuizProblemsResponseDTO problems = new WordQuizProblemsResponseDTO();
 
-        wordQuizProblemResponseDTO.setEnglish(
-                IntStream.range(0, englishes.size())
-                    .filter(i -> i % 4 == 0)
-                    .mapToObj(englishes::get)
-                    .toList()
-        );
+        for (int i = 0; i < words.size(); i += 4) {
+            List<List<String>> curKoreans = new ArrayList<>(koreans.subList(i, i + 4));
+            Collections.shuffle(curKoreans);
 
-        wordQuizProblemResponseDTO.setAnswer(
-                IntStream.range(0, koreans.size())
-                        .filter(i -> i % 4 == 0)
-                        .mapToObj(koreans::get)
-                        .toList()
-        );
-
-
-        for (int i = 0; i < count * 4; i += 4) {
-            List<List<String>> problemKorean = new ArrayList<>(koreans.subList(i, i + 4)); // list가 unmodifiable하기 때문에 new로 생성
-            Collections.shuffle(problemKorean);
-            wordQuizProblemResponseDTO.getKoreanChoice().add(problemKorean);
+            problems.getWordQuizList().add(
+                    WordQuizProblemResponseDTO.builder()
+                            .wordId(words.get(i).getId())
+                            .english(words.get(i).getEnglish())
+                            .koreanChoice(curKoreans)
+                            .build()
+            );
         }
 
-        return wordQuizProblemResponseDTO;
+        return problems;
     }
 
     /*@Override
@@ -131,16 +128,27 @@ public class WordQuizServiceImpl implements WordQuizService {
         return koreanWordQuizResponseDTO;
     }*/
 
+    private WordQuizResultResponseDTO toResultResponseDTO(WordQuiz wordQuiz) {
+        List<String> englishes = Arrays.stream(wordQuiz.getWordIds().split("\\|"))
+                .map(Long::parseLong)
+                .map(wordService::findById)
+                .map(WordResponseDTO::getEnglish)
+                .toList();
 
+        return new WordQuizResultResponseDTO(englishes, wordQuiz);
+    }
 
     @Override
     public WordQuizResultResponseDTO findById(Long id) throws WordQuizNotExistException {
-        return new WordQuizResultResponseDTO(wordQuizRepository.findById(id).orElseThrow(WordQuizNotExistException::new));
+        WordQuiz wordQuiz = wordQuizRepository.findById(id).orElseThrow(WordQuizNotExistException::new);
+
+        return toResultResponseDTO(wordQuiz);
     }
 
     @Override
     public Page<WordQuizResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
-        //return new AllQuizByUserIdResponseDTO(quizRepository.findAllByUserId(userId, pageable));
-        return wordQuizRepository.findAllByUserId(userId, pageable).map(WordQuizResultResponseDTO::new);
+        return wordQuizRepository.findAllByUserId(userId, pageable).map(
+                this::toResultResponseDTO
+        );
     }
 }

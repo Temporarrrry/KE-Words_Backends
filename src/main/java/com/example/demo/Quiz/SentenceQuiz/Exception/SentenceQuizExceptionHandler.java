@@ -1,11 +1,10 @@
 package com.example.demo.Quiz.SentenceQuiz.Exception;
 
-import com.example.demo.Quiz.SentenceQuiz.Controller.SentenceQuizController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = SentenceQuizController.class)
+@RestControllerAdvice
 public class SentenceQuizExceptionHandler {
 
     @ExceptionHandler(SentenceQuizNotExistException.class)

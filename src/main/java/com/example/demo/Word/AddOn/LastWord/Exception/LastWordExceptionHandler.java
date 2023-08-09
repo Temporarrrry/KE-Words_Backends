@@ -1,12 +1,11 @@
 package com.example.demo.Word.AddOn.LastWord.Exception;
 
-import com.example.demo.Word.AddOn.LastWord.Controller.LastWordController;
 import com.example.demo.Word.Exception.WordNotExistException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = LastWordController.class)
+@RestControllerAdvice
 public class LastWordExceptionHandler {
 
     @ExceptionHandler(WordNotExistException.class)

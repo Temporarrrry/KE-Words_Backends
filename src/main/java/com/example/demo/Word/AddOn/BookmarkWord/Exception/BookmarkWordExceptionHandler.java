@@ -1,11 +1,10 @@
 package com.example.demo.Word.AddOn.BookmarkWord.Exception;
 
-import com.example.demo.Word.AddOn.BookmarkWord.Controller.BookmarkWordController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = BookmarkWordController.class)
+@RestControllerAdvice
 public class BookmarkWordExceptionHandler {
 
     @ExceptionHandler(WordNotExistToBookmarkException.class)

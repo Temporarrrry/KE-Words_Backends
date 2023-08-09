@@ -1,7 +1,6 @@
 package com.example.demo.Quiz.WordQuiz.DTO;
 
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,10 +28,10 @@ public class WordQuizResultResponseDTO {
 
     private List<Boolean> result;
 
-    public WordQuizResultResponseDTO(WordQuiz wordQuiz) {
+    public WordQuizResultResponseDTO(List<String> english, WordQuiz wordQuiz) {
         this.id = wordQuiz.getId();
         this.userId = wordQuiz.getUserId();
-        this.english = Arrays.asList(wordQuiz.getWordIds().split("\\|")) ;
+        this.english = english;
         this.quizDate = wordQuiz.getQuizDate();
         this.result = Arrays.stream(wordQuiz.getResult().split("\\|")).map(s -> s.equals("1")).toList();
         this.score = Long.valueOf(Arrays.stream(wordQuiz.getResult().split("")).map(s -> s.equals("1"))

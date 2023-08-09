@@ -1,11 +1,10 @@
 package com.example.demo.Member.Exception;
 
-import com.example.demo.Member.Controller.MemberController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = MemberController.class)
+@RestControllerAdvice
 public class MemberExceptionHandler {
     @ExceptionHandler(loginFailureException.class)
     public ResponseEntity<String> loginFailure(loginFailureException e) {

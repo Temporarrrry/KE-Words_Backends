@@ -3,7 +3,7 @@ package com.example.demo.Quiz.WordQuiz.Controller;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.WordQuiz.DTO.DeleteWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.SaveWordQuizRequestDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Service.WordQuizService;
 import jakarta.validation.Valid;
@@ -45,7 +45,7 @@ public class WordQuizController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/generateWordQuiz")
-    public ResponseEntity<WordQuizProblemResponseDTO> generateWordQuizProblem(@RequestParam(value = "count") int count) {
+    public ResponseEntity<WordQuizProblemsResponseDTO> generateWordQuizProblem(@RequestParam(value = "count") int count) {
         return new ResponseEntity<>(wordQuizService.generateEnglishWordQuiz(count), HttpStatus.OK);
     }
 

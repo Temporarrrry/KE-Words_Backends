@@ -1,12 +1,11 @@
 package com.example.demo.Sentence.AddOn.LastSentence.Exception;
 
-import com.example.demo.Sentence.AddOn.LastSentence.Controller.LastSentenceController;
 import com.example.demo.Sentence.Exception.SentenceNotExistException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackageClasses = LastSentenceController.class)
+@RestControllerAdvice
 public class LastSentenceExceptionHandler {
 
     @ExceptionHandler(SentenceNotExistException.class)
