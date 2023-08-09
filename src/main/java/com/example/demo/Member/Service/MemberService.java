@@ -24,6 +24,8 @@ public interface MemberService extends UserDetailsService {
 
     boolean userEmailDupCheck(String userEmail);
 
+    Optional<String> findUserEmailById(Long userId);
+
     Optional<Long> findIdByUserEmail(String userEmail);
 
     MemberInfoResponseDTO findMember(MemberRequestDTO memberRequestDTO);
@@ -31,6 +33,8 @@ public interface MemberService extends UserDetailsService {
     Optional<Member> findByUserEmail(String userEmail);
 
     void changePasswordByUserEmail(String userEmail, String newPassword);
+
+    Member findByAuthentication();
 
     Long findIdByAuthentication();
 }

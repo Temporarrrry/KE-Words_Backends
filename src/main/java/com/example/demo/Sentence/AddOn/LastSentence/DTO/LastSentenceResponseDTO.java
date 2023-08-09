@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class LastSentenceResponseDTO {
-    @NotBlank
     private Long sentenceId;
 
     public LastSentenceResponseDTO(LastSentence lastSentence) {

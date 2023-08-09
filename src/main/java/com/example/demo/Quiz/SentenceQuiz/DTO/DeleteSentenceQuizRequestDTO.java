@@ -7,6 +7,5 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class DeleteSentenceQuizRequestDTO {
-    @NotBlank
     private Long sentenceQuizId;
 }

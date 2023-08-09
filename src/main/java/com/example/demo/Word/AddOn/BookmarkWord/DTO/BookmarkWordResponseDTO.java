@@ -7,6 +7,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class BookmarkWordResponseDTO {
-    @NotBlank
     private Long wordId;
 }

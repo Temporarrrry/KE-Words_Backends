@@ -7,6 +7,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DeleteWordQuizRequestDTO {
-    @NotBlank
     private Long wordQuizId;
 }

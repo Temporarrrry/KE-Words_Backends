@@ -112,7 +112,10 @@ public class MemberServiceImpl implements MemberService {
         return new MemberInfoResponseDTO(member);
     }
 
-
+    @Override
+    public Optional<String> findUserEmailById(Long userId) {
+        return memberRepository.findById(userId).map(Member::getUserEmail);
+    }
 
     //READ
     @Override
@@ -128,8 +131,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Member findByAuthentication() {
+        return (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+
+    @Override
     public Long findIdByAuthentication() throws MemberNotExistException {
-        String userEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return findIdByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
+        Member member = findByAuthentication();
+        return findIdByUserEmail(member.getUserEmail()).orElseThrow(MemberNotExistException::new);
     }
 }

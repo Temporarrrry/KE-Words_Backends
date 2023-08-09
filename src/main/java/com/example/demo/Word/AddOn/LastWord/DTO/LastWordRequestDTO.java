@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LastWordRequestDTO {
     private Long userId;
-    @NotBlank
     private Long wordId;
 
     public LastWordRequestDTO(Long userId) {

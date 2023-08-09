@@ -1,5 +1,7 @@
 package com.example.demo.Quiz.SentenceQuiz.Service;
 
+import com.example.demo.Member.Exception.MemberNotExistException;
+import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblem;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblemsResponseDTO;
@@ -11,6 +13,7 @@ import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizNotExistException;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceTooShortException;
 import com.example.demo.Quiz.SentenceQuiz.Repository.SentenceQuizRepository;
+import com.example.demo.Ranking.Service.RankingService;
 import com.example.demo.Sentence.DTO.SentenceResponseDTO;
 import com.example.demo.Sentence.Service.SentenceService;
 import jakarta.transaction.Transactional;
@@ -30,6 +33,10 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
     private final SentenceService sentenceService;
 
+    private final RankingService rankingService;
+
+    private final MemberService memberService;
+
     private List<Boolean> scoring(List<String> answer, List<String> userAnswer) {
         return List.of(answer.equals(userAnswer));
     }
@@ -41,6 +48,12 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         List<String> userAnswers = sentenceQuizRequestDTO.getUserAnswers();
 
         List<Boolean> result = scoring(answer, userAnswers);
+
+        long score = result.stream().filter(Boolean::booleanValue).count();
+        String userEmail = memberService.findUserEmailById(sentenceQuizRequestDTO.getUserId())
+                .orElseThrow(MemberNotExistException::new);
+
+        rankingService.addScore(userEmail, score);
 
         sentenceQuizRepository.save(sentenceQuizRequestDTO.toEntity(result));
     }

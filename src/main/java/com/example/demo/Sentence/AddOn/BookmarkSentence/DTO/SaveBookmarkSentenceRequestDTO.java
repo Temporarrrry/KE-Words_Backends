@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveBookmarkSentenceRequestDTO {
-    @NotBlank
     private Long sentenceId;
 
     public BookmarkSentenceRequestDTO toInnerDTO(Long userId) {

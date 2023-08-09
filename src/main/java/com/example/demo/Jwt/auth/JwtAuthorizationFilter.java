@@ -20,7 +20,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -65,17 +64,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             String userEmail = "admin";//jwtTokenProvider.getUserEmailByAccessToken(accessToken)
 
-            Optional<Member> findMember = memberService.findByUserEmail(userEmail);
+            Member findMember = memberService.findByUserEmail(userEmail)
+                    .orElseThrow(TokenNotValidException::new);
 
 
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(
-                            userEmail,
+                            findMember,
                             null,
-                            findMember // 이 곳에서 role을 등록해야 @PreAuthorize에서 사용 가능
-                                    .map(PrincipalDetails::new)
-                                    .orElseThrow(TokenNotValidException::new)
-                                    .getAuthorities()
+                            new PrincipalDetails(findMember)
+                                    .getAuthorities() // 이 곳에서 role을 등록해야 @PreAuthorize에서 사용 가능
                     )
             );
 

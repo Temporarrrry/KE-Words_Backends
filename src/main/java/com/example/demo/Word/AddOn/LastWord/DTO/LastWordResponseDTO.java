@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class LastWordResponseDTO {
-    @NotBlank
     private Long wordId;
 
     public LastWordResponseDTO(LastWord lastWord) {

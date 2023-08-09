@@ -12,10 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 public class FillingQuizResultsResponseDTO {
 
-    @NotBlank
     private Long id;
 
-    @NotBlank
     private Long userId;
 
     List<FillingQuizResult> fillingQuizResults;

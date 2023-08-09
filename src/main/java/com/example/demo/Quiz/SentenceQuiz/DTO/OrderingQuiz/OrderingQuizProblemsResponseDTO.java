@@ -12,6 +12,5 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class OrderingQuizProblemsResponseDTO {
-    @NotBlank
     private List<OrderingQuizProblem> orderingQuizProblems = new ArrayList<>();
 }

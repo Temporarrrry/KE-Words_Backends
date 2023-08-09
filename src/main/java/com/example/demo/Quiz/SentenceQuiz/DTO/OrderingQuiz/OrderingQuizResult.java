@@ -10,15 +10,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderingQuizResult {
 
-    @NotBlank
     private Long sentenceId;
 
-    @NotBlank
     private List<String> originalEnglish;
 
     @NotBlank
     private String korean;
 
-    @NotBlank
     private Boolean result;
 }

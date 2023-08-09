@@ -13,7 +13,6 @@ public class WordRequestDTO {
     @NotBlank
     private String english;
 
-    @NotBlank
     private List<String> korean;
 
     public Word toEntity(){

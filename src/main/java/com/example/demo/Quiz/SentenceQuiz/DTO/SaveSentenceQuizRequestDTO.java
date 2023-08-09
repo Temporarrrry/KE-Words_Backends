@@ -10,10 +10,8 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class SaveSentenceQuizRequestDTO {
-    @NotBlank
     private List<Long> sentenceIds;
 
-    @NotBlank
     private List<String> userAnswers;
 
     public SentenceQuizRequestDTO toInnerDTO(Long userId) {

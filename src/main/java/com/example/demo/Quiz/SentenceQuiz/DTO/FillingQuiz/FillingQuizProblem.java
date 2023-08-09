@@ -12,16 +12,12 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class FillingQuizProblem {
-    @NotBlank
     private Long sentenceId;
 
-    @NotBlank
     private List<String> originalEnglish;
 
-    @NotBlank
     private List<String> blankedEnglish;
 
-    @NotBlank
     private List<String> korean;
 
     @Builder

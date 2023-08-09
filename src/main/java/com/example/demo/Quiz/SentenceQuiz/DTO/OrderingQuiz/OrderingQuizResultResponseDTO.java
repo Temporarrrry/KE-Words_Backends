@@ -13,10 +13,8 @@ import java.util.List;
 
 public class OrderingQuizResultResponseDTO {
 
-    @NotBlank
     private Long id;
 
-    @NotBlank
     private Long userId;
 
     List<OrderingQuizResult> orderingQuizResults;

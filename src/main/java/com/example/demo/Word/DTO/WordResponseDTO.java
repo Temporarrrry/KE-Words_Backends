@@ -15,13 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WordResponseDTO {
-    @NotBlank
     private Long id;
 
     @NotBlank
     private String english;
 
-    @NotBlank
     private List<String> korean;
 
     boolean isBookmarked;

@@ -20,10 +20,8 @@ public class SentenceQuizRequestDTO {
 
     private LocalDate quizDate;
 
-    @NotBlank
     private List<Long> sentenceIds;
 
-    @NotBlank
     private List<String> userAnswers;
 
     public SentenceQuiz toEntity(List<Boolean> result) {

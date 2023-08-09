@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteLastWordRequestDTO {
-    @NotBlank
     private Long wordId;
 
     public LastWordRequestDTO toInnerDTO(Long userId) {

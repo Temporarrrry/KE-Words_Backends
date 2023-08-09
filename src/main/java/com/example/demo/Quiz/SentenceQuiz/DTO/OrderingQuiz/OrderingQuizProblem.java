@@ -13,16 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 
 public class OrderingQuizProblem {
-    @NotBlank
     private Long sentenceId;
 
-    @NotBlank
     private List<String> originalEnglish;
 
-    @NotBlank
     private List<String> shuffledEnglish;
 
-    @NotBlank
     private List<String> korean;
 
     @Builder

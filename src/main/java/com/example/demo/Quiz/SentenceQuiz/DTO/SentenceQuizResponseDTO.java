@@ -15,13 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class SentenceQuizResponseDTO {
 
-    @NotBlank
     private Long id;
 
-    @NotBlank
     private Long userId;
 
-    @NotBlank
     private List<String> english;
 
     private int score;

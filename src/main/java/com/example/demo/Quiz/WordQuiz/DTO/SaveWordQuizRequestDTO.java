@@ -1,6 +1,5 @@
 package com.example.demo.Quiz.WordQuiz.DTO;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,7 +9,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class SaveWordQuizRequestDTO {
-    @NotBlank
     private List<Long> wordQuizIds;
 
     private List<List<String>> userKoreanAnswer;

@@ -11,16 +11,12 @@ import java.util.List;
 @Getter
 public class WordQuizProblemResponseDTO {
 
-    @NotBlank
     private Long id;
 
-    @NotBlank
     private Long userId;
 
-    @NotBlank
     private List<String> english;
 
-    @NotBlank
     private List<List<List<String>>> koreanChoice;
 
     private List<List<String>> answer;

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteBookmarkWordRequestDTO {
-    @NotBlank
     private Long wordId;
 
     public BookmarkWordRequestDTO toInnerDTO(Long userId) {

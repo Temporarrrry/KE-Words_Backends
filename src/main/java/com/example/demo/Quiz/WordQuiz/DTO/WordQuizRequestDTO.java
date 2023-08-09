@@ -14,12 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 public class WordQuizRequestDTO {
 
-    @NotBlank
     private Long userId;
 
     private LocalDate quizDate;
 
-    @NotBlank
     private List<Long> wordIds;
 
     private List<List<String>> userKoreanAnswer;

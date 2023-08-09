@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookmarkSentenceRequestDTO {
     private Long userId;
-    @NotBlank
     private Long sentenceId;
 
     public BookmarkSentence toEntity() {
