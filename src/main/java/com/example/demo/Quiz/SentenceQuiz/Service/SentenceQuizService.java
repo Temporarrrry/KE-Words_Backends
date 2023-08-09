@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 public interface SentenceQuizService {
 
     void saveQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO);
-    void deleteQuiz(DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO);
+    void deleteQuiz(Long userId, DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO);
 
     FillingQuizProblemsResponseDTO generateFillingSentenceQuiz(int count);
 

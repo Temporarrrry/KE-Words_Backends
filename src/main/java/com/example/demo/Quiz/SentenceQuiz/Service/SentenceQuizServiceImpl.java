@@ -1,5 +1,6 @@
 package com.example.demo.Quiz.SentenceQuiz.Service;
 
+import com.example.demo.Common.Exception.NoAuthorityException;
 import com.example.demo.Member.Exception.MemberNotExistException;
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
@@ -58,7 +59,10 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    public void deleteQuiz(DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
+    public void deleteQuiz(Long userId, DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) throws NoAuthorityException {
+        if (!findById(deleteSentenceQuizRequestDTO.getSentenceQuizId()).getUserId().equals(userId))
+            throw new NoAuthorityException();
+
         sentenceQuizRepository.deleteById(deleteSentenceQuizRequestDTO.getSentenceQuizId());
     }
 
@@ -135,8 +139,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         SentenceQuiz sentenceQuiz = sentenceQuizRepository.findById(id)
                 .orElseThrow(SentenceQuizNotExistException::new);
 
-        List<String> english = Arrays.stream(sentenceQuiz.getSentenceIds().split("|"))
-                .map(Long::parseLong)
+        List<String> english = sentenceQuiz.getSentenceIds().stream()
                 .map(sentenceService::findById)
                 .map(SentenceResponseDTO::getEnglish)
                 .toList();
@@ -150,10 +153,10 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         return sentenceQuizRepository.findAllByUserId(userId, pageable)
                 .map(sentenceQuiz -> new SentenceQuizResponseDTO(
                         sentenceQuiz,
-                        Arrays.stream(sentenceQuiz.getSentenceIds().split("|"))
-                                .map(Long::parseLong)
+                        sentenceQuiz.getSentenceIds().stream()
                                 .map(sentenceService::findById)
-                                .map(SentenceResponseDTO::getEnglish).toList()
+                                .map(SentenceResponseDTO::getEnglish)
+                                .toList()
                         )
                 );
     }

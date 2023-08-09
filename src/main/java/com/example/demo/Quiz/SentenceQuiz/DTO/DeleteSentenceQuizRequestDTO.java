@@ -1,6 +1,5 @@
 package com.example.demo.Quiz.SentenceQuiz.DTO;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

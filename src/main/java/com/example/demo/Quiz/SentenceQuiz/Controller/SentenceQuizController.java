@@ -37,10 +37,8 @@ public class SentenceQuizController {
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
     public ResponseEntity<Void> deleteQuizResult(@RequestBody @Valid DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
-        Long sentenceQuizId = deleteSentenceQuizRequestDTO.getSentenceQuizId();
-        if (!Objects.equals(sentenceQuizService.findById(sentenceQuizId).getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        sentenceQuizService.deleteQuiz(deleteSentenceQuizRequestDTO);
+        sentenceQuizService.deleteQuiz(userId, deleteSentenceQuizRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

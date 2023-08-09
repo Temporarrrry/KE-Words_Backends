@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -31,6 +32,9 @@ public class SentenceQuiz extends BaseTimeEntity {
 
     private String result;
 
+    public List<Long> getSentenceIds() {
+        return Stream.of(sentenceIds.split("\\|")).map(Long::parseLong).toList();
+    }
 
     @Builder
     public SentenceQuiz(Long userId, LocalDate quizDate, List<Long> sentenceIds, List<Boolean> result) {
