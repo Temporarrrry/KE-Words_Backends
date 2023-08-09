@@ -35,7 +35,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public String findByUserEmail(String userEmail) {
-        return refreshTokenRedisRepository.findByUserEmail(userEmail)
+        return refreshTokenRedisRepository.findById(userEmail)
                 .orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
     }
 

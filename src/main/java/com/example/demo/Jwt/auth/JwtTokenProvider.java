@@ -181,7 +181,7 @@ public class JwtTokenProvider {
         try{
             Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(refreshToken); // parsing 시에 검증 됨
             // accessToken과 반대로 refreshToken이 존재하면 허가, 존재하지 않으면 거부
-            if (refreshTokenRedisRepository.findByUserEmail(getUserEmailByRefreshToken(refreshToken)).isEmpty())
+            if (refreshTokenRedisRepository.findById(getUserEmailByRefreshToken(refreshToken)).isEmpty())
                 throw new RefreshTokenNotExistException();
         } catch (ExpiredJwtException e) {
             throw new RefreshTokenExpiredException();
