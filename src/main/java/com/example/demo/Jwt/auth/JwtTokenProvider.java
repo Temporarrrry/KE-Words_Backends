@@ -6,9 +6,7 @@ import com.example.demo.Jwt.Exception.RefreshTokenNotExistException;
 import com.example.demo.Jwt.Exception.TokenNotValidException;
 import com.example.demo.Jwt.Repository.RefreshTokenRedisRepository;
 import com.example.demo.Jwt.Service.LogoutAccessTokenService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -166,7 +164,7 @@ public class JwtTokenProvider {
 
 
 
-    public void validateAccessToken(String accessToken) throws AccessTokenExpiredException {
+    public void validateAccessToken(String accessToken) throws AccessTokenExpiredException, TokenNotValidException {
         try{
             Jwts.parser().setSigningKey(accessTokenSecretKey).parseClaimsJws(accessToken); // parsing 시에 검증 됨
             // refreshToken과 반대로 accessToken이 존재하면 거부, 존재하지 않으면 허가
@@ -174,10 +172,12 @@ public class JwtTokenProvider {
                     .ifPresent(logoutAccessToken -> {throw new TokenNotValidException();});
         } catch (ExpiredJwtException e) {
             throw new AccessTokenExpiredException();
+        } catch (MalformedJwtException | SignatureException e) {
+            throw new TokenNotValidException();
         }
     }
 
-    public void validateRefreshToken(String refreshToken) throws RefreshTokenExpiredException {
+    public void validateRefreshToken(String refreshToken) throws RefreshTokenExpiredException, TokenNotValidException {
         try{
             Jwts.parser().setSigningKey(refreshTokenSecretKey).parseClaimsJws(refreshToken); // parsing 시에 검증 됨
             // accessToken과 반대로 refreshToken이 존재하면 허가, 존재하지 않으면 거부
@@ -185,6 +185,8 @@ public class JwtTokenProvider {
                 throw new RefreshTokenNotExistException();
         } catch (ExpiredJwtException e) {
             throw new RefreshTokenExpiredException();
+        } catch (MalformedJwtException | SignatureException e) {
+            throw new TokenNotValidException();
         }
     }
 

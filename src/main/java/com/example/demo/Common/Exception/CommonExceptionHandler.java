@@ -13,6 +13,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class CommonExceptionHandler {
 
+    @ExceptionHandler(NoAuthorityException.class)
+    public ResponseEntity<String> NoAuthority(NoAuthorityException e){
+        return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex){
         Map<String, String> errors = new HashMap<>();
