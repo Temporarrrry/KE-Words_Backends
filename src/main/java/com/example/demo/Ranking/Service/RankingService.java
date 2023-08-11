@@ -28,7 +28,6 @@ public class RankingService {
 
     private final ZSetOperations<String, String> zSet;
 
-    private final String key = "ranking";
 
     @Autowired
     public RankingService(TotalQuizResultRepository totalQuizResultRepository, MemberService memberService, RedisTemplate<String, String> redisTemplate) {
@@ -53,6 +52,8 @@ public class RankingService {
                     totalQuizResult.setCorrectCount(curCorrectCount);
                     totalQuizResult.setTotalCount(curTotalCount);
 
+                    totalQuizResultRepository.save(new TotalQuizResultCounter(userId, type, curCorrectCount, curTotalCount));
+
                     zSet.add(type.name(), userEmail, (double) curCorrectCount / curTotalCount); //update
                 },
                 () -> {
@@ -63,31 +64,49 @@ public class RankingService {
         );
     }
 
-    public Long getScore(String userEmail) {
-        if (zSet.score(key, userEmail) == null) return 0L;
-        else return Objects.requireNonNull(zSet.score(key, userEmail)).longValue();
+    public Double getScore(TotalQuizResultType type, String userEmail) {
+        if (zSet.score(type.name(), userEmail) == null) return 0D;
+        else {
+            return zSet.score(type.name(), userEmail);
+        }
     }
 
-    public Long getRank(String userEmail) {
-        return (zSet.reverseRank(key, userEmail) + 1L);
+    public Long getRank(TotalQuizResultType type, String userEmail) {
+        return (zSet.reverseRank(type.name(), userEmail) + 1L);
     }
 
-    public MyRankingResponseDTO getMyRank() {
+    private MyRankingResponseDTO getMyRank(TotalQuizResultType type) {
         String userEmail = memberService.findByAuthentication().getUserEmail();
-        return new MyRankingResponseDTO(getRank(userEmail), getScore(userEmail));
+        return new MyRankingResponseDTO(getRank(type, userEmail), getScore(type, userEmail));
     }
 
+    public MyRankingResponseDTO getMyWordRank() {
+        return getMyRank(TotalQuizResultType.WORD);
+    }
 
-    public List<RankingResponseDTO> getRankingList(int startRank, int size) {
+    public MyRankingResponseDTO getMySentenceRank() {
+        return getMyRank(TotalQuizResultType.SENTENCE);
+    }
+
+    private List<RankingResponseDTO> getRankingList(TotalQuizResultType type, int startRank, int size) {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        return Objects.requireNonNull(zSet.reverseRangeWithScores(key, startRank, startRank + size - 1))
+        return Objects.requireNonNull(zSet.reverseRangeWithScores(type.name(), startRank, startRank + size - 1))
                 .stream().map(
                         tuple -> new RankingResponseDTO(
                                 atomicInteger.incrementAndGet(),
                                 tuple.getValue(),
-                                Objects.requireNonNull(tuple.getScore()).longValue())
+                                tuple.getScore())
         ).toList();
+    }
+
+
+    public List<RankingResponseDTO> getWordRankingList(int startRank, int size) {
+        return getRankingList(TotalQuizResultType.WORD, startRank - 1, size);
+    }
+
+    public List<RankingResponseDTO> getSentenceRankingList(int startRank, int size) {
+        return getRankingList(TotalQuizResultType.SENTENCE, startRank - 1, size);
     }
 }

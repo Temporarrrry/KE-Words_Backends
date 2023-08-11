@@ -29,7 +29,7 @@ class RankingServiceTest {
         List<Boolean> score = List.of(true, true, true, true, false, true, false, true, true, true);
         rankingService.addScore(TotalQuizResultType.WORD, 1L, score);
 
-        List<RankingResponseDTO> rankingList = rankingService.getRankingList(0, 20);
+        List<RankingResponseDTO> rankingList = rankingService.getWordRankingList(0, 20);
         for (RankingResponseDTO rankingResponseDTO : rankingList) {
             System.out.println(
                     rankingResponseDTO.getRank() + ". "
@@ -39,11 +39,11 @@ class RankingServiceTest {
             System.out.println();
         }
 
-        Long rank = rankingService.getRank(email);
+        /*Long rank = rankingService.getRank(email);
         System.out.println("rank = " + rank);
 
         Long myScore = rankingService.getScore(email);
-        System.out.println("myScore = " + myScore);
+        System.out.println("myScore = " + myScore);*/
     }
 
 }

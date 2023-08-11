@@ -9,5 +9,5 @@ public class MyRankingResponseDTO {
 
     private Long rank;
 
-    private Long score;
+    private Double score;
 }

@@ -19,17 +19,31 @@ public class RankingController {
 
     private final RankingService rankingService;
 
-    @GetMapping("/myRanking")
-    public ResponseEntity<MyRankingResponseDTO> getMyRanking() {
-        MyRankingResponseDTO myRank = rankingService.getMyRank();
+    @GetMapping("/myWordRanking")
+    public ResponseEntity<MyRankingResponseDTO> getMyWordRanking() {
+        MyRankingResponseDTO myRank = rankingService.getMyWordRank();
         return new ResponseEntity<>(myRank, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<RankingResponseDTO>> getRankingList(int startRank, int size) {
+    @GetMapping("/mySentenceRanking")
+    public ResponseEntity<MyRankingResponseDTO> getMySentenceRanking() {
+        MyRankingResponseDTO myRank = rankingService.getMySentenceRank();
+        return new ResponseEntity<>(myRank, HttpStatus.OK);
+    }
+
+    @GetMapping("/word")
+    public ResponseEntity<List<RankingResponseDTO>> getWordRankingList(int startRank, int size) {
         if (20 < size) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        List<RankingResponseDTO> rankingList = rankingService.getRankingList(startRank, size);
+        List<RankingResponseDTO> rankingList = rankingService.getWordRankingList(startRank, size);
+        return new ResponseEntity<>(rankingList, HttpStatus.OK);
+    }
+
+    @GetMapping("/sentence")
+    public ResponseEntity<List<RankingResponseDTO>> getSentenceRankingList(int startRank, int size) {
+        if (20 < size) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<RankingResponseDTO> rankingList = rankingService.getSentenceRankingList(startRank, size);
         return new ResponseEntity<>(rankingList, HttpStatus.OK);
     }
 }

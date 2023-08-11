@@ -11,5 +11,5 @@ public class RankingResponseDTO {
 
     private String userEmail;
 
-    private Long score;
+    private Double score;
 }
