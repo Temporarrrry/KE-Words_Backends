@@ -1,7 +1,6 @@
 package com.example.demo.Quiz.SentenceQuiz.DTO;
 
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,15 +19,13 @@ public class SentenceQuizRequestDTO {
 
     private LocalDate quizDate;
 
-    private List<Long> sentenceIds;
-
-    private List<String> userAnswers;
+    private List<SaveSentenceQuizRequestDTO> userAnswers;
 
     public SentenceQuiz toEntity(List<Boolean> result) {
         return SentenceQuiz.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
-                .sentenceIds(sentenceIds)
+                .sentenceIds(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getSentenceId).toList())
                 .result(result)
                 .build();
     }

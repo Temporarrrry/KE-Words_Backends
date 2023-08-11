@@ -4,7 +4,7 @@ import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.OrderingQuiz.OrderingQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SaveSentenceQuizRequestDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.SaveSentenceQuizListRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Service.SentenceQuizService;
 import jakarta.validation.Valid;
@@ -27,10 +27,10 @@ public class SentenceQuizController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody @Valid SaveSentenceQuizRequestDTO saveSentenceQuizRequestDTO) {
+    public ResponseEntity<Void> saveQuizResult(@RequestBody @Valid SaveSentenceQuizListRequestDTO saveSentenceQuizListRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
 
-        sentenceQuizService.saveQuiz(saveSentenceQuizRequestDTO.toInnerDTO(userId));
+        sentenceQuizService.saveQuiz(saveSentenceQuizListRequestDTO.toInnerDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

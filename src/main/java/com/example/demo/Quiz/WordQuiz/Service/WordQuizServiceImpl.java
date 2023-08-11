@@ -4,6 +4,8 @@ import com.example.demo.Quiz.WordQuiz.DTO.*;
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizNotExistException;
 import com.example.demo.Quiz.WordQuiz.Repository.WordQuizRepository;
+import com.example.demo.Ranking.Entity.TotalQuizResultType;
+import com.example.demo.Ranking.Service.RankingService;
 import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Service.WordService;
 import jakarta.transaction.Transactional;
@@ -26,6 +28,7 @@ public class WordQuizServiceImpl implements WordQuizService {
 
     private final WordService wordService;
 
+    private final RankingService rankingService;
 
     private List<Boolean> scoring(List<List<String>> answer, List<List<String>> userAnswer) {
         List<Boolean> score = new ArrayList<>();
@@ -58,9 +61,16 @@ public class WordQuizServiceImpl implements WordQuizService {
                 .stream().map(WordQuizAnswerRequestDTO::getUserKoreanAnswer)
                 .toList();
 
-        List<Boolean> score = scoring(koreanAnswer, userKoreanAnswers);
+        List<Boolean> result = scoring(koreanAnswer, userKoreanAnswers);
 
-        wordQuizRepository.save(wordQuizRequestDTO.toEntity(score));
+        rankingService
+                .addScore(
+                        TotalQuizResultType.WORD,
+                        wordQuizRequestDTO.getUserId(),
+                        result
+                );
+
+        wordQuizRepository.save(wordQuizRequestDTO.toEntity(result));
     }
 
     @Override
