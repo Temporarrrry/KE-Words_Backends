@@ -1,5 +1,6 @@
 package com.example.demo.Member.Service;
 
+import com.example.demo.Member.DTO.MemberChangePasswordRequestDTO;
 import com.example.demo.Member.DTO.MemberInfoResponseDTO;
 import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.Entity.Member;
@@ -32,7 +33,7 @@ public interface MemberService extends UserDetailsService {
 
     Optional<Member> findByUserEmail(String userEmail);
 
-    void changePasswordByUserEmail(String userEmail, String newPassword);
+    void changePasswordByUserEmail(String userEmail, MemberChangePasswordRequestDTO memberChangePasswordRequestDTO);
 
     Member findByAuthentication();
 

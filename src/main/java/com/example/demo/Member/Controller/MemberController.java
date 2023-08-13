@@ -75,9 +75,8 @@ public class MemberController {
     @RequestMapping(method = RequestMethod.POST, value = "/changePassword")
     public ResponseEntity<Void> changePassword(@RequestBody @Valid MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
         String userEmail = memberService.findByAuthentication().getUserEmail();
-        String newPassword = memberChangePasswordRequestDTO.getNewPassword();
 
-        memberService.changePasswordByUserEmail(userEmail, newPassword);
+        memberService.changePasswordByUserEmail(userEmail, memberChangePasswordRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.Jwt.DTO.LogoutAccessTokenRequestDTO;
 import com.example.demo.Jwt.Service.LogoutAccessTokenService;
 import com.example.demo.Jwt.Service.RefreshTokenService;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
+import com.example.demo.Member.DTO.MemberChangePasswordRequestDTO;
 import com.example.demo.Member.DTO.MemberInfoResponseDTO;
 import com.example.demo.Member.DTO.MemberRequestDTO;
 import com.example.demo.Member.Entity.Member;
@@ -123,10 +124,20 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByUserEmail(userEmail).map(Member::getId);
     }
 
+    private Boolean passwordCheck(String password, String encodedPassword) {
+        return passwordEncoder.matches(password, encodedPassword);
+    }
+
+
     @Override
-    public void changePasswordByUserEmail(String userEmail, String newPassword) throws MemberNotExistException {
+    public void changePasswordByUserEmail(String userEmail, MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) throws MemberNotExistException {
+
         Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);
-        member.setPassword(passwordEncoder.encode(newPassword));
+
+        if (!passwordCheck(memberChangePasswordRequestDTO.getPassword(), member.getPassword()))
+            throw new PasswordNotMatchException();
+
+        member.setPassword(passwordEncoder.encode(memberChangePasswordRequestDTO.getNewPassword()));
         memberRepository.save(member);
     }
 
