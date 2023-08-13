@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -65,8 +64,8 @@ public class MemberController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/info")
-    public ResponseEntity<MemberInfoResponseDTO> getMemberInform(Authentication authentication, @RequestParam String email) throws Exception {
-        String userEmail = ((String) authentication.getPrincipal());
+    public ResponseEntity<MemberInfoResponseDTO> getMemberInform(@RequestParam String email) throws Exception {
+        String userEmail = memberService.findByAuthentication().getUserEmail();
         if (!Objects.equals(userEmail, email)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         MemberInfoResponseDTO memberInfoResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
@@ -74,9 +73,8 @@ public class MemberController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/changePassword")
-    public ResponseEntity<Void> changePassword(Authentication authentication,
-                                               @RequestBody @Valid MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
-        String userEmail = ((String) authentication.getPrincipal());
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
+        String userEmail = memberService.findByAuthentication().getUserEmail();
         String newPassword = memberChangePasswordRequestDTO.getNewPassword();
 
         memberService.changePasswordByUserEmail(userEmail, newPassword);
