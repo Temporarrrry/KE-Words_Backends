@@ -62,7 +62,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // accessToken이 만료되지 않은 경우 계속 진행
             jwtTokenProvider.validateAccessToken(accessToken);*/
 
-            String userEmail = "admin";//jwtTokenProvider.getUserEmailByAccessToken(accessToken)
+            String userEmail = "admin@kewords.com";//jwtTokenProvider.getUserEmailByAccessToken(accessToken)
 
             Member findMember = memberService.findByUserEmail(userEmail)
                     .orElseThrow(TokenNotValidException::new);
