@@ -21,11 +21,15 @@ public class SentenceQuizRequestDTO {
 
     private List<SaveSentenceQuizRequestDTO> userAnswers;
 
+    private Boolean isTest;
+
     public SentenceQuiz toEntity(List<Boolean> result) {
         return SentenceQuiz.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
                 .sentenceIds(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getSentenceId).toList())
+                .problemSentences(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getProblemSentence).toList())
+                .userAnswers(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getUserAnswer).toList())
                 .result(result)
                 .build();
     }

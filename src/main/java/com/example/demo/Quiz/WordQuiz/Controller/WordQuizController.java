@@ -2,7 +2,7 @@ package com.example.demo.Quiz.WordQuiz.Controller;
 
 import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.WordQuiz.DTO.DeleteWordQuizRequestDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.SaveWordQuizRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.CheckWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Service.WordQuizService;
@@ -25,12 +25,12 @@ public class WordQuizController {
 
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveQuizResult(@RequestBody @Valid SaveWordQuizRequestDTO saveWordQuizRequestDTO) {
+    @RequestMapping(method = RequestMethod.POST, value = "/check")
+    public ResponseEntity<WordQuizResultResponseDTO> checkQuizResult(@RequestBody @Valid CheckWordQuizRequestDTO checkWordQuizRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
 
-        wordQuizService.saveQuiz(saveWordQuizRequestDTO.toInnerDTO(userId));
-        return new ResponseEntity<>(HttpStatus.OK);
+        WordQuizResultResponseDTO result = wordQuizService.checkQuiz(checkWordQuizRequestDTO.toInnerDTO(userId));
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")

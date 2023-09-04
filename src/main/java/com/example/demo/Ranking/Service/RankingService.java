@@ -38,16 +38,13 @@ public class RankingService {
     }
 
     @Transactional
-    public void addScore(TotalQuizResultType type, Long userId, List<Boolean> result) {
+    public void addScore(TotalQuizResultType type, Long userId, Integer correctCount, Integer totalCount) {
         String userEmail = memberService.findUserEmailById(userId).orElseThrow(MemberNotExistException::new);
-
-        Long correctCount = result.stream().filter(Boolean::booleanValue).count();
-        Long totalCount = (long) result.size();
 
         totalQuizResultRepository.findByUserIdAndType(userId, type).ifPresentOrElse(
                 totalQuizResult -> {
-                    long curCorrectCount = totalQuizResult.getCorrectCount() + correctCount;
-                    long curTotalCount = totalQuizResult.getTotalCount() + totalCount;
+                    Integer curCorrectCount = totalQuizResult.getCorrectCount() + correctCount;
+                    Integer curTotalCount = totalQuizResult.getTotalCount() + totalCount;
 
                     totalQuizResult.setCorrectCount(curCorrectCount);
                     totalQuizResult.setTotalCount(curTotalCount);

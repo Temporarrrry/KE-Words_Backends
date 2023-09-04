@@ -4,13 +4,14 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz.FillingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.OrderingQuiz.OrderingQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResponseDTO;
-import org.springframework.data.domain.Page;
+import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResultResponseDTO;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface SentenceQuizService {
 
-    void saveQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO);
+    SentenceQuizResultResponseDTO checkQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO);
     void deleteQuiz(Long userId, DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO);
 
     FillingQuizProblemsResponseDTO generateFillingSentenceQuiz(int count);
@@ -19,7 +20,7 @@ public interface SentenceQuizService {
 
     //KoreanWordQuizResponseDTO generateKoreanSentenceQuiz(int count);
 
-    SentenceQuizResponseDTO findById(Long id);
+    SentenceQuizResultResponseDTO findById(Long id);
 
-    Page<SentenceQuizResponseDTO> findAllByUserId(Long userId, Pageable pageable);
+    List<SentenceQuizResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 }

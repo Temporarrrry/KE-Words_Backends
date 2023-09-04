@@ -1,6 +1,5 @@
 package com.example.demo.Quiz.SentenceQuiz.DTO.FillingQuiz;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,16 +13,13 @@ import java.util.List;
 public class FillingQuizProblem {
     private Long sentenceId;
 
-    private List<String> originalEnglish;
-
     private List<String> blankedEnglish;
 
-    private List<String> korean;
+    private String korean;
 
     @Builder
-    public FillingQuizProblem(Long sentenceId, List<String> originalEnglish, List<String> blankedEnglish, List<String> korean) {
+    public FillingQuizProblem(Long sentenceId, List<String> blankedEnglish, String korean) {
         this.sentenceId = sentenceId;
-        this.originalEnglish = originalEnglish;
         this.blankedEnglish = blankedEnglish;
         this.korean = korean;
     }

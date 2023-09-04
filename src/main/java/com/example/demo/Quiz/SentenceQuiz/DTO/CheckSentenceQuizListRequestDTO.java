@@ -8,8 +8,10 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-public class SaveSentenceQuizListRequestDTO {
+public class CheckSentenceQuizListRequestDTO {
     private List<SaveSentenceQuizRequestDTO> userAnswers;
+
+    private Boolean isTest;
 
 
     public SentenceQuizRequestDTO toInnerDTO(Long userId) {
@@ -17,6 +19,7 @@ public class SaveSentenceQuizListRequestDTO {
                 .userId(userId)
                 .quizDate(LocalDate.now())
                 .userAnswers(userAnswers)
+                .isTest(isTest)
                 .build();
     }
 }

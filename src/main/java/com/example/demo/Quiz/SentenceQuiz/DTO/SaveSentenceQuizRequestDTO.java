@@ -10,6 +10,8 @@ import java.util.List;
 public class SaveSentenceQuizRequestDTO {
     private Long sentenceId;
 
+    private List<String> problemSentence;
+
     private List<String> userAnswer;
 }
 

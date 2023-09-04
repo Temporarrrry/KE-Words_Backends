@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface WordQuizService {
 
-    void saveQuiz(WordQuizRequestDTO wordQuizRequestDTO);
+    WordQuizResultResponseDTO checkQuiz(WordQuizRequestDTO wordQuizRequestDTO);
     void deleteQuiz(Long wordQuizId);
 
     WordQuizProblemsResponseDTO generateEnglishWordQuiz(int count);

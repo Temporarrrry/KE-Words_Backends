@@ -19,13 +19,17 @@ public class WordQuizRequestDTO {
 
     private LocalDate quizDate;
 
-    private List<WordQuizAnswerRequestDTO> userAnswers;
+    private List<SaveWordQuizRequestDTO> userAnswers;
+
+    private Boolean isTest;
 
     public WordQuiz toEntity(List<Boolean> result){
         return WordQuiz.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
-                .wordIds(userAnswers.stream().map(WordQuizAnswerRequestDTO::getWordId).toList())
+                .wordIds(userAnswers.stream().map(SaveWordQuizRequestDTO::getWordId).toList())
+                .koreanChoices(userAnswers.stream().map(SaveWordQuizRequestDTO::getProblemKoreans).toList())
+                .userAnswers(userAnswers.stream().map(SaveWordQuizRequestDTO::getUserKoreanAnswer).toList())
                 .result(result)
                 .build();
     }

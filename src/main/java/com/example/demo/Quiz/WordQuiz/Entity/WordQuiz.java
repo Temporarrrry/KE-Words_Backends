@@ -8,12 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
+@Access(AccessType.FIELD) // 필드 접근을 지정해서 JPA가 getter, setter를 사용하지 않도록 함
 public class WordQuiz extends BaseTimeEntity {
     @Id
     @Column(nullable = false)
@@ -23,25 +26,80 @@ public class WordQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
     private LocalDate quizDate;
 
     @Column(nullable = false)
     private String wordIds;
 
-    private int score;
+    @Column(nullable = false)
+    private String koreanChoices;
 
-    private int count;
+    @Column(nullable = false)
+    private String userAnswers;
 
+    @Column(nullable = false)
+    private Integer correctCount;
+
+    @Column(nullable = false)
+    private Integer totalCount;
+
+    @Column(nullable = false)
     private String result;
+
+    public void setWordIds(List<Long> wordIds) {
+        this.wordIds = String.join("|", wordIds.stream().map(String::valueOf).toList());
+    }
+
+    public List<Long> getWordIds() {
+        return Stream.of(wordIds.split("\\|")).map(Long::parseLong).toList();
+    }
+
+    public void setKoreanChoices(List<List<List<String>>> koreanChoices) {
+        this.koreanChoices = String.join("/", koreanChoices.stream().map(
+                list1 -> String.join("|", list1.stream().map(
+                        list2 -> String.join("\\", list2)
+                ).toList())
+        ).toList());
+    }
+
+    public List<List<List<String>>> getKoreanChoices() {
+        return Arrays.stream(koreanChoices.split("\\\\"))
+                .map(s -> Arrays.stream(s.split("\\|")).toList())
+                .map(list -> list.stream().map(s -> Arrays.stream(s.split("/")).toList()).toList()).toList();
+    }
+
+    public void setUserAnswers(List<List<String>> userAnswers) {
+        List<String> userAnswerList = userAnswers.stream()
+                .map(strings -> String.join("/", strings)).toList();
+
+        this.userAnswers = String.join("|", userAnswerList);
+    }
+
+    public List<List<String>> getUserAnswers() {
+        return Stream.of(userAnswers.split("\\|"))
+                .map(s -> Arrays.stream(s.split("/")).toList()).toList();
+    }
+
+
+    public void setResult(List<Boolean> result) {
+        this.result = String.join("|", result.stream().map(aBoolean -> (aBoolean) ? "1" : "0").toList());
+    }
+
+    public List<Boolean> getResult() {
+        return Arrays.stream(this.result.split("\\|")).map(s -> s.equals("1")).toList();
+    }
 
 
     @Builder
-    public WordQuiz(Long userId, LocalDate quizDate, List<Long> wordIds, List<Boolean> result) {
+    public WordQuiz(Long userId, LocalDate quizDate, List<Long> wordIds, List<List<List<String>>> koreanChoices, List<List<String>> userAnswers, List<Boolean> result) {
         this.userId = userId;
         this.quizDate = quizDate;
-        this.wordIds = String.join("|", wordIds.stream().map(String::valueOf).toList());
-        this.score = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
-        this.count = result.size();
-        this.result = String.join("|", result.stream().map(aBoolean -> (aBoolean) ? "1" : "0").toList());
+        setWordIds(wordIds);
+        setKoreanChoices(koreanChoices);
+        setUserAnswers(userAnswers);
+        this.correctCount = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
+        this.totalCount = result.size();
+        setResult(result);
     }
 }

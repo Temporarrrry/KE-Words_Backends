@@ -22,12 +22,12 @@ public class TotalQuizResultCounter {
     private TotalQuizResultType type;
 
     @Column(nullable = false)
-    private Long correctCount;
+    private Integer correctCount;
 
     @Column(nullable = false)
-    private Long totalCount;
+    private Integer totalCount;
 
-    public TotalQuizResultCounter(Long userId, TotalQuizResultType type, Long correctCount, Long totalCount) {
+    public TotalQuizResultCounter(Long userId, TotalQuizResultType type, Integer correctCount, Integer totalCount) {
         this.userId = userId;
         this.type = type;
         this.correctCount = correctCount;

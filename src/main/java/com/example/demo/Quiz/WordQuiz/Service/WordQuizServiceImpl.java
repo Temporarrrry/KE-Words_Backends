@@ -15,10 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @Transactional
@@ -30,47 +28,61 @@ public class WordQuizServiceImpl implements WordQuizService {
 
     private final RankingService rankingService;
 
-    private List<Boolean> scoring(List<List<String>> answer, List<List<String>> userAnswer) {
-        List<Boolean> score = new ArrayList<>();
-
-        IntStream.range(0, answer.size()).forEach(i -> {
-            List<String> answerList = answer.get(i);
-            List<String> userAnswerList = userAnswer.get(i);
-
-            if (answerList.size() != userAnswerList.size()) {
-                score.add(false);
-                return;
-            }
-
-            score.add(answerList.equals(userAnswerList));
-        });
-
-        return score;
-    }
-
-    @Override
-    public void saveQuiz(WordQuizRequestDTO wordQuizRequestDTO) {
-        List<WordQuizAnswerRequestDTO> userAnswers = wordQuizRequestDTO.getUserAnswers();
-
-        List<List<String>> koreanAnswer = userAnswers
-                .stream().map(WordQuizAnswerRequestDTO::getWordId)
-                .map(id -> wordService.findById(id).getKorean())
-                .toList();
-
-        List<List<String>> userKoreanAnswers = userAnswers
-                .stream().map(WordQuizAnswerRequestDTO::getUserKoreanAnswer)
-                .toList();
-
-        List<Boolean> result = scoring(koreanAnswer, userKoreanAnswers);
+    private Long saveQuiz(WordQuizRequestDTO wordQuizRequestDTO,
+                          List<Boolean> result,
+                          Integer correctCount, Integer totalCount) {
 
         rankingService
                 .addScore(
                         TotalQuizResultType.WORD,
                         wordQuizRequestDTO.getUserId(),
-                        result
+                        correctCount,
+                        totalCount
                 );
 
-        wordQuizRepository.save(wordQuizRequestDTO.toEntity(result));
+        return wordQuizRepository.save(wordQuizRequestDTO.toEntity(result)).getId();
+    }
+
+    @Override
+    public WordQuizResultResponseDTO checkQuiz(WordQuizRequestDTO wordQuizRequestDTO) {
+
+        List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList = wordQuizRequestDTO
+                .getUserAnswers()
+                .stream().map(saveWordQuizRequestDTO -> {
+                    Long wordId = saveWordQuizRequestDTO.getWordId();
+                    WordResponseDTO wordResponseDTO = wordService.findById(wordId);
+
+                    List<String> answer = wordResponseDTO.getKorean();
+                    List<String> userKoreanAnswer = saveWordQuizRequestDTO.getUserKoreanAnswer();
+
+                    Boolean result = answer.equals(userKoreanAnswer);
+
+                    return WordQuizOneProblemResultResponseDTO.builder()
+                            .wordId(wordId)
+                            .english(wordResponseDTO.getEnglish())
+                            .originalKorean(answer)
+                            .userKoreanAnswer(userKoreanAnswer)
+                            .koreanChoices(saveWordQuizRequestDTO.getProblemKoreans())
+                            .result(result)
+                            .build();
+                }
+        ).toList();
+
+        WordQuizResultResponseDTO quizResult = WordQuizResultResponseDTO.builder()
+                .userId(wordQuizRequestDTO.getUserId())
+                .correctCount((int) wordQuizOneProblemResultResponseDTOList.stream().filter(WordQuizOneProblemResultResponseDTO::getResult).count())
+                .totalCount(wordQuizOneProblemResultResponseDTOList.size())
+                .wordQuizOneProblemResultResponseDTOList(wordQuizOneProblemResultResponseDTOList)
+                .build();
+
+        List<Boolean> result = quizResult.getWordQuizOneProblemResultResponseDTOList()
+                .stream().map(WordQuizOneProblemResultResponseDTO::getResult)
+                .toList();
+
+        if (wordQuizRequestDTO.getIsTest())
+            quizResult.setQuizId(saveQuiz(wordQuizRequestDTO, result, quizResult.getCorrectCount(), quizResult.getTotalCount()));
+
+        return quizResult;
     }
 
     @Override
@@ -139,13 +151,12 @@ public class WordQuizServiceImpl implements WordQuizService {
     }*/
 
     private WordQuizResultResponseDTO toResultResponseDTO(WordQuiz wordQuiz) {
-        List<String> englishes = Arrays.stream(wordQuiz.getWordIds().split("\\|"))
-                .map(Long::parseLong)
-                .map(wordService::findById)
-                .map(WordResponseDTO::getEnglish)
-                .toList();
+        List<WordResponseDTO> wordResponseDTOS = wordQuiz.getWordIds().stream().map(wordService::findById).toList();
 
-        return new WordQuizResultResponseDTO(englishes, wordQuiz);
+        List<String> englishes = wordResponseDTOS.stream().map(WordResponseDTO::getEnglish).toList();
+        List<List<String>> originalKoreans = wordResponseDTOS.stream().map(WordResponseDTO::getKorean).toList();
+
+        return new WordQuizResultResponseDTO(wordQuiz, englishes, originalKoreans);
     }
 
     @Override

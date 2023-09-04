@@ -1,12 +1,12 @@
 package com.example.demo.Quiz.WordQuiz.DTO;
 
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -14,28 +14,49 @@ import java.util.List;
 @NoArgsConstructor
 public class WordQuizResultResponseDTO {
 
-    private Long id;
+    private Long quizId;
 
     private Long userId;
 
-    private List<String> english;
+    private Integer correctCount;
 
-    private int score;
+    private Integer totalCount;
 
-    private int count;
+    private List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList;
 
-    private LocalDate quizDate;
+    @Builder
+    public WordQuizResultResponseDTO(Long userId, Integer correctCount, Integer totalCount, List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList) {
+        this.userId = userId;
+        this.correctCount = correctCount;
+        this.totalCount = totalCount;
+        this.wordQuizOneProblemResultResponseDTOList = wordQuizOneProblemResultResponseDTOList;
+    }
 
-    private List<Boolean> result;
-
-    public WordQuizResultResponseDTO(List<String> english, WordQuiz wordQuiz) {
-        this.id = wordQuiz.getId();
+    public WordQuizResultResponseDTO(WordQuiz wordQuiz, List<String> englishes, List<List<String>> originalKorean) {
+        this.quizId = wordQuiz.getId();
         this.userId = wordQuiz.getUserId();
-        this.english = english;
-        this.quizDate = wordQuiz.getQuizDate();
-        this.result = Arrays.stream(wordQuiz.getResult().split("\\|")).map(s -> s.equals("1")).toList();
-        this.score = Long.valueOf(Arrays.stream(wordQuiz.getResult().split("")).map(s -> s.equals("1"))
-                .filter(Boolean::booleanValue).count()).intValue();
-        this.count = Long.valueOf(this.result.size()).intValue();
+        this.correctCount = wordQuiz.getCorrectCount();
+        this.totalCount = wordQuiz.getTotalCount();
+
+        List<Long> wordIds = wordQuiz.getWordIds();
+        List<List<List<String>>> koreanChoices = wordQuiz.getKoreanChoices();
+        List<List<String>> userAnswers = wordQuiz.getUserAnswers();
+        List<Boolean> result = wordQuiz.getResult();
+
+        List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList = new ArrayList<>();
+        for (int idx = 0; idx < wordIds.size(); idx++) {
+            wordQuizOneProblemResultResponseDTOList.add(
+                    WordQuizOneProblemResultResponseDTO.builder()
+                            .wordId(wordIds.get(idx))
+                            .english(englishes.get(idx))
+                            .originalKorean(originalKorean.get(idx))
+                            .userKoreanAnswer(userAnswers.get(idx))
+                            .koreanChoices(koreanChoices.get(idx))
+                            .result(result.get(idx))
+                            .build()
+            );
+        }
+
+        this.wordQuizOneProblemResultResponseDTOList = wordQuizOneProblemResultResponseDTOList;
     }
 }
