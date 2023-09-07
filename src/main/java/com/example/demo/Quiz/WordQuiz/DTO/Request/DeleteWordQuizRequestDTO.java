@@ -1,4 +1,4 @@
-package com.example.demo.Quiz.WordQuiz.DTO;
+package com.example.demo.Quiz.WordQuiz.DTO.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

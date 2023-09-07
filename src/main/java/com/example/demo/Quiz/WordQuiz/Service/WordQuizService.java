@@ -1,20 +1,26 @@
 package com.example.demo.Quiz.WordQuiz.Service;
 
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemsResponseDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizRequestDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.GenerateWordQuizRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.Grade.GradeWordQuizTestRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Practice.WordQuizPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Result.WordQuizProblemsResultResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Test.WordQuizTestProblemsResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface WordQuizService {
 
-    WordQuizResultResponseDTO checkQuiz(WordQuizRequestDTO wordQuizRequestDTO);
-    void deleteQuiz(Long wordQuizId);
+    WordQuizProblemsResultResponseDTO gradeQuiz(GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO);
 
-    WordQuizProblemsResponseDTO generateEnglishWordQuiz(int count);
+    //WordQuizCommonProblemsResponseDTO generateWordQuiz(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
+    WordQuizPracticeProblemsResponseDTO getPractice(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
+
+    WordQuizTestProblemsResponseDTO getTest(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
+
+    void deleteQuiz(Long wordQuizId);
 
     //KoreanWordQuizResponseDTO generateKoreanWordQuiz(int count);
 
-    WordQuizResultResponseDTO findById(Long id);
-    Page<WordQuizResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
+    WordQuizProblemsResultResponseDTO findById(Long id);
+    Page<WordQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 }

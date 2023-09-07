@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Getter
@@ -29,13 +30,13 @@ public class WordQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate quizDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2047)
     private String wordIds;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2047)
     private String koreanChoices;
 
-    @Column(nullable = false)
+    @Column(length = 2047)
     private String userAnswers;
 
     @Column(nullable = false)
@@ -44,8 +45,11 @@ public class WordQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer totalCount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2047)
     private String result;
+
+    @Column(nullable = false)
+    private Boolean isCompleted;
 
     public void setWordIds(List<Long> wordIds) {
         this.wordIds = String.join("|", wordIds.stream().map(String::valueOf).toList());
@@ -69,11 +73,13 @@ public class WordQuiz extends BaseTimeEntity {
                 .map(list -> list.stream().map(s -> Arrays.stream(s.split("/")).toList()).toList()).toList();
     }
 
-    public void setUserAnswers(List<List<String>> userAnswers) {
-        List<String> userAnswerList = userAnswers.stream()
-                .map(strings -> String.join("/", strings)).toList();
+    public void setUserAnswers(Optional<List<List<String>>> userAnswers) {
+        userAnswers.ifPresent(userAnswer -> {
+            List<String> userAnswerList = userAnswer.stream()
+                    .map(strings -> String.join("/", strings)).toList();
 
-        this.userAnswers = String.join("|", userAnswerList);
+            this.userAnswers = String.join("|", userAnswerList);
+        });
     }
 
     public List<List<String>> getUserAnswers() {
@@ -92,7 +98,9 @@ public class WordQuiz extends BaseTimeEntity {
 
 
     @Builder
-    public WordQuiz(Long userId, LocalDate quizDate, List<Long> wordIds, List<List<List<String>>> koreanChoices, List<List<String>> userAnswers, List<Boolean> result) {
+    public WordQuiz(Long userId, LocalDate quizDate,
+                    List<Long> wordIds, List<List<List<String>>> koreanChoices,
+                    Optional<List<List<String>>> userAnswers, List<Boolean> result) {
         this.userId = userId;
         this.quizDate = quizDate;
         setWordIds(wordIds);
@@ -101,5 +109,6 @@ public class WordQuiz extends BaseTimeEntity {
         this.correctCount = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
         this.totalCount = result.size();
         setResult(result);
+        this.isCompleted = Boolean.FALSE;
     }
 }

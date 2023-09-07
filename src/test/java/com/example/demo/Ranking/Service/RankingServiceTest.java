@@ -27,7 +27,7 @@ class RankingServiceTest {
 
         String email = "emailEx";
         List<Boolean> score = List.of(true, true, true, true, false, true, false, true, true, true);
-        rankingService.addScore(TotalQuizResultType.WORD, 1L, score);
+        rankingService.addScore(TotalQuizResultType.WORD, 1L, 4, 10);
 
         List<RankingResponseDTO> rankingList = rankingService.getWordRankingList(0, 20);
         for (RankingResponseDTO rankingResponseDTO : rankingList) {

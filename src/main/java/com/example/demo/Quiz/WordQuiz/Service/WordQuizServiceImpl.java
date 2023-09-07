@@ -1,7 +1,17 @@
 package com.example.demo.Quiz.WordQuiz.Service;
 
-import com.example.demo.Quiz.WordQuiz.DTO.*;
+import com.example.demo.Common.Exception.NoAuthorityException;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.GenerateWordQuizRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.Grade.GradeWordQuizTestProblemRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.Grade.GradeWordQuizTestRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.Test.SaveWordQuizTestRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Common.WordQuizCommonProblemResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Common.WordQuizCommonProblemsResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Practice.WordQuizPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Result.WordQuizProblemsResultResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Test.WordQuizTestProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
+import com.example.demo.Quiz.WordQuiz.Exception.WordQuizAnswerLengthNotMatchException;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizNotExistException;
 import com.example.demo.Quiz.WordQuiz.Repository.WordQuizRepository;
 import com.example.demo.Ranking.Entity.TotalQuizResultType;
@@ -14,9 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -28,148 +39,190 @@ public class WordQuizServiceImpl implements WordQuizService {
 
     private final RankingService rankingService;
 
-    private Long saveQuiz(WordQuizRequestDTO wordQuizRequestDTO,
-                          List<Boolean> result,
-                          Integer correctCount, Integer totalCount) {
 
-        rankingService
-                .addScore(
-                        TotalQuizResultType.WORD,
-                        wordQuizRequestDTO.getUserId(),
-                        correctCount,
-                        totalCount
-                );
+    //CREATE
+    private Long saveBaseQuiz(SaveWordQuizTestRequestDTO saveWordQuizTestRequestDTO) {
 
-        return wordQuizRepository.save(wordQuizRequestDTO.toEntity(result)).getId();
-    }
+        rankingService.addScore(
+                TotalQuizResultType.WORD,
+                saveWordQuizTestRequestDTO.getUserId(),
+                0, // updateQuiz에서 계산
+                saveWordQuizTestRequestDTO.getProblems().size()
+        );
 
-    @Override
-    public WordQuizResultResponseDTO checkQuiz(WordQuizRequestDTO wordQuizRequestDTO) {
 
-        List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList = wordQuizRequestDTO
-                .getUserAnswers()
-                .stream().map(saveWordQuizRequestDTO -> {
-                    Long wordId = saveWordQuizRequestDTO.getWordId();
-                    WordResponseDTO wordResponseDTO = wordService.findById(wordId);
-
-                    List<String> answer = wordResponseDTO.getKorean();
-                    List<String> userKoreanAnswer = saveWordQuizRequestDTO.getUserKoreanAnswer();
-
-                    Boolean result = answer.equals(userKoreanAnswer);
-
-                    return WordQuizOneProblemResultResponseDTO.builder()
-                            .wordId(wordId)
-                            .english(wordResponseDTO.getEnglish())
-                            .originalKorean(answer)
-                            .userKoreanAnswer(userKoreanAnswer)
-                            .koreanChoices(saveWordQuizRequestDTO.getProblemKoreans())
-                            .result(result)
-                            .build();
-                }
-        ).toList();
-
-        WordQuizResultResponseDTO quizResult = WordQuizResultResponseDTO.builder()
-                .userId(wordQuizRequestDTO.getUserId())
-                .correctCount((int) wordQuizOneProblemResultResponseDTOList.stream().filter(WordQuizOneProblemResultResponseDTO::getResult).count())
-                .totalCount(wordQuizOneProblemResultResponseDTOList.size())
-                .wordQuizOneProblemResultResponseDTOList(wordQuizOneProblemResultResponseDTOList)
-                .build();
-
-        List<Boolean> result = quizResult.getWordQuizOneProblemResultResponseDTOList()
-                .stream().map(WordQuizOneProblemResultResponseDTO::getResult)
+        List<Boolean> FalseResult = Stream.generate(() -> false)
+                .limit(saveWordQuizTestRequestDTO.getProblems().size())
                 .toList();
 
-        if (wordQuizRequestDTO.getIsTest())
-            quizResult.setQuizId(saveQuiz(wordQuizRequestDTO, result, quizResult.getCorrectCount(), quizResult.getTotalCount()));
-
-        return quizResult;
+        WordQuiz wordQuiz = saveWordQuizTestRequestDTO.toEntity(Optional.empty(), FalseResult);
+        return wordQuizRepository.save(wordQuiz).getId();
     }
 
-    @Override
-    public void deleteQuiz(Long wordQuizId) throws WordQuizNotExistException {
-        if (!wordQuizRepository.existsById(wordQuizId)) throw new WordQuizNotExistException();
-        wordQuizRepository.deleteById(wordQuizId);
-    }
+    private WordQuizCommonProblemsResponseDTO generateWordQuiz(GenerateWordQuizRequestDTO generateWordQuizRequestDTO) {
+        Long userId = generateWordQuizRequestDTO.getUserId();
+        Integer count = generateWordQuizRequestDTO.getCount();
+        Boolean isTest = generateWordQuizRequestDTO.getIsTest();
 
-    @Override
-    public WordQuizProblemsResponseDTO generateEnglishWordQuiz(int count) {
         List<WordResponseDTO> words = wordService.findWordsByRandom(count * 4);
 
         List<List<String>> koreans = words.stream().map(WordResponseDTO::getKorean).toList();
 
-        WordQuizProblemsResponseDTO problems = new WordQuizProblemsResponseDTO();
-
+        WordQuizCommonProblemsResponseDTO problems = new WordQuizCommonProblemsResponseDTO();
         for (int i = 0; i < words.size(); i += 4) {
-            List<List<String>> curKoreans = new ArrayList<>(koreans.subList(i, i + 4));
-            Collections.shuffle(curKoreans);
+            List<String> originalKorean = koreans.get(i);
+
+            List<List<String>> koreanChoices = new ArrayList<>(koreans.subList(i, i + 4));
+            Collections.shuffle(koreanChoices);
 
             problems.getWordQuizList().add(
-                    WordQuizProblemResponseDTO.builder()
+                    WordQuizCommonProblemResponseDTO.builder()
                             .wordId(words.get(i).getId())
                             .english(words.get(i).getEnglish())
-                            .koreanChoice(curKoreans)
+                            .originalKorean((isTest) ? null : originalKorean)
+                            .koreanChoice(koreanChoices)
                             .build()
             );
+        }
+
+        if (isTest) {
+            List<Long> wordIds = problems.getWordQuizList()
+                    .stream().map(WordQuizCommonProblemResponseDTO::getWordId)
+                    .toList();
+
+            List<List<List<String>>> koreanChoices = problems.getWordQuizList()
+                    .stream().map(WordQuizCommonProblemResponseDTO::getKoreanChoice)
+                    .toList();
+
+            problems.setQuizId(saveBaseQuiz(new SaveWordQuizTestRequestDTO(userId, wordIds, koreanChoices)));
         }
 
         return problems;
     }
 
-    /*@Override
-    public KoreanWordQuizResponseDTO generateKoreanWordQuiz(int count) {
-        List<WordResponseDTO> words = wordService.findWordsByRandom(count * 4);
+    @Override
+    @Transactional
+    public WordQuizPracticeProblemsResponseDTO getPractice(GenerateWordQuizRequestDTO generateWordQuizRequestDTO) {
+        return new WordQuizPracticeProblemsResponseDTO(generateWordQuiz(generateWordQuizRequestDTO));
+    }
 
-        Stream<List<String>> koreanStream = words.stream().map(WordResponseDTO::getKorean);
-        List<List<String>> koreans = koreanStream.toList();
-
-        List<String> englishes = words.stream().map(WordResponseDTO::getEnglish).toList();
-
-        KoreanWordQuizResponseDTO koreanWordQuizResponseDTO = new KoreanWordQuizResponseDTO();
-
-        koreanWordQuizResponseDTO.setKorean(
-                IntStream.range(0, koreans.size())
-                        .filter(i -> i % 4 == 0)
-                        .mapToObj(koreans::get)
-                        .toList()
-        );
-
-        koreanWordQuizResponseDTO.setAnswer(
-                IntStream.range(0, englishes.size())
-                        .filter(i -> i % 4 == 0)
-                        .mapToObj(englishes::get)
-                        .toList()
-        );
+    @Override
+    @Transactional
+    public WordQuizTestProblemsResponseDTO getTest(GenerateWordQuizRequestDTO generateWordQuizRequestDTO) {
+        return new WordQuizTestProblemsResponseDTO(generateWordQuiz(generateWordQuizRequestDTO));
+    }
 
 
-        for (int i = 0; i < count * 4; i += 4) {
-            List<String> problemEnglish = new ArrayList<>(englishes.subList(i, i + 4)); // list가 unmodifiable하기 때문에 new로 생성
-            Collections.shuffle(problemEnglish);
-            koreanWordQuizResponseDTO.getEnglishChoice().add(problemEnglish);
-        }
+    //DELETE
 
-        return koreanWordQuizResponseDTO;
-    }*/
+    @Override
+    @Transactional
+    public void deleteQuiz(Long wordQuizId) throws WordQuizNotExistException {
+        if (!wordQuizRepository.existsById(wordQuizId)) throw new WordQuizNotExistException();
+        wordQuizRepository.deleteById(wordQuizId);
+    }
 
-    private WordQuizResultResponseDTO toResultResponseDTO(WordQuiz wordQuiz) {
+    //READ
+
+    private WordQuizProblemsResultResponseDTO toResultResponseDTO(WordQuiz wordQuiz) {
         List<WordResponseDTO> wordResponseDTOS = wordQuiz.getWordIds().stream().map(wordService::findById).toList();
 
         List<String> englishes = wordResponseDTOS.stream().map(WordResponseDTO::getEnglish).toList();
         List<List<String>> originalKoreans = wordResponseDTOS.stream().map(WordResponseDTO::getKorean).toList();
 
-        return new WordQuizResultResponseDTO(wordQuiz, englishes, originalKoreans);
+        return new WordQuizProblemsResultResponseDTO(wordQuiz, englishes, originalKoreans);
     }
 
     @Override
-    public WordQuizResultResponseDTO findById(Long id) throws WordQuizNotExistException {
+    public WordQuizProblemsResultResponseDTO findById(Long id) throws WordQuizNotExistException {
         WordQuiz wordQuiz = wordQuizRepository.findById(id).orElseThrow(WordQuizNotExistException::new);
 
         return toResultResponseDTO(wordQuiz);
     }
 
     @Override
-    public Page<WordQuizResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
+    public Page<WordQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
         return wordQuizRepository.findAllByUserId(userId, pageable).map(
                 this::toResultResponseDTO
         );
+    }
+
+    //UPDATE
+
+
+
+    @Override
+    @Transactional
+    public WordQuizProblemsResultResponseDTO gradeQuiz(GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
+
+        List<WordQuiz> allByIsCompletedIsFalse = wordQuizRepository.findAllByIsCompletedIsFalse();
+
+        if (allByIsCompletedIsFalse.isEmpty())
+            throw new WordQuizNotExistException("채점 가능한 퀴즈가 존재하지 않습니다");
+
+        // 전처리
+        // (마지막 wordQuiz == 수정해야 하는 wordQuiz)를 뽑아옴
+        WordQuiz wordQuiz = allByIsCompletedIsFalse.stream()
+                .max(Comparator.comparing(WordQuiz::getCreateTime))
+                .orElse(null);
+
+        if (!wordQuiz.getId().equals(gradeWordQuizTestRequestDTO.getQuizId()))
+            throw new NoAuthorityException("이제 수정할 수 없는 퀴즈입니다.");
+
+        // completed된 wordQuiz 파일이 복수 개 존재할 경우
+        if (allByIsCompletedIsFalse.size() > 1) {
+            // (마지막 wordQuiz == 수정해야 하는 wordQuiz)를 제외한 나머지 wordQuiz들을 completed로 바꿈
+            allByIsCompletedIsFalse.stream()
+                    .filter(wq -> !wq.equals(wordQuiz))
+                    .forEach(wq -> wq.setIsCompleted(true));
+        }
+
+
+        List<WordResponseDTO> words = wordQuiz.getWordIds()
+                .stream().map(wordService::findById)
+                .toList();
+
+        // dto에서 정보를 뽑아냄
+        Map<Long, List<String>> userAnswersMap = gradeWordQuizTestRequestDTO.getUserAnswers()
+                .stream().collect(Collectors.toMap(
+                        GradeWordQuizTestProblemRequestDTO::getWordId,
+                        GradeWordQuizTestProblemRequestDTO::getUserKoreanAnswer
+                        )
+                );
+
+        List<List<String>> orderedUserKoreanAnswers = words
+                .stream().map(word -> userAnswersMap.get(word.getId())).toList();
+
+        List<List<String>> answers = words.stream().map(WordResponseDTO::getKorean).toList();
+
+        if (orderedUserKoreanAnswers.size() != answers.size())
+            throw new WordQuizAnswerLengthNotMatchException();
+
+
+        List<Boolean> result = IntStream.range(0, answers.size())
+                .mapToObj(idx -> orderedUserKoreanAnswers.get(idx).equals(answers.get(idx)))
+                .toList();
+
+        Integer correctCount = (int) result.stream().filter(Boolean::booleanValue).count();
+        Integer totalCount = result.size();
+
+        // wordQuiz Entity 업데이트
+        wordQuiz.setUserAnswers(Optional.of(orderedUserKoreanAnswers));
+        wordQuiz.setResult(result);
+        wordQuiz.setIsCompleted(true);
+        wordQuiz.setCorrectCount(correctCount);
+        wordQuiz.setTotalCount(totalCount);
+
+
+        // 랭킹 정보 업데이트
+        rankingService
+                .addScore(
+                        TotalQuizResultType.WORD,
+                        gradeWordQuizTestRequestDTO.getUserId(),
+                        correctCount,
+                        0 // 이미 더해져 있다고 가정
+                );
+
+        return toResultResponseDTO(wordQuiz);
     }
 }

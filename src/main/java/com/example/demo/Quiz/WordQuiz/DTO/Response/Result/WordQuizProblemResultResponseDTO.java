@@ -1,4 +1,4 @@
-package com.example.demo.Quiz.WordQuiz.DTO;
+package com.example.demo.Quiz.WordQuiz.DTO.Response.Result;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class WordQuizOneProblemResultResponseDTO {
+public class WordQuizProblemResultResponseDTO {
 
     private Long wordId;
 
@@ -25,7 +25,7 @@ public class WordQuizOneProblemResultResponseDTO {
     private Boolean result;
 
     @Builder
-    public WordQuizOneProblemResultResponseDTO(Long wordId, String english, List<String> originalKorean, List<String> userKoreanAnswer, List<List<String>> koreanChoices, Boolean result) {
+    public WordQuizProblemResultResponseDTO(Long wordId, String english, List<String> originalKorean, List<String> userKoreanAnswer, List<List<String>> koreanChoices, Boolean result) {
         this.wordId = wordId;
         this.english = english;
         this.originalKorean = originalKorean;

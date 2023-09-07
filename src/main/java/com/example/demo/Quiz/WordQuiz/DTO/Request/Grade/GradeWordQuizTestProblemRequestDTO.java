@@ -1,4 +1,4 @@
-package com.example.demo.Quiz.WordQuiz.DTO;
+package com.example.demo.Quiz.WordQuiz.DTO.Request.Grade;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,10 +9,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveWordQuizRequestDTO {
+public class GradeWordQuizTestProblemRequestDTO {
     private Long wordId;
-
-    private List<List<String>> problemKoreans;
 
     private List<String> userKoreanAnswer;
 }

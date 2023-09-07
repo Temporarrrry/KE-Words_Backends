@@ -1,10 +1,12 @@
 package com.example.demo.Quiz.WordQuiz.Controller;
 
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Quiz.WordQuiz.DTO.DeleteWordQuizRequestDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.CheckWordQuizRequestDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizProblemsResponseDTO;
-import com.example.demo.Quiz.WordQuiz.DTO.WordQuizResultResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.DeleteWordQuizRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.GenerateWordQuizRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Request.Grade.GradeWordQuizTestRequestDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Practice.WordQuizPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Result.WordQuizProblemsResultResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.Test.WordQuizTestProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Service.WordQuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +27,22 @@ public class WordQuizController {
 
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/check")
-    public ResponseEntity<WordQuizResultResponseDTO> checkQuizResult(@RequestBody @Valid CheckWordQuizRequestDTO checkWordQuizRequestDTO) {
+    @RequestMapping(method = RequestMethod.GET, value = "/practice")
+    public ResponseEntity<WordQuizPracticeProblemsResponseDTO> practice() {
         Long userId = memberService.findIdByAuthentication();
 
-        WordQuizResultResponseDTO result = wordQuizService.checkQuiz(checkWordQuizRequestDTO.toInnerDTO(userId));
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        WordQuizPracticeProblemsResponseDTO practice = wordQuizService
+                .getPractice(new GenerateWordQuizRequestDTO(userId, 20, false));
+        return new ResponseEntity<>(practice, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/test")
+    public ResponseEntity<WordQuizTestProblemsResponseDTO> test() {
+        Long userId = memberService.findIdByAuthentication();
+
+        WordQuizTestProblemsResponseDTO test = wordQuizService
+                .getTest(new GenerateWordQuizRequestDTO(userId, 20, true));
+        return new ResponseEntity<>(test, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
@@ -44,30 +56,26 @@ public class WordQuizController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/generateWordQuiz")
-    public ResponseEntity<WordQuizProblemsResponseDTO> generateWordQuizProblem(@RequestParam(value = "count") int count) {
-        return new ResponseEntity<>(wordQuizService.generateEnglishWordQuiz(count), HttpStatus.OK);
-    }
-
-    /*@RequestMapping(method = RequestMethod.GET, value = "/generateKoreanQuiz")
-    public ResponseEntity<KoreanWordQuizResponseDTO> generateKoreanQuizProblem(@RequestParam(value = "count") int count) {
-        return new ResponseEntity<>(wordQuizService.generateKoreanWordQuiz(count), HttpStatus.OK);
-    }*/
-
-
 
     @RequestMapping(method = RequestMethod.GET, value = "/findById")
-    public ResponseEntity<WordQuizResultResponseDTO> findById(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<WordQuizProblemsResultResponseDTO> findById(@RequestParam(value = "id") Long id) {
         Long userId = memberService.findIdByAuthentication();
-        WordQuizResultResponseDTO wordQuizResultResponseDTO = wordQuizService.findById(id);
+        WordQuizProblemsResultResponseDTO wordQuizProblemsResultResponseDTO = wordQuizService.findById(id);
 
-        if (!Objects.equals(wordQuizResultResponseDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        return new ResponseEntity<>(wordQuizResultResponseDTO, HttpStatus.OK);
+        if (!Objects.equals(wordQuizProblemsResultResponseDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(wordQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findAllByUserId")
-    public ResponseEntity<List<WordQuizResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<WordQuizProblemsResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(wordQuizService.findAllByUserId(userId, pageable).getContent(), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/grade")
+    public ResponseEntity<WordQuizProblemsResultResponseDTO> gradingQuizTest(@RequestBody @Valid GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
+        WordQuizProblemsResultResponseDTO wordQuizProblemsResultResponseDTO = wordQuizService
+                .gradeQuiz(gradeWordQuizTestRequestDTO);
+        return new ResponseEntity<>(wordQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 }

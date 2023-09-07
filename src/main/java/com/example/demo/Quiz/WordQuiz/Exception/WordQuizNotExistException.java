@@ -7,4 +7,8 @@ public class WordQuizNotExistException extends RuntimeExceptionWithHttpStatus {
     public WordQuizNotExistException() {
         super("존재하지 않는 퀴즈입니다.", HttpStatus.NOT_FOUND);
     }
+
+    public WordQuizNotExistException(String message) {
+        super(message, HttpStatus.NOT_FOUND);
+    }
 }

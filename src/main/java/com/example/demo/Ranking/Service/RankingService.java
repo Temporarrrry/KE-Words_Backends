@@ -46,6 +46,8 @@ public class RankingService {
                     Integer curCorrectCount = totalQuizResult.getCorrectCount() + correctCount;
                     Integer curTotalCount = totalQuizResult.getTotalCount() + totalCount;
 
+                    if (curTotalCount.equals(0)) throw new ArithmeticException("total count is zero");
+
                     totalQuizResult.setCorrectCount(curCorrectCount);
                     totalQuizResult.setTotalCount(curTotalCount);
 

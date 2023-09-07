@@ -40,3 +40,5 @@ out/
 #database setting
 application-dev.yml
 application-prod.yml
+/src/main/java/com/example/demo/TODO.txt
+/src/main/java/com/example/demo/InitDB.java

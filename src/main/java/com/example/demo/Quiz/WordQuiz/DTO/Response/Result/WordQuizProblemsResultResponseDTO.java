@@ -1,4 +1,4 @@
-package com.example.demo.Quiz.WordQuiz.DTO;
+package com.example.demo.Quiz.WordQuiz.DTO.Response.Result;
 
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class WordQuizResultResponseDTO {
+public class WordQuizProblemsResultResponseDTO {
 
     private Long quizId;
 
@@ -22,17 +22,17 @@ public class WordQuizResultResponseDTO {
 
     private Integer totalCount;
 
-    private List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList;
+    private List<WordQuizProblemResultResponseDTO> wordQuizProblemResultResponseDTOList;
 
     @Builder
-    public WordQuizResultResponseDTO(Long userId, Integer correctCount, Integer totalCount, List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList) {
+    public WordQuizProblemsResultResponseDTO(Long userId, Integer correctCount, Integer totalCount, List<WordQuizProblemResultResponseDTO> wordQuizProblemResultResponseDTOList) {
         this.userId = userId;
         this.correctCount = correctCount;
         this.totalCount = totalCount;
-        this.wordQuizOneProblemResultResponseDTOList = wordQuizOneProblemResultResponseDTOList;
+        this.wordQuizProblemResultResponseDTOList = wordQuizProblemResultResponseDTOList;
     }
 
-    public WordQuizResultResponseDTO(WordQuiz wordQuiz, List<String> englishes, List<List<String>> originalKorean) {
+    public WordQuizProblemsResultResponseDTO(WordQuiz wordQuiz, List<String> englishes, List<List<String>> originalKorean) {
         this.quizId = wordQuiz.getId();
         this.userId = wordQuiz.getUserId();
         this.correctCount = wordQuiz.getCorrectCount();
@@ -43,10 +43,10 @@ public class WordQuizResultResponseDTO {
         List<List<String>> userAnswers = wordQuiz.getUserAnswers();
         List<Boolean> result = wordQuiz.getResult();
 
-        List<WordQuizOneProblemResultResponseDTO> wordQuizOneProblemResultResponseDTOList = new ArrayList<>();
+        List<WordQuizProblemResultResponseDTO> wordQuizProblemResultResponseDTOList = new ArrayList<>();
         for (int idx = 0; idx < wordIds.size(); idx++) {
-            wordQuizOneProblemResultResponseDTOList.add(
-                    WordQuizOneProblemResultResponseDTO.builder()
+            wordQuizProblemResultResponseDTOList.add(
+                    WordQuizProblemResultResponseDTO.builder()
                             .wordId(wordIds.get(idx))
                             .english(englishes.get(idx))
                             .originalKorean(originalKorean.get(idx))
@@ -57,6 +57,6 @@ public class WordQuizResultResponseDTO {
             );
         }
 
-        this.wordQuizOneProblemResultResponseDTOList = wordQuizOneProblemResultResponseDTOList;
+        this.wordQuizProblemResultResponseDTOList = wordQuizProblemResultResponseDTOList;
     }
 }
