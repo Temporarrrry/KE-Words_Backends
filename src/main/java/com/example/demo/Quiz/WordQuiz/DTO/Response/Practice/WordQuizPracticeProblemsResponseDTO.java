@@ -11,13 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 public class WordQuizPracticeProblemsResponseDTO {
 
-    private Long quizId;
-
     private List<WordQuizPracticeProblemResponseDTO> wordQuizList = new ArrayList<>();
 
     public WordQuizPracticeProblemsResponseDTO(WordQuizCommonProblemsResponseDTO wordQuizCommonProblemsResponseDTO) {
-        this.quizId = wordQuizCommonProblemsResponseDTO.getQuizId();
-
         this.wordQuizList = wordQuizCommonProblemsResponseDTO
                 .getWordQuizList()
                 .stream().map(WordQuizPracticeProblemResponseDTO::new)

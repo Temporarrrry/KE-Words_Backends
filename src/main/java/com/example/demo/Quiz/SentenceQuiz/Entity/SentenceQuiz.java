@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Getter
@@ -29,13 +30,13 @@ public class SentenceQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate quizDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2047)
     private String sentenceIds;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2047)
     private String problemSentences;
 
-    @Column(nullable = false)
+    @Column(length = 2047)
     private String userAnswers;
 
     @Column(nullable = false)
@@ -44,8 +45,11 @@ public class SentenceQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private int totalCount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2047)
     private String result;
+
+    @Column(nullable = false)
+    private Boolean isCompleted;
 
     public void setSentenceIds(List<Long> sentenceIds) {
         this.sentenceIds = String.join("|", sentenceIds.stream().map(String::valueOf).toList());
@@ -70,12 +74,14 @@ public class SentenceQuiz extends BaseTimeEntity {
                 .toList();
     }
 
-    public void setUserAnswers(List<List<String>> userAnswer) {
-        List<String> userAnswerList = userAnswer.stream()
-                .map(strings -> String.join(" ", strings))
-                .toList();
+    public void setUserAnswers(Optional<List<List<String>>> userAnswers) {
+        userAnswers.ifPresent(userAnswer -> {
+            List<String> userAnswerList = userAnswer.stream()
+                    .map(strings -> String.join(" ", strings))
+                    .toList();
 
-        this.userAnswers = String.join("|", userAnswerList);
+            this.userAnswers = String.join("|", userAnswerList);
+        });
     }
 
     public List<List<String>> getUserAnswers() {
@@ -94,7 +100,7 @@ public class SentenceQuiz extends BaseTimeEntity {
 
     @Builder
     public SentenceQuiz(Long userId, LocalDate quizDate, List<Long> sentenceIds,
-                        List<List<String>> problemSentences, List<List<String>> userAnswers, List<Boolean> result) {
+                        List<List<String>> problemSentences, Optional<List<List<String>>> userAnswers, List<Boolean> result) {
 
         this.userId = userId;
         this.quizDate = quizDate;
@@ -104,5 +110,6 @@ public class SentenceQuiz extends BaseTimeEntity {
         this.correctCount = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
         this.totalCount = result.size();
         setResult(result);
+        this.isCompleted = Boolean.FALSE;
     }
 }

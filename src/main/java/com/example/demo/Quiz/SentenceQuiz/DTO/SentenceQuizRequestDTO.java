@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Data
 @Builder
@@ -17,19 +19,22 @@ public class SentenceQuizRequestDTO {
 
     private Long userId;
 
-    private LocalDate quizDate;
+    private List<SaveSentenceQuizTestProblemRequestDTO> problems;
 
-    private List<SaveSentenceQuizRequestDTO> userAnswers;
+    public SentenceQuizRequestDTO(Long userId, List<Long> sentenceIds, List<List<String>> problemSentences) {
+        this.userId = userId;
+        this.problems = IntStream.range(0, sentenceIds.size())
+                .mapToObj(idx -> new SaveSentenceQuizTestProblemRequestDTO(sentenceIds.get(idx), problemSentences.get(idx)))
+                .toList();
+    }
 
-    private Boolean isTest;
-
-    public SentenceQuiz toEntity(List<Boolean> result) {
+    public SentenceQuiz toEntity(Optional<List<List<String>>> userAnswers, List<Boolean> result) {
         return SentenceQuiz.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
-                .sentenceIds(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getSentenceId).toList())
-                .problemSentences(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getProblemSentence).toList())
-                .userAnswers(userAnswers.stream().map(SaveSentenceQuizRequestDTO::getUserAnswer).toList())
+                .sentenceIds(problems.stream().map(SaveSentenceQuizTestProblemRequestDTO::getSentenceId).toList())
+                .problemSentences(problems.stream().map(SaveSentenceQuizTestProblemRequestDTO::getProblemSentence).toList())
+                .userAnswers(userAnswers)
                 .result(result)
                 .build();
     }

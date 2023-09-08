@@ -164,13 +164,13 @@ public class WordQuizServiceImpl implements WordQuizService {
         // (마지막 wordQuiz == 수정해야 하는 wordQuiz)를 뽑아옴
         WordQuiz wordQuiz = allByIsCompletedIsFalse.stream()
                 .max(Comparator.comparing(WordQuiz::getCreateTime))
-                .orElse(null);
+                .orElseThrow(WordQuizNotExistException::new);
 
         if (!wordQuiz.getId().equals(gradeWordQuizTestRequestDTO.getQuizId()))
             throw new NoAuthorityException("이제 수정할 수 없는 퀴즈입니다.");
 
         // completed된 wordQuiz 파일이 복수 개 존재할 경우
-        if (allByIsCompletedIsFalse.size() > 1) {
+        if (1 < allByIsCompletedIsFalse.size()) {
             // (마지막 wordQuiz == 수정해야 하는 wordQuiz)를 제외한 나머지 wordQuiz들을 completed로 바꿈
             allByIsCompletedIsFalse.stream()
                     .filter(wq -> !wq.equals(wordQuiz))
@@ -191,7 +191,8 @@ public class WordQuizServiceImpl implements WordQuizService {
                 );
 
         List<List<String>> orderedUserKoreanAnswers = words
-                .stream().map(word -> userAnswersMap.get(word.getId())).toList();
+                .stream().map(word -> userAnswersMap.get(word.getId()))
+                .toList();
 
         List<List<String>> answers = words.stream().map(WordResponseDTO::getKorean).toList();
 

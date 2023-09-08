@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,6 +20,8 @@ public interface SentenceQuizRepository extends JpaRepository<SentenceQuiz, Long
     boolean existsById(Long id);
 
     Optional<SentenceQuiz> findById(Long id);
+
+    List<SentenceQuiz> findAllByIsCompletedIsFalse();
 
     Page<SentenceQuiz> findAllByUserId(Long userId, Pageable pageable);
 }

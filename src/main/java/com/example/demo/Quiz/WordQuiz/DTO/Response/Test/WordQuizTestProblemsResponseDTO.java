@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class WordQuizTestProblemsResponseDTO {
 
-    Long quizId;
+    private Long quizId;
 
     private List<WordQuizTestProblemResponseDTO> wordQuizList = new ArrayList<>();
 

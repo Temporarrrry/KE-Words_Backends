@@ -16,4 +16,9 @@ public class SentenceQuizExceptionHandler {
     public ResponseEntity<String> sentenceTooShort(SentenceTooShortException e) {
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
+
+    @ExceptionHandler(SentenceQuizAnswerLengthNotMatchException.class)
+    public ResponseEntity<String> answerLengthNotMatch(SentenceQuizAnswerLengthNotMatchException e) {
+        return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+    }
 }
