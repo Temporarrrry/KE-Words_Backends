@@ -12,5 +12,5 @@ import java.util.List;
 public class GradeSentenceQuizTestProblemRequestDTO {
     private Long sentenceId;
 
-    private List<String> userKoreanAnswer;
+    private List<String> userAnswer;
 }
