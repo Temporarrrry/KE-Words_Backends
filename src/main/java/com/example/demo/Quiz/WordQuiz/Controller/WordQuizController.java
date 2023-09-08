@@ -74,8 +74,10 @@ public class WordQuizController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/grade")
     public ResponseEntity<WordQuizProblemsResultResponseDTO> gradingQuizTest(@RequestBody @Valid GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
+        Long userId = memberService.findIdByAuthentication();
+
         WordQuizProblemsResultResponseDTO wordQuizProblemsResultResponseDTO = wordQuizService
-                .gradeQuiz(gradeWordQuizTestRequestDTO);
+                .gradeQuiz(userId, gradeWordQuizTestRequestDTO);
         return new ResponseEntity<>(wordQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 }

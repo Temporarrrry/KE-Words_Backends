@@ -5,7 +5,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizReques
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Practice.PracticeSentenceQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Test.TestSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResultResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -30,9 +30,9 @@ public interface SentenceQuizService {
     PracticeSentenceQuizProblemsResponseDTO getOrderingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 
 
-    SentenceQuizResultResponseDTO findById(Long id);
+    SentenceQuizProblemsResultResponseDTO findById(Long id);
 
-    List<SentenceQuizResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
+    List<SentenceQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 
-    SentenceQuizResultResponseDTO gradeQuiz(GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO);
+    SentenceQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO);
 }

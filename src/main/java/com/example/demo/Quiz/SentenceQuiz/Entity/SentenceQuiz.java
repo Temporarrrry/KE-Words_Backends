@@ -84,10 +84,12 @@ public class SentenceQuiz extends BaseTimeEntity {
         });
     }
 
-    public List<List<String>> getUserAnswers() {
-        return Arrays.stream(this.userAnswers.split("\\|"))
+    public Optional<List<List<String>>> getUserAnswers() {
+        if (this.userAnswers == null) return Optional.empty();
+
+        return Optional.of(Arrays.stream(this.userAnswers.split("\\|"))
                 .map(s -> Arrays.stream(s.split(" ")).toList())
-                .toList();
+                .toList());
     }
 
     public void setResult(List<Boolean> result) {

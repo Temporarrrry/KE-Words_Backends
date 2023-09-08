@@ -10,7 +10,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Common.CommonSentenceQuiz
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Practice.PracticeSentenceQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Test.TestSentenceQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResultResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizAnswerLengthNotMatchException;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizNotExistException;
@@ -197,7 +197,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
 
     @Override
-    public SentenceQuizResultResponseDTO findById(Long id) {
+    public SentenceQuizProblemsResultResponseDTO findById(Long id) {
         SentenceQuiz sentenceQuiz = sentenceQuizRepository.findById(id)
                 .orElseThrow(SentenceQuizNotExistException::new);
 
@@ -208,11 +208,11 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 .toList();
 
 
-        return new SentenceQuizResultResponseDTO(sentenceQuiz, english);
+        return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, english);
     }
 
     @Override
-    public List<SentenceQuizResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
+    public List<SentenceQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
 
         return sentenceQuizRepository.findAllByUserId(userId, pageable) // 퀴즈 여러 개
                 .map(sentenceQuiz -> { // 퀴즈 하나
@@ -222,14 +222,14 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                                     .map(s -> Arrays.stream(s.split(" ")).toList())
                                     .toList();
 
-                            return new SentenceQuizResultResponseDTO(sentenceQuiz, originalSentences);
+                            return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, originalSentences);
                 }).getContent();
     }
 
 
     @Override
     @Transactional
-    public SentenceQuizResultResponseDTO gradeQuiz(GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
+    public SentenceQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
         List<SentenceQuiz> allByIsCompletedIsFalse = sentenceQuizRepository.findAllByIsCompletedIsFalse();
 
         if (allByIsCompletedIsFalse.isEmpty())
@@ -239,8 +239,14 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 .stream().max(Comparator.comparing(SentenceQuiz::getCreateTime))
                 .orElseThrow(SentenceQuizNotExistException::new);
 
-        if (!sentenceQuiz.getId().equals(gradeSentenceQuizTestRequestDTO.getQuizId()))
-            throw new NoAuthorityException("이제 수정할 수 없는 퀴즈입니다.");
+        if (!sentenceQuiz.getUserId().equals(userId))
+            throw new NoAuthorityException("이 퀴즈의 주인이 아닙니다.");
+
+
+        if (!sentenceQuiz.getId().equals(gradeSentenceQuizTestRequestDTO.getQuizId())) {
+            throw new NoAuthorityException("수정할 수 없거나 존재하지 않는 퀴즈입니다.");
+        }
+
 
         if (1 < allByIsCompletedIsFalse.size()) {
             allByIsCompletedIsFalse.stream()
@@ -255,7 +261,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         Map<Long, List<String>> userAnswerMap = gradeSentenceQuizTestRequestDTO.getUserAnswers()
                 .stream().collect(Collectors.toMap(
                                 GradeSentenceQuizTestProblemRequestDTO::getSentenceId,
-                                GradeSentenceQuizTestProblemRequestDTO::getUserKoreanAnswer
+                                GradeSentenceQuizTestProblemRequestDTO::getUserAnswer
                         )
                 );
 
@@ -295,6 +301,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 .map(s -> Arrays.stream(s.split(" ")).toList())
                 .toList();
 
-        return new SentenceQuizResultResponseDTO(sentenceQuiz, originalEnglish);
+        return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, originalEnglish);
     }
 }

@@ -15,7 +15,5 @@ public class GradeSentenceQuizTestRequestDTO {
 
     private Long quizId;
 
-    private Long userId;
-
     private List<GradeSentenceQuizTestProblemRequestDTO> userAnswers;
 }

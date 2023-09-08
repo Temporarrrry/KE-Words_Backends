@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface WordQuizService {
 
-    WordQuizProblemsResultResponseDTO gradeQuiz(GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO);
+    WordQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO);
 
     //WordQuizCommonProblemsResponseDTO generateWordQuiz(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
     WordQuizPracticeProblemsResponseDTO getPractice(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
