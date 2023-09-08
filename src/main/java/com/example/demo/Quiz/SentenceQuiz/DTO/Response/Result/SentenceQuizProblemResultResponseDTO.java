@@ -1,4 +1,4 @@
-package com.example.demo.Quiz.SentenceQuiz.DTO;
+package com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-public class SentenceQuizOneProblemResultResponseDTO {
+public class SentenceQuizProblemResultResponseDTO {
 
     private Long sentenceId;
 

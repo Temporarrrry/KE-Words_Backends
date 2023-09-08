@@ -68,9 +68,9 @@ public class WordQuiz extends BaseTimeEntity {
     }
 
     public List<List<List<String>>> getKoreanChoices() {
-        return Arrays.stream(koreanChoices.split("\\\\"))
+        return Arrays.stream(koreanChoices.split("/"))
                 .map(s -> Arrays.stream(s.split("\\|")).toList())
-                .map(list -> list.stream().map(s -> Arrays.stream(s.split("/")).toList()).toList()).toList();
+                .map(list -> list.stream().map(s -> Arrays.stream(s.split("\\\\")).toList()).toList()).toList();
     }
 
     public void setUserAnswers(Optional<List<List<String>>> userAnswers) {
@@ -82,9 +82,11 @@ public class WordQuiz extends BaseTimeEntity {
         });
     }
 
-    public List<List<String>> getUserAnswers() {
-        return Stream.of(userAnswers.split("\\|"))
-                .map(s -> Arrays.stream(s.split("/")).toList()).toList();
+    public Optional<List<List<String>>> getUserAnswers() {
+        if (this.userAnswers == null) return Optional.empty();
+
+        return Optional.of(Stream.of(userAnswers.split("\\|"))
+                .map(s -> Arrays.stream(s.split("/")).toList()).toList());
     }
 
 

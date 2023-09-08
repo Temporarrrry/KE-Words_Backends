@@ -1,4 +1,4 @@
-package com.example.demo.Quiz.SentenceQuiz.DTO;
+package com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result;
 
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
 import lombok.Builder;
@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
-public class SentenceQuizResultResponseDTO {
+public class SentenceQuizProblemsResultResponseDTO {
 
     private Long quizId;
 
@@ -20,19 +21,19 @@ public class SentenceQuizResultResponseDTO {
 
     private Integer totalCount;
 
-    private List<SentenceQuizOneProblemResultResponseDTO> sentenceQuizOneProblemResultResponseDTOList;
+    private List<SentenceQuizProblemResultResponseDTO> sentenceQuizProblemResultResponseDTOList;
 
 
     @Builder
-    public SentenceQuizResultResponseDTO(Long userId, Integer correctCount, Integer totalCount, List<SentenceQuizOneProblemResultResponseDTO> sentenceQuizOneProblemResultResponseDTOList) {
+    public SentenceQuizProblemsResultResponseDTO(Long userId, Integer correctCount, Integer totalCount, List<SentenceQuizProblemResultResponseDTO> sentenceQuizProblemResultResponseDTOList) {
         this.userId = userId;
         this.correctCount = correctCount;
         this.totalCount = totalCount;
-        this.sentenceQuizOneProblemResultResponseDTOList = sentenceQuizOneProblemResultResponseDTOList;
+        this.sentenceQuizProblemResultResponseDTOList = sentenceQuizProblemResultResponseDTOList;
     }
 
 
-    public SentenceQuizResultResponseDTO(SentenceQuiz sentenceQuiz, List<List<String>> originalSentences) {
+    public SentenceQuizProblemsResultResponseDTO(SentenceQuiz sentenceQuiz, List<List<String>> originalSentences) {
         this.quizId = sentenceQuiz.getId();
         this.userId = sentenceQuiz.getUserId();
         this.correctCount = sentenceQuiz.getCorrectCount();
@@ -41,22 +42,22 @@ public class SentenceQuizResultResponseDTO {
         List<Long> sentenceIds = sentenceQuiz.getSentenceIds();
         List<List<String>> problemSentences = sentenceQuiz.getProblemSentences();
 
-        List<List<String>> userAnswers = sentenceQuiz.getUserAnswers();
+        Optional<List<List<String>>> userAnswers = sentenceQuiz.getUserAnswers();
         List<Boolean> results = sentenceQuiz.getResult();
 
-        List<SentenceQuizOneProblemResultResponseDTO> sentenceQuizOneProblemResultResponseDTOList = new ArrayList<>();
+        List<SentenceQuizProblemResultResponseDTO> sentenceQuizProblemResultResponseDTOList = new ArrayList<>();
         for (int idx = 0; idx < sentenceIds.size(); idx++) {
-            sentenceQuizOneProblemResultResponseDTOList.add(
-                    SentenceQuizOneProblemResultResponseDTO.builder()
+            sentenceQuizProblemResultResponseDTOList.add(
+                    SentenceQuizProblemResultResponseDTO.builder()
                             .sentenceId(sentenceIds.get(idx))
                             .originalSentence(originalSentences.get(idx))
                             .problemSentence(problemSentences.get(idx))
-                            .userAnswer(userAnswers.get(idx))
+                            .userAnswer((userAnswers.isPresent()) ? userAnswers.get().get(idx) : null)
                             .result(results.get(idx))
                             .build()
             );
         }
 
-        this.sentenceQuizOneProblemResultResponseDTOList = sentenceQuizOneProblemResultResponseDTOList;
+        this.sentenceQuizProblemResultResponseDTOList = sentenceQuizProblemResultResponseDTOList;
     }
 }

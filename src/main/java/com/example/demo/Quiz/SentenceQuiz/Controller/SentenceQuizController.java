@@ -6,7 +6,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizReques
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Practice.PracticeSentenceQuizProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Test.TestSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizResultResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Service.SentenceQuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -72,22 +72,23 @@ public class SentenceQuizController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/findById")
-    public ResponseEntity<SentenceQuizResultResponseDTO> findById(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<SentenceQuizProblemsResultResponseDTO> findById(@RequestParam(value = "id") Long id) {
         Long userId = memberService.findIdByAuthentication();
-        SentenceQuizResultResponseDTO sentenceQuizResultResponseDTO = sentenceQuizService.findById(id);
+        SentenceQuizProblemsResultResponseDTO sentenceQuizProblemsResultResponseDTO = sentenceQuizService.findById(id);
 
-        if (!Objects.equals(sentenceQuizResultResponseDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        return new ResponseEntity<>(sentenceQuizResultResponseDTO, HttpStatus.OK);
+        if (!Objects.equals(sentenceQuizProblemsResultResponseDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(sentenceQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findAllByUserId")
-    public ResponseEntity<List<SentenceQuizResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<SentenceQuizProblemsResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(sentenceQuizService.findAllByUserId(userId, pageable), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/grade")
-    public ResponseEntity<SentenceQuizResultResponseDTO> gradeQuiz(@RequestBody @Valid GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
-        return new ResponseEntity<>(sentenceQuizService.gradeQuiz(gradeSentenceQuizTestRequestDTO), HttpStatus.OK);
+    public ResponseEntity<SentenceQuizProblemsResultResponseDTO> gradeQuiz(@RequestBody @Valid GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
+        Long userId = memberService.findIdByAuthentication();
+        return new ResponseEntity<>(sentenceQuizService.gradeQuiz(userId, gradeSentenceQuizTestRequestDTO), HttpStatus.OK);
     }
 }

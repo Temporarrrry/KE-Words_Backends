@@ -15,7 +15,5 @@ public class GradeWordQuizTestRequestDTO {
 
     private Long quizId;
 
-    private Long userId;
-
     private List<GradeWordQuizTestProblemRequestDTO> userAnswers;
 }
