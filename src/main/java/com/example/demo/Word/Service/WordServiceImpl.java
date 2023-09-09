@@ -5,7 +5,6 @@ import com.example.demo.Word.AddOn.BookmarkWord.DTO.BookmarkWordRequestDTO;
 import com.example.demo.Word.AddOn.BookmarkWord.Service.BookmarkWordService;
 import com.example.demo.Word.AddOn.LastWord.DTO.LastWordRequestDTO;
 import com.example.demo.Word.AddOn.LastWord.Service.LastWordService;
-import com.example.demo.Word.DTO.PageNumberResponseDTO;
 import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Entity.Word;
 import com.example.demo.Word.Exception.WordNotExistException;
@@ -30,22 +29,6 @@ public class WordServiceImpl implements WordService {
 
     private final LastWordService lastWordService;
 
-    /*@Override
-    public void saveWord(WordRequestDTO wordRequestDTO) throws WordExistException {
-        if (isExist(wordRequestDTO)) throw new WordExistException();
-        wordRepository.save(wordRequestDTO.toEntity());
-    }*/
-    /*@Override
-    public void deleteWord(WordRequestDTO wordRequestDTO) throws WordNotExistException {
-        if (!isExist(wordRequestDTO)) throw new WordNotExistException();
-        wordRepository.deleteByEnglish(wordRequestDTO.getEnglish());
-    }*/
-
-    @Override
-    public boolean isExistById(Long wordId) {
-        return wordRepository.existsById(wordId);
-    }
-
     @Override
     public WordResponseDTO findById(Long id) {
         Word word = wordRepository.findById(id).orElseThrow(WordNotExistException::new);
@@ -55,18 +38,6 @@ public class WordServiceImpl implements WordService {
                 word, bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
         );
     }
-
-    @Override
-    public WordResponseDTO findByEnglish(String english) throws WordNotExistException {
-        Long userId = memberService.findIdByAuthentication();
-        Word word = wordRepository.findByEnglish(english).orElseThrow(WordNotExistException::new);
-
-        return new WordResponseDTO(
-                word, bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
-        );
-    }
-
-
 
     @Override
     public List<WordResponseDTO> findWordsByRandom(int count) {
@@ -80,13 +51,6 @@ public class WordServiceImpl implements WordService {
                                 bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
                         )
                 ).toList();
-    }
-
-    @Override
-    public PageNumberResponseDTO findPageNumberById(Long id, int pageSize) throws WordNotExistException {
-        if (!wordRepository.existsById(id)) throw new WordNotExistException();
-        int indexById = wordRepository.findIndexById(id);
-        return new PageNumberResponseDTO(indexById / pageSize);
     }
 
     @Override
@@ -107,14 +71,5 @@ public class WordServiceImpl implements WordService {
         }
 
         return words;
-    }
-
-    @Override
-    public PageNumberResponseDTO findLastPageNumber(Pageable pageable) throws WordNotExistException {
-        Long userId = memberService.findIdByAuthentication();
-        Long wordId = lastWordService.findByUserId(userId).getWordId();
-
-        int pageNumberById = findPageNumberById(wordId, pageable.getPageSize()).getPageNumber();
-        return new PageNumberResponseDTO(pageNumberById);
     }
 }

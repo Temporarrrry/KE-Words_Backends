@@ -13,7 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GradeWordQuizTestRequestDTO {
 
-    private Long quizId;
-
     private List<GradeWordQuizTestProblemRequestDTO> userAnswers;
 }

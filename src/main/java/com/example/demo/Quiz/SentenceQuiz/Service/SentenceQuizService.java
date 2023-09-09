@@ -1,6 +1,5 @@
 package com.example.demo.Quiz.SentenceQuiz.Service;
 
-import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Practice.SentenceQuizFillingPracticeProblemsResponseDTO;
@@ -17,7 +16,7 @@ import java.util.List;
 public interface SentenceQuizService {
 
     //SentenceQuizResultResponseDTO checkQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO);
-    void deleteQuiz(Long userId, DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO);
+    void deleteQuiz(Long userId, Long quizId);
 
     //CommonSentenceQuizProblemsResponseDTO generateFillingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 
@@ -41,5 +40,5 @@ public interface SentenceQuizService {
 
     List<SentenceQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 
-    SentenceQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO);
+    SentenceQuizProblemsResultResponseDTO gradeQuiz(Long quizId, Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO);
 }

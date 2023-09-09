@@ -1,7 +1,6 @@
 package com.example.demo.Quiz.SentenceQuiz.Service;
 
 import com.example.demo.Common.Exception.NoAuthorityException;
-import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestProblemRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
@@ -69,11 +68,11 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    public void deleteQuiz(Long userId, DeleteSentenceQuizRequestDTO deleteSentenceQuizRequestDTO) throws NoAuthorityException {
-        if (!findById(deleteSentenceQuizRequestDTO.getSentenceQuizId()).getUserId().equals(userId))
+    public void deleteQuiz(Long userId, Long quizId) throws NoAuthorityException {
+        if (!findById(quizId).getUserId().equals(userId))
             throw new NoAuthorityException();
 
-        sentenceQuizRepository.deleteById(deleteSentenceQuizRequestDTO.getSentenceQuizId());
+        sentenceQuizRepository.deleteById(quizId);
     }
 
 
@@ -288,7 +287,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
     @Override
     @Transactional
-    public SentenceQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
+    public SentenceQuizProblemsResultResponseDTO gradeQuiz(Long quizId, Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
         List<SentenceQuiz> allByIsCompletedIsFalse = sentenceQuizRepository.findAllByIsCompletedIsFalse();
 
         if (allByIsCompletedIsFalse.isEmpty())
@@ -302,7 +301,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
             throw new NoAuthorityException("이 퀴즈의 주인이 아닙니다.");
 
 
-        if (!sentenceQuiz.getId().equals(gradeSentenceQuizTestRequestDTO.getQuizId()))
+        if (!sentenceQuiz.getId().equals(quizId))
             throw new NoAuthorityException("수정할 수 없거나 존재하지 않는 퀴즈입니다.");
 
 

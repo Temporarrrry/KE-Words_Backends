@@ -7,6 +7,8 @@ import com.example.demo.Ranking.Entity.TotalQuizResultType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -29,7 +31,52 @@ class RankingServiceTest {
         List<Boolean> score = List.of(true, true, true, true, false, true, false, true, true, true);
         rankingService.addScore(TotalQuizResultType.WORD, 1L, 4, 10);
 
-        List<RankingResponseDTO> rankingList = rankingService.getWordRankingList(0, 20);
+        List<RankingResponseDTO> rankingList = rankingService.getWordRankingList(new Pageable() {
+            @Override
+            public int getPageNumber() {
+                return 0;
+            }
+
+            @Override
+            public int getPageSize() {
+                return 5;
+            }
+
+            @Override
+            public long getOffset() {
+                return 0;
+            }
+
+            @Override
+            public Sort getSort() {
+                return null;
+            }
+
+            @Override
+            public Pageable next() {
+                return null;
+            }
+
+            @Override
+            public Pageable previousOrFirst() {
+                return null;
+            }
+
+            @Override
+            public Pageable first() {
+                return null;
+            }
+
+            @Override
+            public Pageable withPage(int pageNumber) {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+        });
         for (RankingResponseDTO rankingResponseDTO : rankingList) {
             System.out.println(
                     rankingResponseDTO.getRank() + ". "
@@ -38,12 +85,6 @@ class RankingServiceTest {
             );
             System.out.println();
         }
-
-        /*Long rank = rankingService.getRank(email);
-        System.out.println("rank = " + rank);
-
-        Long myScore = rankingService.getScore(email);
-        System.out.println("myScore = " + myScore);*/
     }
 
 }

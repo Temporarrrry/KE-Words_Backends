@@ -8,6 +8,7 @@ import com.example.demo.Ranking.Entity.TotalQuizResultCounter;
 import com.example.demo.Ranking.Entity.TotalQuizResultType;
 import com.example.demo.Ranking.Repository.TotalQuizResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -101,11 +102,13 @@ public class RankingService {
     }
 
 
-    public List<RankingResponseDTO> getWordRankingList(int startRank, int size) {
-        return getRankingList(TotalQuizResultType.WORD, startRank - 1, size);
+    public List<RankingResponseDTO> getWordRankingList(Pageable pageable) {
+        int startRank = pageable.getPageNumber() * pageable.getPageSize();
+        return getRankingList(TotalQuizResultType.WORD,startRank - 1, pageable.getPageSize());
     }
 
-    public List<RankingResponseDTO> getSentenceRankingList(int startRank, int size) {
-        return getRankingList(TotalQuizResultType.SENTENCE, startRank - 1, size);
+    public List<RankingResponseDTO> getSentenceRankingList(Pageable pageable) {
+        int startRank = pageable.getPageNumber() * pageable.getPageSize();
+        return getRankingList(TotalQuizResultType.SENTENCE, startRank - 1, pageable.getPageSize());
     }
 }

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MemberInfoResponseDTO {
     @NotBlank
-    private String userEmail; //TODO response 정보 수정해야함
+    private String userEmail;
 
     private LocalDate createdAt;
 

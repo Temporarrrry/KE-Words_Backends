@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class RefreshTokenController {
     private final RefreshTokenService refreshTokenService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/reIssue")
+    @RequestMapping(method = RequestMethod.POST, value = "/reissue")
     public ResponseEntity<JwtToken> reIssueAccessToken(@RequestBody @Valid RefreshTokenRequestDTO refreshTokenRequestDTO) throws RefreshTokenExpiredException {
         JwtToken jwtToken = refreshTokenService.reIssueTokens(refreshTokenRequestDTO);
         return new ResponseEntity<>(jwtToken, HttpStatus.OK);

@@ -1,4 +1,4 @@
-package com.example.demo.Sentence.AddOn.LastSentence.Service;
+package com.example.demo.Sentence.AddOn.BookmarkSentence.Service;
 
 import com.example.demo.Sentence.AddOn.BookmarkSentence.DTO.BookmarkSentenceRequestDTO;
 import com.example.demo.Sentence.AddOn.BookmarkSentence.DTO.BookmarkSentenceResponseDTO;
@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BookmarkSentenceService {
 
-    void saveBookmarkSentence(BookmarkSentenceRequestDTO BookmarkSentenceRequestDTO);
+    void saveBookmarkSentence(BookmarkSentenceRequestDTO bookmarkSentenceRequestDTO);
 
     void deleteBookmarkSentence(BookmarkSentenceRequestDTO BookmarkSentenceRequestDTO);
 

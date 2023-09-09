@@ -87,15 +87,6 @@ public class JwtTokenProvider {
     }
 
 
-    /*public String getUserEmailByAccessTokenRequest(HttpServletRequest request) throws Exception {
-        String accessToken = getAccessTokenByRequest(request).orElseThrow(AccessTokenNotExistException::new);
-        validateAccessToken(accessToken);
-
-        return getUserEmailByAccessToken(accessToken);
-
-    }*/
-
-
     public String getUserEmailByAccessToken(String accessToken) throws AccessTokenExpiredException {
         return Jwts.parser()
                 .setSigningKey(accessTokenSecretKey)
@@ -144,10 +135,6 @@ public class JwtTokenProvider {
     }
 
 
-    /*public Authentication getAuthentication(PrincipalDetails principalDetails) {
-        return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
-    }*/
-
     public Optional<String> getAccessTokenByRequest(HttpServletRequest request) {
         String accessToken = request.getHeader(accessTokenGettingHeaderName);
         if (accessToken == null) return Optional.empty();
@@ -189,8 +176,4 @@ public class JwtTokenProvider {
             throw new TokenNotValidException();
         }
     }
-
-    /*public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
-    }*/
 }

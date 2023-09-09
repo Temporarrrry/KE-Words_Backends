@@ -1,7 +1,6 @@
 package com.example.demo.Quiz.WordQuiz.Controller;
 
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Quiz.WordQuiz.DTO.Request.DeleteWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Request.GenerateWordQuizRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Request.Grade.GradeWordQuizTestRequestDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Practice.WordQuizPracticeProblemsResponseDTO;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/wordQuiz")
+@RequestMapping("/api/quiz/word")
 @RequiredArgsConstructor
 public class WordQuizController {
     private final WordQuizService wordQuizService;
@@ -45,20 +44,19 @@ public class WordQuizController {
         return new ResponseEntity<>(test, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete")
-    public ResponseEntity<Void> deleteQuizResult(@RequestBody @Valid DeleteWordQuizRequestDTO deleteWordQuizRequestDTO) {
+    @RequestMapping(method = RequestMethod.POST, value = "/delete/{id}")
+    public ResponseEntity<Void> deleteQuizResult(@PathVariable Long id) {
         Long userId = memberService.findIdByAuthentication();
-        Long wordQuizId = deleteWordQuizRequestDTO.getWordQuizId();
-        if (!Objects.equals(wordQuizService.findById(wordQuizId).getUserId(), userId))
+        if (!Objects.equals(wordQuizService.findById(id).getUserId(), userId))
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        wordQuizService.deleteQuiz(wordQuizId);
+        wordQuizService.deleteQuiz(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/findById")
-    public ResponseEntity<WordQuizProblemsResultResponseDTO> findById(@RequestParam(value = "id") Long id) {
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public ResponseEntity<WordQuizProblemsResultResponseDTO> findById(@PathVariable Long id) {
         Long userId = memberService.findIdByAuthentication();
         WordQuizProblemsResultResponseDTO wordQuizProblemsResultResponseDTO = wordQuizService.findById(id);
 
@@ -66,18 +64,18 @@ public class WordQuizController {
         return new ResponseEntity<>(wordQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/findAllByUserId")
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<WordQuizProblemsResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(wordQuizService.findAllByUserId(userId, pageable).getContent(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/grade")
-    public ResponseEntity<WordQuizProblemsResultResponseDTO> gradingQuizTest(@RequestBody @Valid GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
+    @RequestMapping(method = RequestMethod.POST, value = "/grade/{quizId}")
+    public ResponseEntity<WordQuizProblemsResultResponseDTO> gradingQuizTest(@PathVariable Long quizId, @RequestBody @Valid GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
 
         WordQuizProblemsResultResponseDTO wordQuizProblemsResultResponseDTO = wordQuizService
-                .gradeQuiz(userId, gradeWordQuizTestRequestDTO);
+                .gradeQuiz(quizId, userId, gradeWordQuizTestRequestDTO);
         return new ResponseEntity<>(wordQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 }

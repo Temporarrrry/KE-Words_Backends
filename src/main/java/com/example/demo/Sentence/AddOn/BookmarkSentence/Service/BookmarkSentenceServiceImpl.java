@@ -1,4 +1,4 @@
-package com.example.demo.Sentence.AddOn.LastSentence.Service;
+package com.example.demo.Sentence.AddOn.BookmarkSentence.Service;
 
 import com.example.demo.Sentence.AddOn.BookmarkSentence.DTO.*;
 import com.example.demo.Sentence.AddOn.BookmarkSentence.Repository.BookmarkSentenceRepository;

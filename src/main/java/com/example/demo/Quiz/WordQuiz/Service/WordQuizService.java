@@ -10,16 +10,12 @@ import org.springframework.data.domain.Pageable;
 
 public interface WordQuizService {
 
-    WordQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO);
-
-    //WordQuizCommonProblemsResponseDTO generateWordQuiz(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
+    WordQuizProblemsResultResponseDTO gradeQuiz(Long quizId, Long userId, GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO);
     WordQuizPracticeProblemsResponseDTO getPractice(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
 
     WordQuizTestProblemsResponseDTO getTest(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
 
     void deleteQuiz(Long wordQuizId);
-
-    //KoreanWordQuizResponseDTO generateKoreanWordQuiz(int count);
 
     WordQuizProblemsResultResponseDTO findById(Long id);
     Page<WordQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);

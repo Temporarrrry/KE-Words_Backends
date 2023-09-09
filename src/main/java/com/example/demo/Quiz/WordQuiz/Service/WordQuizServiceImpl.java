@@ -154,7 +154,7 @@ public class WordQuizServiceImpl implements WordQuizService {
 
     @Override
     @Transactional
-    public WordQuizProblemsResultResponseDTO gradeQuiz(Long userId, GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
+    public WordQuizProblemsResultResponseDTO gradeQuiz(Long quizId, Long userId, GradeWordQuizTestRequestDTO gradeWordQuizTestRequestDTO) {
 
         List<WordQuiz> allByIsCompletedIsFalse = wordQuizRepository.findAllByIsCompletedIsFalse();
 
@@ -170,7 +170,7 @@ public class WordQuizServiceImpl implements WordQuizService {
         if (!wordQuiz.getUserId().equals(userId))
             throw new NoAuthorityException("이 퀴즈의 주인이 아닙니다.");
 
-        if (!wordQuiz.getId().equals(gradeWordQuizTestRequestDTO.getQuizId()))
+        if (!wordQuiz.getId().equals(quizId))
             throw new NoAuthorityException("수정할 수 없거나 존재하지 않는 퀴즈입니다.");
 
         // completed된 wordQuiz 파일이 복수 개 존재할 경우

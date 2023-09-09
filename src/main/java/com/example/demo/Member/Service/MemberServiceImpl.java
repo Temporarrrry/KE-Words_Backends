@@ -62,16 +62,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByUserEmail(userEmail);
     }
 
-    /*// login을 authenticationFilter를 통해 진행하므로 호출되지 않음
-    @Override
-    public MemberResponseDTO login(MemberRequestDTO memberRequestDTO) throws loginFailureException {
-        Member member = memberRepository.findByUserEmail(memberRequestDTO.getUserEmail())
-                .orElseThrow(loginFailureException::new);
-        if(!passwordEncoder.matches(memberRequestDTO.getPassword(), member.getPassword()))
-            throw new loginFailureException();
-
-        return new MemberResponseDTO(member.getUserEmail());
-    }*/
+    // login은 authenticationFilter를 통해 진행하므로 호출되지 않음
 
 
     // JwtAuthenticationFilter를 통한 login
@@ -96,15 +87,18 @@ public class MemberServiceImpl implements MemberService {
     //DELETE
     @Override
     public void resign(String accessToken, String password) throws MemberNotExistException, PasswordNotMatchException {
-        String userEmail = jwtTokenProvider.getUserEmailByAccessToken(accessToken);
-        if (!memberRepository.existsByUserEmail(userEmail)) throw new MemberNotExistException();
-
-        Member member = findByUserEmail(userEmail)
+        Member member = memberRepository
+                .findById(findIdByAuthentication())
                 .orElseThrow(MemberNotExistException::new);
-        if (!passwordEncoder.matches(password, member.getPassword())) throw new PasswordNotMatchException();
+
+        if (!memberRepository.existsById(member.getId()))
+            throw new MemberNotExistException();
+
+        if (!passwordEncoder.matches(password, member.getPassword()))
+            throw new PasswordNotMatchException();
 
         logout(accessToken);
-        memberRepository.deleteByUserEmail(userEmail);
+        memberRepository.delete(member);
     }
 
     public MemberInfoResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
