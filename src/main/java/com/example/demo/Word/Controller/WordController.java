@@ -17,18 +17,18 @@ import java.util.List;
 public class WordController {
     private final WordService wordService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public ResponseEntity<WordResponseDTO> findById(@PathVariable Long id) {
-        return new ResponseEntity<>(wordService.findById(id), HttpStatus.OK);
+    @GetMapping("/{wordId}")
+    public ResponseEntity<WordResponseDTO> findById(@PathVariable Long wordId) {
+        return new ResponseEntity<>(wordService.findById(wordId), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/random")
+    @GetMapping("/random")
     public ResponseEntity<List<WordResponseDTO>> getWordsByRandom(@RequestParam(value = "count") int count) {
         if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(wordService.findWordsByRandom(count), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<List<WordResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable) {
         return new ResponseEntity<>(wordService.findAll(pageable).getContent(), HttpStatus.OK);
     }

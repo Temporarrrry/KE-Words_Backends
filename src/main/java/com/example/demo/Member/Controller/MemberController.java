@@ -23,14 +23,14 @@ public class MemberController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/register")
+    @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid MemberRequestDTO memberRequestDTO) {
         memberService.register(memberRequestDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/resign")
+    @DeleteMapping
     public ResponseEntity<Void> resign(HttpServletRequest request, @RequestBody @Valid MemberResignRequestDTO memberResignRequestDTO) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);
@@ -40,7 +40,7 @@ public class MemberController {
     }
     //READ
 
-    @RequestMapping(method = RequestMethod.GET, value = "/email/{email}/check")
+    @GetMapping("/{email}/check")
     public ResponseEntity<Void> userEmailDuplicatedCheck(@PathVariable String email) {
         if (memberService.userEmailDupCheck(email)) return new ResponseEntity<>(HttpStatus.CONFLICT);
         else return new ResponseEntity<>(HttpStatus.OK);
@@ -49,7 +49,7 @@ public class MemberController {
     //login은 filter에서 진행
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/logout") // spring security의 logout은 기본적으로 POST
+    @PostMapping("/logout") // spring security의 logout은 기본적으로 POST
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String accessToken = jwtTokenProvider.getAccessTokenByRequest(request)
                 .orElseThrow(AccessTokenNotExistException::new);
@@ -58,15 +58,15 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/info")
-    public ResponseEntity<MemberInfoResponseDTO> getMemberInform() throws Exception {
+    @GetMapping("/info")
+    public ResponseEntity<MemberInfoResponseDTO> getMemberInform() {
         String userEmail = memberService.findByAuthentication().getUserEmail();
 
         MemberInfoResponseDTO memberInfoResponseDTO = memberService.findMember(new MemberRequestDTO(userEmail));
         return new ResponseEntity<>(memberInfoResponseDTO, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/password/change")
+    @PatchMapping("/password")
     public ResponseEntity<Void> changePassword(@RequestBody @Valid MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) {
         String userEmail = memberService.findByAuthentication().getUserEmail();
 

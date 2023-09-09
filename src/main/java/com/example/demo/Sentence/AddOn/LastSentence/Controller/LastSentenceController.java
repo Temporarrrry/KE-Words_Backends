@@ -7,10 +7,7 @@ import com.example.demo.Sentence.AddOn.LastSentence.Service.LastSentenceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/last/sentence")
@@ -19,21 +16,21 @@ public class LastSentenceController {
     private final LastSentenceService lastSentenceService;
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/update/{sentenceId}")
+    @PostMapping("/{sentenceId}/update")
     public ResponseEntity<Void> saveOrUpdate(@PathVariable Long sentenceId) {
         Long userId = memberService.findIdByAuthentication();
         lastSentenceService.saveOrUpdate(new LastSentenceRequestDTO(userId, sentenceId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete")
+    @DeleteMapping
     public ResponseEntity<Void> delete() {
         Long userId = memberService.findIdByAuthentication();
         lastSentenceService.delete(new LastSentenceRequestDTO(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<LastSentenceResponseDTO> findByUserId() {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(lastSentenceService.findByUserId(userId), HttpStatus.OK);

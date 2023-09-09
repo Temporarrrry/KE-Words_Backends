@@ -18,18 +18,18 @@ import java.util.List;
 public class SentenceController {
     private final SentenceService sentenceService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public ResponseEntity<SentenceResponseDTO> findById(@PathVariable Long id) throws SentenceNotExistException {
-        return new ResponseEntity<>(sentenceService.findById(id), HttpStatus.OK);
+    @GetMapping("/{sentenceId}")
+    public ResponseEntity<SentenceResponseDTO> findById(@PathVariable Long sentenceId) throws SentenceNotExistException {
+        return new ResponseEntity<>(sentenceService.findById(sentenceId), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/random")
+    @GetMapping("/random")
     public ResponseEntity<List<SentenceResponseDTO>> getSentencesByRandom(@RequestParam(value = "count") int count) {
         if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(sentenceService.findByRandom(count), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<List<SentenceResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable) {
         return new ResponseEntity<>(sentenceService.findAll(pageable).getContent(), HttpStatus.OK);
     }

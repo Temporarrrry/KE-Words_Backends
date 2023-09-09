@@ -30,7 +30,7 @@ public class SentenceQuizController {
 
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/filling/test")
+    @PostMapping("/filling/test")
     public ResponseEntity<SentenceQuizFillingTestProblemsResponseDTO> generateFillingTest() {
         Long userId = memberService.findIdByAuthentication();
         SentenceQuizFillingTestProblemsResponseDTO fillingTest = sentenceQuizService
@@ -38,7 +38,7 @@ public class SentenceQuizController {
         return new ResponseEntity<>(fillingTest, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/filling/practice")
+    @GetMapping("/filling/practice")
     public ResponseEntity<SentenceQuizFillingPracticeProblemsResponseDTO> generateFillingPractice() {
         Long userId = memberService.findIdByAuthentication();
         SentenceQuizFillingPracticeProblemsResponseDTO fillingPractice = sentenceQuizService
@@ -46,7 +46,7 @@ public class SentenceQuizController {
         return new ResponseEntity<>(fillingPractice, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/ordering/test")
+    @PostMapping("/ordering/test")
     public ResponseEntity<SentenceQuizOrderingTestProblemsResponseDTO> generateOrderingTest() {
         Long userId = memberService.findIdByAuthentication();
         SentenceQuizOrderingTestProblemsResponseDTO orderingTest = sentenceQuizService
@@ -54,7 +54,7 @@ public class SentenceQuizController {
         return new ResponseEntity<>(orderingTest, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/ordering/practice")
+    @GetMapping("/ordering/practice")
     public ResponseEntity<SentenceQuizOrderingPracticeProblemsResponseDTO> generateOrderingPractice() {
         Long userId = memberService.findIdByAuthentication();
         SentenceQuizOrderingPracticeProblemsResponseDTO orderingPractice = sentenceQuizService
@@ -62,7 +62,7 @@ public class SentenceQuizController {
         return new ResponseEntity<>(orderingPractice, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/meaning/test")
+    @PostMapping("/meaning/test")
     public ResponseEntity<SentenceQuizMeaningTestProblemsResponseDTO> generateMeaningQuizTest() {
         Long userId = memberService.findIdByAuthentication();
         SentenceQuizMeaningTestProblemsResponseDTO meaningTest = sentenceQuizService
@@ -70,7 +70,7 @@ public class SentenceQuizController {
         return new ResponseEntity<>(meaningTest, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/meaning/practice")
+    @GetMapping("/meaning/practice")
     public ResponseEntity<SentenceQuizMeaningPracticeProblemsResponseDTO> generateMeaningPractice() {
         Long userId = memberService.findIdByAuthentication();
         SentenceQuizMeaningPracticeProblemsResponseDTO meaningPractice = sentenceQuizService
@@ -80,7 +80,7 @@ public class SentenceQuizController {
 
     //=====================
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete/{quizId}")
+    @DeleteMapping("/{quizId}")
     public ResponseEntity<Void> deleteQuizResult(@PathVariable Long quizId) {
         Long userId = memberService.findIdByAuthentication();
 
@@ -90,22 +90,22 @@ public class SentenceQuizController {
 
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public ResponseEntity<SentenceQuizProblemsResultResponseDTO> findById(@PathVariable Long id) {
+    @GetMapping("/{quizId}")
+    public ResponseEntity<SentenceQuizProblemsResultResponseDTO> findById(@PathVariable Long quizId) {
         Long userId = memberService.findIdByAuthentication();
-        SentenceQuizProblemsResultResponseDTO sentenceQuizProblemsResultResponseDTO = sentenceQuizService.findById(id);
+        SentenceQuizProblemsResultResponseDTO sentenceQuizProblemsResultResponseDTO = sentenceQuizService.findById(quizId);
 
         if (!Objects.equals(sentenceQuizProblemsResultResponseDTO.getUserId(), userId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         return new ResponseEntity<>(sentenceQuizProblemsResultResponseDTO, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<List<SentenceQuizProblemsResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(sentenceQuizService.findAllByUserId(userId, pageable), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/grade/{quizId}")
+    @PostMapping("/grade/{quizId}")
     public ResponseEntity<SentenceQuizProblemsResultResponseDTO> gradeQuiz(@PathVariable Long quizId, @RequestBody @Valid GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(sentenceQuizService.gradeQuiz(quizId, userId, gradeSentenceQuizTestRequestDTO), HttpStatus.OK);
