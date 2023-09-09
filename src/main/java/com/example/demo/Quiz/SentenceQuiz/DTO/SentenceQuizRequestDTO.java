@@ -1,6 +1,7 @@
 package com.example.demo.Quiz.SentenceQuiz.DTO;
 
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
+import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuizType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,12 +20,15 @@ public class SentenceQuizRequestDTO {
 
     private Long userId;
 
+    private SentenceQuizType type;
+
     private List<SaveSentenceQuizTestProblemRequestDTO> problems;
 
-    public SentenceQuizRequestDTO(Long userId, List<Long> sentenceIds, List<List<String>> problemSentences) {
+    public SentenceQuizRequestDTO(Long userId, SentenceQuizType type, List<Long> sentenceIds, List<List<String>> problemSentencesOrKoreanChoices) {
         this.userId = userId;
+        this.type = type;
         this.problems = IntStream.range(0, sentenceIds.size())
-                .mapToObj(idx -> new SaveSentenceQuizTestProblemRequestDTO(sentenceIds.get(idx), problemSentences.get(idx)))
+                .mapToObj(idx -> new SaveSentenceQuizTestProblemRequestDTO(sentenceIds.get(idx), problemSentencesOrKoreanChoices.get(idx)))
                 .toList();
     }
 
@@ -32,8 +36,9 @@ public class SentenceQuizRequestDTO {
         return SentenceQuiz.builder()
                 .userId(userId)
                 .quizDate(LocalDate.now())
+                .sentenceQuizType(type)
                 .sentenceIds(problems.stream().map(SaveSentenceQuizTestProblemRequestDTO::getSentenceId).toList())
-                .problemSentences(problems.stream().map(SaveSentenceQuizTestProblemRequestDTO::getProblemSentence).toList())
+                .problemSentencesOrKoreanChoices(problems.stream().map(SaveSentenceQuizTestProblemRequestDTO::getProblemSentence).toList())
                 .userAnswers(userAnswers)
                 .result(result)
                 .build();

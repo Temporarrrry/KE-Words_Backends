@@ -21,7 +21,7 @@ public class LastSentenceController {
     private final LastSentenceService lastSentenceService;
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/saveOrUpdate")
+    @RequestMapping(method = RequestMethod.POST, value = "/update")
     public ResponseEntity<Void> saveOrUpdate(@RequestBody @Valid SaveLastSentenceRequestDTO saveLastSentenceRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         lastSentenceService.saveOrUpdate(saveLastSentenceRequestDTO.toInnerDTO(userId));

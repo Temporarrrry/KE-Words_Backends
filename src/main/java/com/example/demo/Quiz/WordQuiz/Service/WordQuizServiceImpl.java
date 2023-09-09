@@ -12,6 +12,7 @@ import com.example.demo.Quiz.WordQuiz.DTO.Response.Result.WordQuizProblemsResult
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Test.WordQuizTestProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizAnswerLengthNotMatchException;
+import com.example.demo.Quiz.WordQuiz.Exception.WordQuizAnswerNotMatchException;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizNotExistException;
 import com.example.demo.Quiz.WordQuiz.Repository.WordQuizRepository;
 import com.example.demo.Ranking.Entity.TotalQuizResultType;
@@ -193,15 +194,17 @@ public class WordQuizServiceImpl implements WordQuizService {
                         )
                 );
 
-        List<List<String>> orderedUserKoreanAnswers = words
-                .stream().map(word -> userAnswersMap.get(word.getId()))
+        List<List<String>> orderedUserKoreanAnswers = words.stream()
+                .filter(wordResponseDTO -> userAnswersMap.containsKey(wordResponseDTO.getId()))
+                .map(word -> userAnswersMap.get(word.getId()))
                 .toList();
 
+
+        if (orderedUserKoreanAnswers.size() != words.size())
+            throw new WordQuizAnswerNotMatchException();
+
+
         List<List<String>> answers = words.stream().map(WordResponseDTO::getKorean).toList();
-
-        if (orderedUserKoreanAnswers.size() != answers.size())
-            throw new WordQuizAnswerLengthNotMatchException();
-
 
         List<Boolean> result = IntStream.range(0, answers.size())
                 .mapToObj(idx -> orderedUserKoreanAnswers.get(idx).equals(answers.get(idx)))
@@ -225,7 +228,7 @@ public class WordQuizServiceImpl implements WordQuizService {
         rankingService
                 .addScore(
                         TotalQuizResultType.WORD,
-                        gradeWordQuizTestRequestDTO.getUserId(),
+                        wordQuiz.getUserId(),
                         correctCount,
                         0 // 이미 더해져 있다고 가정
                 );

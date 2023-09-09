@@ -3,8 +3,12 @@ package com.example.demo.Quiz.SentenceQuiz.Service;
 import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Practice.PracticeSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Test.TestSentenceQuizProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Practice.SentenceQuizFillingPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Test.SentenceQuizFillingTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Practice.SentenceQuizMeaningPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Test.SentenceQuizMeaningTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Practice.SentenceQuizOrderingPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Test.SentenceQuizOrderingTestProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -21,13 +25,16 @@ public interface SentenceQuizService {
 
     //KoreanWordQuizResponseDTO generateKoreanSentenceQuiz(int count);
 
-    TestSentenceQuizProblemsResponseDTO getFillingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
+    SentenceQuizMeaningTestProblemsResponseDTO getMeaningTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
+    SentenceQuizMeaningPracticeProblemsResponseDTO getMeaningPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 
-    PracticeSentenceQuizProblemsResponseDTO getFillingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
+    SentenceQuizFillingTestProblemsResponseDTO getFillingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 
-    TestSentenceQuizProblemsResponseDTO getOrderingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
+    SentenceQuizFillingPracticeProblemsResponseDTO getFillingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 
-    PracticeSentenceQuizProblemsResponseDTO getOrderingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
+    SentenceQuizOrderingTestProblemsResponseDTO getOrderingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
+
+    SentenceQuizOrderingPracticeProblemsResponseDTO getOrderingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 
 
     SentenceQuizProblemsResultResponseDTO findById(Long id);

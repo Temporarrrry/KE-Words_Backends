@@ -30,22 +30,26 @@ public class SentenceQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate quizDate;
 
-    @Column(nullable = false, length = 2047)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SentenceQuizType type;
+
+    @Column(nullable = false, length = 10000)
     private String sentenceIds;
 
-    @Column(nullable = false, length = 2047)
-    private String problemSentences;
+    @Column(nullable = false, length = 10000)
+    private String problemSentencesOrKoreanChoices;
 
-    @Column(length = 2047)
+    @Column(length = 10000)
     private String userAnswers;
 
     @Column(nullable = false)
-    private int correctCount;
+    private Integer correctCount;
 
     @Column(nullable = false)
-    private int totalCount;
+    private Integer totalCount;
 
-    @Column(nullable = false, length = 2047)
+    @Column(nullable = false, length = 10000)
     private String result;
 
     @Column(nullable = false)
@@ -60,16 +64,16 @@ public class SentenceQuiz extends BaseTimeEntity {
     }
 
 
-    public void setProblemSentences(List<List<String>> problemSentences) {
+    public void setProblemSentencesOrKoreanChoices(List<List<String>> problemSentences) {
         List<String> problemSentenceList = problemSentences.stream()
                 .map(strings -> String.join(" ", strings))
                 .toList();
 
-        this.problemSentences = String.join("|", problemSentenceList);
+        this.problemSentencesOrKoreanChoices = String.join("|", problemSentenceList);
     }
 
-    public List<List<String>> getProblemSentences() {
-        return Arrays.stream(this.problemSentences.split("\\|"))
+    public List<List<String>> getProblemSentencesOrKoreanChoices() {
+        return Arrays.stream(this.problemSentencesOrKoreanChoices.split("\\|"))
                 .map(s -> Arrays.stream(s.split(" ")).toList())
                 .toList();
     }
@@ -101,13 +105,14 @@ public class SentenceQuiz extends BaseTimeEntity {
     }
 
     @Builder
-    public SentenceQuiz(Long userId, LocalDate quizDate, List<Long> sentenceIds,
-                        List<List<String>> problemSentences, Optional<List<List<String>>> userAnswers, List<Boolean> result) {
+    public SentenceQuiz(Long userId, LocalDate quizDate, SentenceQuizType sentenceQuizType, List<Long> sentenceIds,
+                        List<List<String>> problemSentencesOrKoreanChoices, Optional<List<List<String>>> userAnswers, List<Boolean> result) {
 
         this.userId = userId;
         this.quizDate = quizDate;
+        this.type = sentenceQuizType;
         setSentenceIds(sentenceIds);
-        setProblemSentences(problemSentences);
+        setProblemSentencesOrKoreanChoices(problemSentencesOrKoreanChoices);
         setUserAnswers(userAnswers);
         this.correctCount = Long.valueOf(result.stream().filter(Boolean::booleanValue).count()).intValue();
         this.totalCount = result.size();

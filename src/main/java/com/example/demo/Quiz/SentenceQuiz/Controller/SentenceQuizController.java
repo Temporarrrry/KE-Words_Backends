@@ -4,8 +4,12 @@ import com.example.demo.Member.Service.MemberService;
 import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Practice.PracticeSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Test.TestSentenceQuizProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Practice.SentenceQuizFillingPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Test.SentenceQuizFillingTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Practice.SentenceQuizMeaningPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Test.SentenceQuizMeaningTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Practice.SentenceQuizOrderingPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Test.SentenceQuizOrderingTestProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Service.SentenceQuizService;
 import jakarta.validation.Valid;
@@ -28,35 +32,51 @@ public class SentenceQuizController {
     private final MemberService memberService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/fillingQuiz/test")
-    public ResponseEntity<TestSentenceQuizProblemsResponseDTO> generateFillingTest() {
+    public ResponseEntity<SentenceQuizFillingTestProblemsResponseDTO> generateFillingTest() {
         Long userId = memberService.findIdByAuthentication();
-        TestSentenceQuizProblemsResponseDTO fillingTest = sentenceQuizService
+        SentenceQuizFillingTestProblemsResponseDTO fillingTest = sentenceQuizService
                 .getFillingTest(new GenerateSentenceQuizRequestDTO(userId, 20, true));
         return new ResponseEntity<>(fillingTest, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/fillingQuiz/practice")
-    public ResponseEntity<PracticeSentenceQuizProblemsResponseDTO> generateFillingPractice() {
+    public ResponseEntity<SentenceQuizFillingPracticeProblemsResponseDTO> generateFillingPractice() {
         Long userId = memberService.findIdByAuthentication();
-        PracticeSentenceQuizProblemsResponseDTO fillingPractice = sentenceQuizService
+        SentenceQuizFillingPracticeProblemsResponseDTO fillingPractice = sentenceQuizService
                 .getFillingPractice(new GenerateSentenceQuizRequestDTO(userId, 20, false));
         return new ResponseEntity<>(fillingPractice, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/orderingQuiz/test")
-    public ResponseEntity<TestSentenceQuizProblemsResponseDTO> generateOrderingTest() {
+    public ResponseEntity<SentenceQuizOrderingTestProblemsResponseDTO> generateOrderingTest() {
         Long userId = memberService.findIdByAuthentication();
-        TestSentenceQuizProblemsResponseDTO orderingTest = sentenceQuizService
+        SentenceQuizOrderingTestProblemsResponseDTO orderingTest = sentenceQuizService
                 .getOrderingTest(new GenerateSentenceQuizRequestDTO(userId, 20, true));
         return new ResponseEntity<>(orderingTest, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/orderingQuiz/practice")
-    public ResponseEntity<PracticeSentenceQuizProblemsResponseDTO> generateOrderingPractice() {
+    public ResponseEntity<SentenceQuizOrderingPracticeProblemsResponseDTO> generateOrderingPractice() {
         Long userId = memberService.findIdByAuthentication();
-        PracticeSentenceQuizProblemsResponseDTO orderingPractice = sentenceQuizService
+        SentenceQuizOrderingPracticeProblemsResponseDTO orderingPractice = sentenceQuizService
                 .getOrderingPractice(new GenerateSentenceQuizRequestDTO(userId, 20, false));
         return new ResponseEntity<>(orderingPractice, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/meaningQuiz/test")
+    public ResponseEntity<SentenceQuizMeaningTestProblemsResponseDTO> generateMeaningQuizTest() {
+        Long userId = memberService.findIdByAuthentication();
+        SentenceQuizMeaningTestProblemsResponseDTO meaningTest = sentenceQuizService
+                .getMeaningTest(new GenerateSentenceQuizRequestDTO(userId, 20, true));
+        return new ResponseEntity<>(meaningTest, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/meaningQuiz/practice")
+    public ResponseEntity<SentenceQuizMeaningPracticeProblemsResponseDTO> generateMeaningPractice() {
+        Long userId = memberService.findIdByAuthentication();
+        SentenceQuizMeaningPracticeProblemsResponseDTO meaningPractice = sentenceQuizService
+                .getMeaningPractice(new GenerateSentenceQuizRequestDTO(userId, 20, false));
+        return new ResponseEntity<>(meaningPractice, HttpStatus.OK);
     }
 
     //=====================

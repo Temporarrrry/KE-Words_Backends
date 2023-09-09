@@ -21,7 +21,7 @@ public class LastWordController {
     private final LastWordService lastWordService;
     private final MemberService memberService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/saveOrUpdate")
+    @RequestMapping(method = RequestMethod.POST, value = "/update")
     public ResponseEntity<Void> saveOrUpdate(@RequestBody @Valid SaveLastWordRequestDTO saveLastWordRequestDTO) {
         Long userId = memberService.findIdByAuthentication();
         lastWordService.saveOrUpdate(saveLastWordRequestDTO.toInnerDTO(userId));

@@ -13,7 +13,12 @@ public class WordQuizExceptionHandler {
     }
 
     @ExceptionHandler(WordQuizAnswerLengthNotMatchException.class)
-    public ResponseEntity<String> quizNotExist(WordQuizAnswerLengthNotMatchException e) {
+    public ResponseEntity<String> answerLengthNotMatch(WordQuizAnswerLengthNotMatchException e) {
+        return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+    }
+
+    @ExceptionHandler(WordQuizAnswerNotMatchException.class)
+    public ResponseEntity<String> AnswerNotMatch(WordQuizAnswerNotMatchException e) {
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
 }

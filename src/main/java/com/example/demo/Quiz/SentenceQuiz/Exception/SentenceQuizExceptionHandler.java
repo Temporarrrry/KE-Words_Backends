@@ -21,4 +21,9 @@ public class SentenceQuizExceptionHandler {
     public ResponseEntity<String> answerLengthNotMatch(SentenceQuizAnswerLengthNotMatchException e) {
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
+
+    @ExceptionHandler(SentenceQuizAnswerNotMatchException.class)
+    public ResponseEntity<String> answerNotMatch(SentenceQuizAnswerNotMatchException e) {
+        return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+    }
 }

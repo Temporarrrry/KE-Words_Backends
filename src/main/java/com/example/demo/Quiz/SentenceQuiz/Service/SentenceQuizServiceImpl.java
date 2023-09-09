@@ -5,14 +5,23 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.DeleteSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.GenerateSentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestProblemRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Request.Grade.GradeSentenceQuizTestRequestDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Common.CommonSentenceQuizProblem;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Common.CommonSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Practice.PracticeSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Test.TestSentenceQuizProblemsResponseDTO;
-import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Common.SentenceQuizFillingCommonProblem;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Common.SentenceQuizFillingCommonProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Practice.SentenceQuizFillingPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Filling.Test.SentenceQuizFillingTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Common.SentenceQuizMeaningCommonProblem;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Common.SentenceQuizMeaningCommonProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Practice.SentenceQuizMeaningPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Test.SentenceQuizMeaningTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Common.SentenceQuizOrderingCommonProblem;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Common.SentenceQuizOrderingCommonProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Practice.SentenceQuizOrderingPracticeProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Test.SentenceQuizOrderingTestProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
-import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizAnswerLengthNotMatchException;
+import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuizType;
+import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizAnswerNotMatchException;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceQuizNotExistException;
 import com.example.demo.Quiz.SentenceQuiz.Exception.SentenceTooShortException;
 import com.example.demo.Quiz.SentenceQuiz.Repository.SentenceQuizRepository;
@@ -68,19 +77,73 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
 
+    private SentenceQuizMeaningCommonProblemsResponseDTO generateMeaningSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        Integer count = generateSentenceQuizRequestDTO.getCount();
+        Long userId = generateSentenceQuizRequestDTO.getUserId();
+        Boolean isTest = generateSentenceQuizRequestDTO.getIsTest();
+
+        List<SentenceResponseDTO> sentences = sentenceService.findByRandom(count * 4);
+
+        List<String> koreans = sentences.stream().map(SentenceResponseDTO::getKorean).toList();
+
+        SentenceQuizMeaningCommonProblemsResponseDTO problems = new SentenceQuizMeaningCommonProblemsResponseDTO();
+        for (int i = 0; i < sentences.size(); i += 4) {
+            String originalKorean = koreans.get(i);
+            List<String> english = sentences.get(i).getEnglish();
+
+            List<String> koreanChoices = new ArrayList<>(koreans.subList(i, i + 4));
+            Collections.shuffle(koreanChoices);
+
+            problems.getMeaningProblems().add(
+                    SentenceQuizMeaningCommonProblem.builder()
+                            .sentenceId(sentences.get(i).getId())
+                            .english(english)
+                            .koreanChoices(koreanChoices)
+                            .originalKorean((isTest) ? null : originalKorean)
+                            .build()
+            );
+        }
+
+        if (isTest) {
+            List<Long> sentenceIds = problems.getMeaningProblems()
+                    .stream().map(SentenceQuizMeaningCommonProblem::getSentenceId)
+                    .toList();
+
+            List<List<String>> koreanChoices = problems.getMeaningProblems()
+                    .stream().map(SentenceQuizMeaningCommonProblem::getKoreanChoices)
+                    .toList();
+
+            problems.setQuizId(saveBaseQuiz(new SentenceQuizRequestDTO(userId, SentenceQuizType.MEANING, sentenceIds, koreanChoices)));
+        }
+
+        return problems;
+    }
+
+    @Override
+    @Transactional
+    public SentenceQuizMeaningTestProblemsResponseDTO getMeaningTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        return new SentenceQuizMeaningTestProblemsResponseDTO(generateMeaningSentenceQuiz(generateSentenceQuizRequestDTO));
+    }
+
+    @Override
+    @Transactional
+    public SentenceQuizMeaningPracticeProblemsResponseDTO getMeaningPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        return new SentenceQuizMeaningPracticeProblemsResponseDTO(generateMeaningSentenceQuiz(generateSentenceQuizRequestDTO));
+    }
 
 
 
-    private CommonSentenceQuizProblemsResponseDTO generateFillingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) throws SentenceTooShortException {
+
+    private SentenceQuizFillingCommonProblemsResponseDTO generateFillingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) throws SentenceTooShortException {
         Integer count = generateSentenceQuizRequestDTO.getCount();
         Long userId = generateSentenceQuizRequestDTO.getUserId();
         Boolean isTest = generateSentenceQuizRequestDTO.getIsTest();
 
         Random random = new Random();
 
-        List<CommonSentenceQuizProblem> problems = sentenceService.findByRandom(count)
+        List<SentenceQuizFillingCommonProblem> problems = sentenceService.findByRandom(count)
                 .stream().map(dto -> {
-                    List<String> originalSentence = Arrays.asList(dto.getEnglish().split(" "));
+                    List<String> originalSentence = dto.getEnglish();
 
                     int sentenceSize = originalSentence.size();
 
@@ -100,7 +163,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                     }
 
 
-                    return CommonSentenceQuizProblem.builder()
+                    return SentenceQuizFillingCommonProblem.builder()
                             .sentenceId(dto.getId())
                             .originalEnglish((isTest) ? null : originalSentence)
                             .editedEnglish(blankedSentence)
@@ -109,20 +172,20 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 })
                 .toList();
 
-        CommonSentenceQuizProblemsResponseDTO problemResponseDTO = new CommonSentenceQuizProblemsResponseDTO();
-        problemResponseDTO.setCommonProblems(problems);
+        SentenceQuizFillingCommonProblemsResponseDTO problemResponseDTO = new SentenceQuizFillingCommonProblemsResponseDTO();
+        problemResponseDTO.setProblems(problems);
 
 
         if (isTest) {
-            List<Long> sentenceIds = problemResponseDTO.getCommonProblems()
-                    .stream().map(CommonSentenceQuizProblem::getSentenceId)
+            List<Long> sentenceIds = problemResponseDTO.getProblems()
+                    .stream().map(SentenceQuizFillingCommonProblem::getSentenceId)
                     .toList();
 
-            List<List<String>> editedEnglish = problemResponseDTO.getCommonProblems()
-                    .stream().map(CommonSentenceQuizProblem::getEditedEnglish)
+            List<List<String>> editedEnglish = problemResponseDTO.getProblems()
+                    .stream().map(SentenceQuizFillingCommonProblem::getEditedEnglish)
                     .toList();
 
-            problemResponseDTO.setQuizId(saveBaseQuiz(new SentenceQuizRequestDTO(userId, sentenceIds, editedEnglish)));
+            problemResponseDTO.setQuizId(saveBaseQuiz(new SentenceQuizRequestDTO(userId, SentenceQuizType.FILLING, sentenceIds, editedEnglish)));
         }
 
         return problemResponseDTO;
@@ -130,33 +193,33 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
     @Override
     @Transactional
-    public TestSentenceQuizProblemsResponseDTO getFillingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
-        return new TestSentenceQuizProblemsResponseDTO(generateFillingSentenceQuiz(generateSentenceQuizRequestDTO));
+    public SentenceQuizFillingTestProblemsResponseDTO getFillingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        return new SentenceQuizFillingTestProblemsResponseDTO(generateFillingSentenceQuiz(generateSentenceQuizRequestDTO));
     }
 
 
     @Override
     @Transactional
-    public PracticeSentenceQuizProblemsResponseDTO getFillingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
-        return new PracticeSentenceQuizProblemsResponseDTO(generateFillingSentenceQuiz(generateSentenceQuizRequestDTO));
+    public SentenceQuizFillingPracticeProblemsResponseDTO getFillingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        return new SentenceQuizFillingPracticeProblemsResponseDTO(generateFillingSentenceQuiz(generateSentenceQuizRequestDTO));
     }
 
 
-    private CommonSentenceQuizProblemsResponseDTO generateOrderingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+    private SentenceQuizOrderingCommonProblemsResponseDTO generateOrderingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         Integer count = generateSentenceQuizRequestDTO.getCount();
         Long userId = generateSentenceQuizRequestDTO.getUserId();
         Boolean isTest = generateSentenceQuizRequestDTO.getIsTest();
 
 
-        List<CommonSentenceQuizProblem> problems = sentenceService.findByRandom(count)
+        List<SentenceQuizOrderingCommonProblem> problems = sentenceService.findByRandom(count)
                 .stream().map(dto -> {
-                    List<String> originalSentence = Arrays.asList(dto.getEnglish().split(" "));
+                    List<String> originalSentence = dto.getEnglish();
 
                     List<String> shuffledSentence = new ArrayList<>(originalSentence);
                     Collections.shuffle(shuffledSentence);
 
 
-                    return CommonSentenceQuizProblem.builder()
+                    return SentenceQuizOrderingCommonProblem.builder()
                             .sentenceId(dto.getId())
                             .originalEnglish((isTest) ? null : originalSentence)
                             .editedEnglish(shuffledSentence)
@@ -165,19 +228,19 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 })
                 .toList();
 
-        CommonSentenceQuizProblemsResponseDTO problemResponseDTO = new CommonSentenceQuizProblemsResponseDTO();
-        problemResponseDTO.setCommonProblems(problems);
+        SentenceQuizOrderingCommonProblemsResponseDTO problemResponseDTO = new SentenceQuizOrderingCommonProblemsResponseDTO();
+        problemResponseDTO.setProblems(problems);
 
         if (isTest) {
-            List<Long> sentenceIds = problemResponseDTO.getCommonProblems()
-                    .stream().map(CommonSentenceQuizProblem::getSentenceId)
+            List<Long> sentenceIds = problemResponseDTO.getProblems()
+                    .stream().map(SentenceQuizOrderingCommonProblem::getSentenceId)
                     .toList();
 
-            List<List<String>> editedEnglish = problemResponseDTO.getCommonProblems()
-                    .stream().map(CommonSentenceQuizProblem::getEditedEnglish)
+            List<List<String>> editedEnglish = problemResponseDTO.getProblems()
+                    .stream().map(SentenceQuizOrderingCommonProblem::getEditedEnglish)
                     .toList();
 
-            problemResponseDTO.setQuizId(saveBaseQuiz(new SentenceQuizRequestDTO(userId, sentenceIds, editedEnglish)));
+            problemResponseDTO.setQuizId(saveBaseQuiz(new SentenceQuizRequestDTO(userId, SentenceQuizType.ORDERING, sentenceIds, editedEnglish)));
         }
 
         return problemResponseDTO;
@@ -185,14 +248,14 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
     @Override
     @Transactional
-    public TestSentenceQuizProblemsResponseDTO getOrderingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
-        return new TestSentenceQuizProblemsResponseDTO(generateOrderingSentenceQuiz(generateSentenceQuizRequestDTO));
+    public SentenceQuizOrderingTestProblemsResponseDTO getOrderingTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        return new SentenceQuizOrderingTestProblemsResponseDTO(generateOrderingSentenceQuiz(generateSentenceQuizRequestDTO));
     }
 
     @Override
     @Transactional
-    public PracticeSentenceQuizProblemsResponseDTO getOrderingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
-        return new PracticeSentenceQuizProblemsResponseDTO(generateOrderingSentenceQuiz(generateSentenceQuizRequestDTO));
+    public SentenceQuizOrderingPracticeProblemsResponseDTO getOrderingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
+        return new SentenceQuizOrderingPracticeProblemsResponseDTO(generateOrderingSentenceQuiz(generateSentenceQuizRequestDTO));
     }
 
 
@@ -201,28 +264,24 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         SentenceQuiz sentenceQuiz = sentenceQuizRepository.findById(id)
                 .orElseThrow(SentenceQuizNotExistException::new);
 
-        List<List<String>> english = sentenceQuiz.getSentenceIds().stream()
+        List<SentenceResponseDTO> sentenceResponseDTOS = sentenceQuiz.getSentenceIds().stream()
                 .map(sentenceService::findById)
-                .map(SentenceResponseDTO::getEnglish)
-                .map(s -> Arrays.stream(s.split(" ")).toList())
                 .toList();
 
 
-        return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, english);
+        return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, sentenceResponseDTOS);
     }
 
     @Override
     public List<SentenceQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
 
         return sentenceQuizRepository.findAllByUserId(userId, pageable) // 퀴즈 여러 개
-                .map(sentenceQuiz -> { // 퀴즈 하나
-                            List<List<String>> originalSentences = sentenceQuiz.getSentenceIds()
-                                    .stream().map(sentenceService::findById)
-                                    .map(SentenceResponseDTO::getEnglish)
-                                    .map(s -> Arrays.stream(s.split(" ")).toList())
-                                    .toList();
+                .map(sentenceQuiz -> {
+                    List<SentenceResponseDTO> sentenceResponseDTOS = sentenceQuiz.getSentenceIds().stream()
+                            .map(sentenceService::findById)
+                            .toList();
 
-                            return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, originalSentences);
+                    return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, sentenceResponseDTOS);
                 }).getContent();
     }
 
@@ -243,9 +302,8 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
             throw new NoAuthorityException("이 퀴즈의 주인이 아닙니다.");
 
 
-        if (!sentenceQuiz.getId().equals(gradeSentenceQuizTestRequestDTO.getQuizId())) {
+        if (!sentenceQuiz.getId().equals(gradeSentenceQuizTestRequestDTO.getQuizId()))
             throw new NoAuthorityException("수정할 수 없거나 존재하지 않는 퀴즈입니다.");
-        }
 
 
         if (1 < allByIsCompletedIsFalse.size()) {
@@ -258,6 +316,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 .stream().map(sentenceService::findById)
                 .toList();
 
+
         Map<Long, List<String>> userAnswerMap = gradeSentenceQuizTestRequestDTO.getUserAnswers()
                 .stream().collect(Collectors.toMap(
                                 GradeSentenceQuizTestProblemRequestDTO::getSentenceId,
@@ -265,14 +324,19 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                         )
                 );
 
-        List<List<String>> orderedUserAnswers = sentences
-                .stream().map(sentence -> userAnswerMap.get(sentence.getId()))
+        List<List<String>> orderedUserAnswers = sentences.stream()
+                .filter(sentenceResponseDTO ->  userAnswerMap.containsKey(sentenceResponseDTO.getId()))
+                .map(sentence -> userAnswerMap.get(sentence.getId()))
                 .toList();
 
-        List<String> answers = sentences.stream().map(SentenceResponseDTO::getKorean).toList();
+        if (orderedUserAnswers.size() != sentences.size())
+            throw new SentenceQuizAnswerNotMatchException();
 
-        if (orderedUserAnswers.size() != answers.size())
-            throw new SentenceQuizAnswerLengthNotMatchException();
+        List<List<String>> answers;
+        if (sentenceQuiz.getType().equals(SentenceQuizType.MEANING))
+            answers = sentences.stream().map(SentenceResponseDTO::getEnglish).toList();
+        else
+            answers = sentences.stream().map(dto -> List.of(dto.getKorean())).toList();
 
         List<Boolean> result = IntStream.range(0, answers.size())
                 .mapToObj(idx -> orderedUserAnswers.get(idx).equals(answers.get(idx)))
@@ -296,11 +360,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
                 0
         );
 
-        List<List<String>> originalEnglish = sentences.stream()
-                .map(SentenceResponseDTO::getEnglish)
-                .map(s -> Arrays.stream(s.split(" ")).toList())
-                .toList();
-
-        return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, originalEnglish);
+        return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, sentences);
     }
 }

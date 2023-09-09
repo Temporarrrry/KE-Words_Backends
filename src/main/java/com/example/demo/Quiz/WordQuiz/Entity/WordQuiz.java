@@ -30,13 +30,13 @@ public class WordQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate quizDate;
 
-    @Column(nullable = false, length = 2047)
+    @Column(nullable = false, length = 10000)
     private String wordIds;
 
-    @Column(nullable = false, length = 2047)
+    @Column(nullable = false, length = 10000)
     private String koreanChoices;
 
-    @Column(length = 2047)
+    @Column(length = 10000)
     private String userAnswers;
 
     @Column(nullable = false)
@@ -45,7 +45,7 @@ public class WordQuiz extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer totalCount;
 
-    @Column(nullable = false, length = 2047)
+    @Column(nullable = false, length = 10000)
     private String result;
 
     @Column(nullable = false)
