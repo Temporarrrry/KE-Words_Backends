@@ -16,11 +16,11 @@ public class WordQuizTestProblemResponseDTO {
 
     private String english;
 
-    private List<List<String>> koreanChoice;
+    private List<List<String>> koreanChoices;
 
     public WordQuizTestProblemResponseDTO(WordQuizCommonProblemResponseDTO wordQuizCommonProblemResponseDTO) {
         this.wordId = wordQuizCommonProblemResponseDTO.getWordId();
         this.english = wordQuizCommonProblemResponseDTO.getEnglish();
-        this.koreanChoice = wordQuizCommonProblemResponseDTO.getKoreanChoice();
+        this.koreanChoices = wordQuizCommonProblemResponseDTO.getKoreanChoices();
     }
 }

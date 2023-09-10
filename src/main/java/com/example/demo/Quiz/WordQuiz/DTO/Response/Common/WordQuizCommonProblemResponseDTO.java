@@ -17,5 +17,5 @@ public class WordQuizCommonProblemResponseDTO {
 
     private List<String> originalKorean;
 
-    private List<List<String>> koreanChoice;
+    private List<List<String>> koreanChoices;
 }
