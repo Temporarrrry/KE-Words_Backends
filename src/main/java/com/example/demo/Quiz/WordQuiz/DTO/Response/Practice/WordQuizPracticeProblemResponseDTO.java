@@ -18,12 +18,12 @@ public class WordQuizPracticeProblemResponseDTO {
 
     private List<String> originalKorean;
 
-    private List<List<String>> koreanChoice;
+    private List<List<String>> koreanChoices;
 
     public WordQuizPracticeProblemResponseDTO(WordQuizCommonProblemResponseDTO wordQuizCommonProblemResponseDTO) {
         this.wordId = wordQuizCommonProblemResponseDTO.getWordId();
         this.english = wordQuizCommonProblemResponseDTO.getEnglish();
         this.originalKorean = wordQuizCommonProblemResponseDTO.getOriginalKorean();
-        this.koreanChoice = wordQuizCommonProblemResponseDTO.getKoreanChoice();
+        this.koreanChoices = wordQuizCommonProblemResponseDTO.getKoreanChoices();
     }
 }

@@ -80,7 +80,7 @@ public class WordQuizServiceImpl implements WordQuizService {
                             .wordId(words.get(i).getId())
                             .english(words.get(i).getEnglish())
                             .originalKorean((isTest) ? null : originalKorean)
-                            .koreanChoice(koreanChoices)
+                            .koreanChoices(koreanChoices)
                             .build()
             );
         }
@@ -91,7 +91,7 @@ public class WordQuizServiceImpl implements WordQuizService {
                     .toList();
 
             List<List<List<String>>> koreanChoices = problems.getWordQuizList()
-                    .stream().map(WordQuizCommonProblemResponseDTO::getKoreanChoice)
+                    .stream().map(WordQuizCommonProblemResponseDTO::getKoreanChoices)
                     .toList();
 
             problems.setQuizId(saveBaseQuiz(new SaveWordQuizTestRequestDTO(userId, wordIds, koreanChoices)));

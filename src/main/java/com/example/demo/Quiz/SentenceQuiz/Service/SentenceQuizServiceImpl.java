@@ -88,7 +88,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         SentenceQuizMeaningCommonProblemsResponseDTO problems = new SentenceQuizMeaningCommonProblemsResponseDTO();
         for (int i = 0; i < sentences.size(); i += 4) {
             String originalKorean = koreans.get(i);
-            List<String> english = sentences.get(i).getEnglish();
+            String english = String.join(" ", sentences.get(i).getEnglish());
 
             List<String> koreanChoices = new ArrayList<>(koreans.subList(i, i + 4));
             Collections.shuffle(koreanChoices);
