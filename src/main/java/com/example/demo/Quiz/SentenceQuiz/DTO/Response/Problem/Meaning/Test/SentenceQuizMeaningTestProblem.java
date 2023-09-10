@@ -13,7 +13,7 @@ import java.util.List;
 public class SentenceQuizMeaningTestProblem {
     private Long sentenceId;
 
-    private List<String> english;
+    private String english;
 
     @JsonSerialize(using = SentenceKoreanChoicesSerializer.class)
     private List<String> koreanChoices;
