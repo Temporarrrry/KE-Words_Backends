@@ -21,7 +21,6 @@ import com.example.demo.Word.DTO.WordResponseDTO;
 import com.example.demo.Word.Service.WordService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -142,10 +141,11 @@ public class WordQuizServiceImpl implements WordQuizService {
     }
 
     @Override
-    public Page<WordQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
-        return wordQuizRepository.findAllByUserId(userId, pageable).map(
-                this::toResultResponseDTO
-        );
+    public List<Long> findAllByUserId(Long userId, Pageable pageable) {
+        return wordQuizRepository
+                .findAllByUserId(userId, pageable)
+                .map(WordQuiz::getId)
+                .getContent();
     }
 
     //UPDATE

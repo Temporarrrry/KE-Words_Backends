@@ -100,7 +100,7 @@ public class SentenceQuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SentenceQuizProblemsResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<Long>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(sentenceQuizService.findAllByUserId(userId, pageable), HttpStatus.OK);
     }

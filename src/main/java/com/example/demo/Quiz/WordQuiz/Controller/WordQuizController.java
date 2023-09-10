@@ -26,7 +26,7 @@ public class WordQuizController {
 
     private final MemberService memberService;
 
-    @GetMapping("/practice")
+    @GetMapping("/meaning/practice")
     public ResponseEntity<WordQuizPracticeProblemsResponseDTO> practice() {
         Long userId = memberService.findIdByAuthentication();
 
@@ -35,7 +35,7 @@ public class WordQuizController {
         return new ResponseEntity<>(practice, HttpStatus.OK);
     }
 
-    @PostMapping("/test")
+    @PostMapping("/meaning/test")
     public ResponseEntity<WordQuizTestProblemsResponseDTO> test() {
         Long userId = memberService.findIdByAuthentication();
 
@@ -65,9 +65,9 @@ public class WordQuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WordQuizProblemsResultResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<Long>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
-        return new ResponseEntity<>(wordQuizService.findAllByUserId(userId, pageable).getContent(), HttpStatus.OK);
+        return new ResponseEntity<>(wordQuizService.findAllByUserId(userId, pageable), HttpStatus.OK);
     }
 
     @PostMapping("/grade/{quizId}")

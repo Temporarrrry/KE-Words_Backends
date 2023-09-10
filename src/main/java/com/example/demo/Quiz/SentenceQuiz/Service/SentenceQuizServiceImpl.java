@@ -272,16 +272,11 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    public List<SentenceQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
-
-        return sentenceQuizRepository.findAllByUserId(userId, pageable) // 퀴즈 여러 개
-                .map(sentenceQuiz -> {
-                    List<SentenceResponseDTO> sentenceResponseDTOS = sentenceQuiz.getSentenceIds().stream()
-                            .map(sentenceService::findById)
-                            .toList();
-
-                    return new SentenceQuizProblemsResultResponseDTO(sentenceQuiz, sentenceResponseDTOS);
-                }).getContent();
+    public List<Long> findAllByUserId(Long userId, Pageable pageable) {
+        return sentenceQuizRepository
+                .findAllByUserId(userId, pageable) // 퀴즈 여러 개
+                .map(SentenceQuiz::getId)
+                .getContent();
     }
 
 

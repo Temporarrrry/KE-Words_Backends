@@ -38,7 +38,7 @@ public interface SentenceQuizService {
 
     SentenceQuizProblemsResultResponseDTO findById(Long id);
 
-    List<SentenceQuizProblemsResultResponseDTO> findAllByUserId(Long userId, Pageable pageable);
+    List<Long> findAllByUserId(Long userId, Pageable pageable);
 
     SentenceQuizProblemsResultResponseDTO gradeQuiz(Long quizId, Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO);
 }
