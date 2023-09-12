@@ -1,7 +1,5 @@
 package com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result;
 
-import com.example.demo.Sentence.Serializer.SentenceKoreanSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.util.List;
@@ -18,7 +16,6 @@ public class SentenceQuizProblemResult {
 
     private List<String> editedEnglishOrKoreanChoices;
 
-    @JsonSerialize(using = SentenceKoreanSerializer.class)
     private String originalKorean;
 
     private List<String> userAnswer;

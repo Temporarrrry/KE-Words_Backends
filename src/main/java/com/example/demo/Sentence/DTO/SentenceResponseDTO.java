@@ -1,5 +1,6 @@
 package com.example.demo.Sentence.DTO;
 
+import com.example.demo.Sentence.Serializer.SentenceEnglishSerializer;
 import com.example.demo.Sentence.Serializer.SentenceKoreanSerializer;
 import com.example.demo.Sentence.Entity.Sentence;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -18,7 +19,7 @@ import java.util.List;
 public class SentenceResponseDTO {
     private Long id;
 
-
+    @JsonSerialize(using = SentenceEnglishSerializer.class)
     private List<String> english;
 
     @JsonSerialize(using = SentenceKoreanSerializer.class)
