@@ -10,6 +10,7 @@ import com.example.demo.Quiz.WordQuiz.DTO.Response.Common.WordQuizCommonProblems
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Practice.WordQuizPracticeProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Result.WordQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Test.WordQuizTestProblemsResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.WordQuizProblemsResultForAllResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Entity.WordQuiz;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizAnswerLengthNotMatchException;
 import com.example.demo.Quiz.WordQuiz.Exception.WordQuizAnswerNotMatchException;
@@ -141,10 +142,10 @@ public class WordQuizServiceImpl implements WordQuizService {
     }
 
     @Override
-    public List<Long> findAllByUserId(Long userId, Pageable pageable) {
+    public List<WordQuizProblemsResultForAllResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
         return wordQuizRepository
                 .findAllByUserId(userId, pageable)
-                .map(WordQuiz::getId)
+                .map(WordQuizProblemsResultForAllResponseDTO::new)
                 .getContent();
     }
 

@@ -6,6 +6,7 @@ import com.example.demo.Quiz.WordQuiz.DTO.Request.Grade.GradeWordQuizTestRequest
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Practice.WordQuizPracticeProblemsResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Result.WordQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.WordQuiz.DTO.Response.Test.WordQuizTestProblemsResponseDTO;
+import com.example.demo.Quiz.WordQuiz.DTO.Response.WordQuizProblemsResultForAllResponseDTO;
 import com.example.demo.Quiz.WordQuiz.Service.WordQuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,7 @@ public class WordQuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Long>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<WordQuizProblemsResultForAllResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(wordQuizService.findAllByUserId(userId, pageable), HttpStatus.OK);
     }
