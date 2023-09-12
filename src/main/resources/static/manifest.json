@@ -1,0 +1,25 @@
+{
+  "short_name": "KE-Words",
+  "name": "For Study Korean/English",
+  "icons": [
+    {
+      "src": "Favicon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "1000x200"
+    },
+    {
+      "src": "logo_small.png",
+      "type": "image/png",
+      "sizes": "170*50"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
