@@ -9,6 +9,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Practice.
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Meaning.Test.SentenceQuizMeaningTestProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Practice.SentenceQuizOrderingPracticeProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Test.SentenceQuizOrderingTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultForAllResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.Service.SentenceQuizService;
 import jakarta.validation.Valid;
@@ -100,7 +101,7 @@ public class SentenceQuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Long>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<SentenceQuizProblemsResultForAllResponseDTO>> findAllByUserId(@PageableDefault(size = 10) Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
         return new ResponseEntity<>(sentenceQuizService.findAllByUserId(userId, pageable), HttpStatus.OK);
     }

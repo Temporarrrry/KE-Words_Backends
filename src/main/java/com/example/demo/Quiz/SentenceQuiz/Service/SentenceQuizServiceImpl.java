@@ -16,6 +16,7 @@ import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Common.S
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Common.SentenceQuizOrderingCommonProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Practice.SentenceQuizOrderingPracticeProblemsResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Problem.Ordering.Test.SentenceQuizOrderingTestProblemsResponseDTO;
+import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultForAllResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.Response.Result.SentenceQuizProblemsResultResponseDTO;
 import com.example.demo.Quiz.SentenceQuiz.DTO.SentenceQuizRequestDTO;
 import com.example.demo.Quiz.SentenceQuiz.Entity.SentenceQuiz;
@@ -272,10 +273,10 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    public List<Long> findAllByUserId(Long userId, Pageable pageable) {
+    public List<SentenceQuizProblemsResultForAllResponseDTO> findAllByUserId(Long userId, Pageable pageable) {
         return sentenceQuizRepository
                 .findAllByUserId(userId, pageable) // 퀴즈 여러 개
-                .map(SentenceQuiz::getId)
+                .map(SentenceQuizProblemsResultForAllResponseDTO::new)
                 .getContent();
     }
 
@@ -283,7 +284,7 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     @Override
     @Transactional
     public SentenceQuizProblemsResultResponseDTO gradeQuiz(Long quizId, Long userId, GradeSentenceQuizTestRequestDTO gradeSentenceQuizTestRequestDTO) {
-        List<SentenceQuiz> allByIsCompletedIsFalse = sentenceQuizRepository.findAllByIsCompletedIsFalse();
+        List<SentenceQuiz> allByIsCompletedIsFalse = sentenceQuizRepository.findAllByUserIdAndIsCompletedIsFalse(userId);
 
         if (allByIsCompletedIsFalse.isEmpty())
             throw new SentenceQuizNotExistException("채점 가능한 퀴즈가 존재하지 않습니다");
@@ -328,9 +329,9 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
         List<List<String>> answers;
         if (sentenceQuiz.getType().equals(SentenceQuizType.MEANING))
-            answers = sentences.stream().map(SentenceResponseDTO::getEnglish).toList();
-        else
             answers = sentences.stream().map(dto -> List.of(dto.getKorean())).toList();
+        else
+            answers = sentences.stream().map(SentenceResponseDTO::getEnglish).toList();
 
         List<Boolean> result = IntStream.range(0, answers.size())
                 .mapToObj(idx -> orderedUserAnswers.get(idx).equals(answers.get(idx)))

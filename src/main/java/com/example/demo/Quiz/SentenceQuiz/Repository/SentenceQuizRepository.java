@@ -21,7 +21,7 @@ public interface SentenceQuizRepository extends JpaRepository<SentenceQuiz, Long
 
     Optional<SentenceQuiz> findById(Long id);
 
-    List<SentenceQuiz> findAllByIsCompletedIsFalse();
+    List<SentenceQuiz> findAllByUserIdAndIsCompletedIsFalse(Long userId);
 
     Page<SentenceQuiz> findAllByUserId(Long userId, Pageable pageable);
 }
