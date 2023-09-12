@@ -19,7 +19,9 @@ public class SentenceQuizProblemResult {
     private List<String> editedEnglishOrKoreanChoices;
 
     @JsonSerialize(using = SentenceKoreanSerializer.class)
-    private String korean;
+    private String originalKorean;
+
+    private List<String> userAnswer;
 
     private Boolean result;
 }

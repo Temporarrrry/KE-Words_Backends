@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Setter
 @Getter
@@ -36,11 +37,14 @@ public class SentenceQuizProblemsResultResponseDTO {
         this.totalCount = sentenceQuiz.getTotalCount();
 
         for (int i = 0; i < sentenceQuiz.getProblemSentencesOrKoreanChoices().size(); i++) {
+            Optional<List<List<String>>> userAnswers = sentenceQuiz.getUserAnswers();
+
             SentenceQuizProblemResult sentenceQuizProblemResult = SentenceQuizProblemResult.builder()
                     .sentenceId(sentenceQuiz.getSentenceIds().get(i))
                     .english(sentenceResponseDTOS.get(i).getEnglish())
                     .editedEnglishOrKoreanChoices(sentenceQuiz.getProblemSentencesOrKoreanChoices().get(i))
-                    .korean(sentenceResponseDTOS.get(i).getKorean())
+                    .originalKorean(sentenceResponseDTOS.get(i).getKorean())
+                    .userAnswer((userAnswers.isPresent()) ? userAnswers.get().get(i) : null)
                     .result(sentenceQuiz.getResult().get(i))
                     .build();
 

@@ -66,7 +66,7 @@ public class SentenceQuiz extends BaseTimeEntity {
 
     public void setProblemSentencesOrKoreanChoices(List<List<String>> problemSentences) {
         List<String> problemSentenceList = problemSentences.stream()
-                .map(strings -> String.join(" ", strings))
+                .map(strings -> String.join("/", strings))
                 .toList();
 
         this.problemSentencesOrKoreanChoices = String.join("|", problemSentenceList);
@@ -74,7 +74,7 @@ public class SentenceQuiz extends BaseTimeEntity {
 
     public List<List<String>> getProblemSentencesOrKoreanChoices() {
         return Arrays.stream(this.problemSentencesOrKoreanChoices.split("\\|"))
-                .map(s -> Arrays.stream(s.split(" ")).toList())
+                .map(s -> Arrays.stream(s.split("/")).toList())
                 .toList();
     }
 
