@@ -31,7 +31,7 @@ public class BookmarkWordServiceImpl implements BookmarkWordService {
     }
 
     @Override
-    public boolean isExist(BookmarkWordRequestDTO bookmarkWordRequestDTO) {
+    public Boolean isExist(BookmarkWordRequestDTO bookmarkWordRequestDTO) {
         return bookmarkWordRepository.existsByUserIdAndWordId(bookmarkWordRequestDTO.getUserId(), bookmarkWordRequestDTO.getWordId());
     }
 

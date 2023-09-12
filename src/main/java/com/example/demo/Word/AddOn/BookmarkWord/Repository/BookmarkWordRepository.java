@@ -15,7 +15,7 @@ public interface BookmarkWordRepository extends JpaRepository<BookmarkWord, Book
 
     void deleteByUserIdAndWordId(Long userId, Long wordId);
 
-    boolean existsByUserIdAndWordId(Long userId, Long wordId);
+    Boolean existsByUserIdAndWordId(Long userId, Long wordId);
 
     Page<BookmarkWord> findAllByUserId(Long userId, Pageable pageable);
 }

@@ -11,7 +11,7 @@ public interface BookmarkSentenceService {
 
     void deleteBookmarkSentence(BookmarkSentenceRequestDTO BookmarkSentenceRequestDTO);
 
-    boolean isExist(BookmarkSentenceRequestDTO bookmarkSentenceRequestDTO);
+    Boolean isExist(BookmarkSentenceRequestDTO bookmarkSentenceRequestDTO);
 
     Page<BookmarkSentenceResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 }

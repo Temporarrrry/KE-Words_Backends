@@ -1,8 +1,8 @@
 package com.example.demo.Sentence.Controller;
 
-import com.example.demo.Sentence.DTO.SentenceResponseDTO;
+import com.example.demo.Sentence.DTO.SentenceWithBookmarkResponseDTO;
 import com.example.demo.Sentence.Exception.SentenceNotExistException;
-import com.example.demo.Sentence.Service.SentenceService;
+import com.example.demo.Sentence.Service.WithBookmark.SentenceWithBookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,21 +16,21 @@ import java.util.List;
 @RequestMapping("/api/sentence")
 @RequiredArgsConstructor
 public class SentenceController {
-    private final SentenceService sentenceService;
+    private final SentenceWithBookmarkService sentenceWithBookmarkService;
 
     @GetMapping("/{sentenceId}")
-    public ResponseEntity<SentenceResponseDTO> findById(@PathVariable Long sentenceId) throws SentenceNotExistException {
-        return new ResponseEntity<>(sentenceService.findById(sentenceId), HttpStatus.OK);
+    public ResponseEntity<SentenceWithBookmarkResponseDTO> findById(@PathVariable Long sentenceId) throws SentenceNotExistException {
+        return new ResponseEntity<>(sentenceWithBookmarkService.findById(sentenceId), HttpStatus.OK);
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<SentenceResponseDTO>> getSentencesByRandom(@RequestParam(value = "count") int count) {
+    public ResponseEntity<List<SentenceWithBookmarkResponseDTO>> getSentencesByRandom(@RequestParam(value = "count") int count) {
         if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(sentenceService.findByRandom(count), HttpStatus.OK);
+        return new ResponseEntity<>(sentenceWithBookmarkService.findByRandom(count), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<SentenceResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable) {
-        return new ResponseEntity<>(sentenceService.findAll(pageable).getContent(), HttpStatus.OK);
+    public ResponseEntity<List<SentenceWithBookmarkResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable) {
+        return new ResponseEntity<>(sentenceWithBookmarkService.findAll(pageable).getContent(), HttpStatus.OK);
     }
 }

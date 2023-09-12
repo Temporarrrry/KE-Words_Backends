@@ -16,5 +16,5 @@ public interface LastWordRepository extends JpaRepository<LastWord, Long> {
 
     void deleteByUserId(Long userId);
 
-    boolean existsByUserId(Long userId);
+    Boolean existsByUserId(Long userId);
 }

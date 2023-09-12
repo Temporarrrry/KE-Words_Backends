@@ -1,8 +1,6 @@
 package com.example.demo.Word.Service;
 
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Word.AddOn.BookmarkWord.DTO.BookmarkWordRequestDTO;
-import com.example.demo.Word.AddOn.BookmarkWord.Service.BookmarkWordService;
 import com.example.demo.Word.AddOn.LastWord.DTO.LastWordRequestDTO;
 import com.example.demo.Word.AddOn.LastWord.Service.LastWordService;
 import com.example.demo.Word.DTO.WordResponseDTO;
@@ -23,8 +21,6 @@ import java.util.List;
 public class WordServiceImpl implements WordService {
     private final WordRepository wordRepository;
 
-    private final BookmarkWordService bookmarkWordService;
-
     private final MemberService memberService;
 
     private final LastWordService lastWordService;
@@ -32,37 +28,23 @@ public class WordServiceImpl implements WordService {
     @Override
     public WordResponseDTO findById(Long id) {
         Word word = wordRepository.findById(id).orElseThrow(WordNotExistException::new);
-        Long userId = memberService.findIdByAuthentication();
 
-        return new WordResponseDTO(
-                word, bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
-        );
+        return new WordResponseDTO(word);
     }
 
     @Override
     public List<WordResponseDTO> findWordsByRandom(int count) {
-        Long userId = memberService.findIdByAuthentication();
-
         return wordRepository
                 .findWordsByRandom(count)
-                .stream().map(
-                        word -> new WordResponseDTO(
-                                word,
-                                bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
-                        )
-                ).toList();
+                .stream().map(WordResponseDTO::new)
+                .toList();
     }
 
     @Override
     public Page<WordResponseDTO> findAll(Pageable pageable) {
         Long userId = memberService.findIdByAuthentication();
 
-        Page<WordResponseDTO> words = wordRepository.findAll(pageable).map(
-                word -> new WordResponseDTO(
-                        word,
-                        bookmarkWordService.isExist(new BookmarkWordRequestDTO(userId, word.getId()))
-                )
-        );
+        Page<WordResponseDTO> words = wordRepository.findAll(pageable).map(WordResponseDTO::new);
 
         // 마지막 단어 저장
         if (words.hasContent()) { // page 내에 단어가 존재할 때

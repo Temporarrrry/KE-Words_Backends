@@ -29,5 +29,5 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long> {
 
     Page<Sentence> findAll(Pageable pageable);
 
-    boolean existsByEnglish(String english);
+    Boolean existsByEnglish(String english);
 }

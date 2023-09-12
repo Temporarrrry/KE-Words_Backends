@@ -16,5 +16,5 @@ public interface LastSentenceRepository extends JpaRepository<LastSentence, Long
 
     void deleteByUserId(Long userId);
 
-    boolean existsByUserId(Long userId);
+    Boolean existsByUserId(Long userId);
 }

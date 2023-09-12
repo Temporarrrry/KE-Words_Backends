@@ -31,7 +31,7 @@ public class BookmarkSentenceServiceImpl implements BookmarkSentenceService {
     }
 
     @Override
-    public boolean isExist(BookmarkSentenceRequestDTO bookmarkSentenceRequestDTO) {
+    public Boolean isExist(BookmarkSentenceRequestDTO bookmarkSentenceRequestDTO) {
         return bookmarkSentenceRepository.existsByUserIdAndSentenceId(bookmarkSentenceRequestDTO.getUserId(), bookmarkSentenceRequestDTO.getSentenceId());
     }
 

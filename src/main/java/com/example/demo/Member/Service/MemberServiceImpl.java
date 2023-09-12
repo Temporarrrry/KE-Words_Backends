@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean userEmailDupCheck(String userEmail) {
+    public Boolean userEmailDupCheck(String userEmail) {
         return memberRepository.existsByUserEmail(userEmail);
     }
 

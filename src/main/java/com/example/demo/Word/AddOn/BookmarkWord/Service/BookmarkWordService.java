@@ -11,7 +11,7 @@ public interface BookmarkWordService {
 
     void deleteBookmarkWord(BookmarkWordRequestDTO bookmarkWordRequestDTO);
 
-    boolean isExist(BookmarkWordRequestDTO bookmarkWordRequestDTO);
+    Boolean isExist(BookmarkWordRequestDTO bookmarkWordRequestDTO);
 
     Page<BookmarkWordResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 }

@@ -15,7 +15,7 @@ public interface BookmarkSentenceRepository extends JpaRepository<BookmarkSenten
 
     void deleteByUserIdAndSentenceId(Long userId, Long sentenceId);
 
-    boolean existsByUserIdAndSentenceId(Long userId, Long sentenceId);
+    Boolean existsByUserIdAndSentenceId(Long userId, Long sentenceId);
 
     Page<BookmarkSentence> findAllByUserId(Long userId, Pageable pageable);
 }
