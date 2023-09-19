@@ -1,14 +1,12 @@
 package com.example.demo.Sentence.Service;
 
 import com.example.demo.Member.Service.MemberService;
-import com.example.demo.Sentence.AddOn.BookmarkSentence.Service.BookmarkSentenceService;
 import com.example.demo.Sentence.AddOn.LastSentence.DTO.LastSentenceRequestDTO;
 import com.example.demo.Sentence.AddOn.LastSentence.Service.LastSentenceService;
 import com.example.demo.Sentence.DTO.SentenceResponseDTO;
 import com.example.demo.Sentence.Entity.Sentence;
 import com.example.demo.Sentence.Exception.SentenceNotExistException;
 import com.example.demo.Sentence.Repository.SentenceRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,13 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SentenceServiceImpl implements SentenceService {
 
     private final SentenceRepository sentenceRepository;
-
-    private final BookmarkSentenceService bookmarkSentenceService;
 
     private final MemberService memberService;
 

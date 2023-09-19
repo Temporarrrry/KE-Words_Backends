@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private PasswordEncoder passwordEncoder;
@@ -50,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
     //CREATE
 
     @Override
+    @Transactional
     public void register(MemberRequestDTO memberRequestDTO) throws MemberExistException {
         if (userEmailDupCheck(memberRequestDTO.getUserEmail())) throw new MemberExistException();
 
@@ -74,18 +74,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void logout(String accessToken) {
         Long remainingTime = jwtTokenProvider.getRemainingTimeByAccessToken(accessToken);
         logoutAccessTokenService.saveLogoutAccessToken(new LogoutAccessTokenRequestDTO(accessToken, remainingTime));
         refreshTokenService.deleteByUserEmail(jwtTokenProvider.getUserEmailByAccessToken(accessToken));
     }
 
+    @Override
     public Optional<Member> findByUserEmail(String userEmail) {
         return memberRepository.findByUserEmail(userEmail);
     }
 
     //DELETE
     @Override
+    @Transactional
     public void resign(String accessToken, String password) throws MemberNotExistException, PasswordNotMatchException {
         Member member = memberRepository
                 .findById(findIdByAuthentication())
@@ -101,6 +104,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
     }
 
+    @Override
     public MemberInfoResponseDTO findMember(MemberRequestDTO memberRequestDTO) throws MemberNotExistException {
         Member member = memberRepository.findByUserEmail(memberRequestDTO.getUserEmail())
                 .orElseThrow(MemberNotExistException::new);
@@ -124,6 +128,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public void changePasswordByUserEmail(String userEmail, MemberChangePasswordRequestDTO memberChangePasswordRequestDTO) throws MemberNotExistException {
 
         Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(MemberNotExistException::new);

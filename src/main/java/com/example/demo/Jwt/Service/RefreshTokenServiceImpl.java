@@ -1,17 +1,16 @@
 package com.example.demo.Jwt.Service;
 
+import com.example.demo.Jwt.DTO.RefreshTokenRequestDTO;
 import com.example.demo.Jwt.Entity.RefreshToken;
 import com.example.demo.Jwt.Exception.RefreshTokenNotExistException;
 import com.example.demo.Jwt.Repository.RefreshTokenRedisRepository;
 import com.example.demo.Jwt.auth.JwtToken;
 import com.example.demo.Jwt.auth.JwtTokenProvider;
-import com.example.demo.Jwt.DTO.RefreshTokenRequestDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
@@ -19,6 +18,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public void saveOrUpdate(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         String refreshToken = refreshTokenRequestDTO.getRefreshToken();
 
@@ -29,6 +29,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional
     public void deleteByUserEmail(String userEmail) {
         refreshTokenRedisRepository.delete(RefreshToken.builder().userEmail(userEmail).build());
     }
@@ -39,6 +40,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(RefreshTokenNotExistException::new).getRefreshToken();
     }
 
+    @Override
+    @Transactional
     public JwtToken reIssueTokens(RefreshTokenRequestDTO refreshTokenRequestDTO) throws RefreshTokenNotExistException {
         String refreshToken = refreshTokenRequestDTO.getRefreshToken();
 

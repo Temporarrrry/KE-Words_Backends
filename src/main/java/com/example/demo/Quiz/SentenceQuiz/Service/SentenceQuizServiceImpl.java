@@ -40,7 +40,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SentenceQuizServiceImpl implements SentenceQuizService {
 
@@ -49,7 +48,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     private final SentenceService sentenceService;
 
     private final RankingService rankingService;
-
 
     private Long saveBaseQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO) {
 
@@ -69,13 +67,13 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
+    @Transactional
     public void deleteQuiz(Long userId, Long quizId) throws NoAuthorityException {
         if (!findById(quizId).getUserId().equals(userId))
             throw new NoAuthorityException();
 
         sentenceQuizRepository.deleteById(quizId);
     }
-
 
     private SentenceQuizMeaningCommonProblemsResponseDTO generateMeaningSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         Integer count = generateSentenceQuizRequestDTO.getCount();
@@ -126,12 +124,9 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    @Transactional
     public SentenceQuizMeaningPracticeProblemsResponseDTO getMeaningPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         return new SentenceQuizMeaningPracticeProblemsResponseDTO(generateMeaningSentenceQuiz(generateSentenceQuizRequestDTO));
     }
-
-
 
 
     private SentenceQuizFillingCommonProblemsResponseDTO generateFillingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) throws SentenceTooShortException {
@@ -199,11 +194,9 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
 
 
     @Override
-    @Transactional
     public SentenceQuizFillingPracticeProblemsResponseDTO getFillingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         return new SentenceQuizFillingPracticeProblemsResponseDTO(generateFillingSentenceQuiz(generateSentenceQuizRequestDTO));
     }
-
 
     private SentenceQuizOrderingCommonProblemsResponseDTO generateOrderingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         Integer count = generateSentenceQuizRequestDTO.getCount();
@@ -253,7 +246,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
     }
 
     @Override
-    @Transactional
     public SentenceQuizOrderingPracticeProblemsResponseDTO getOrderingPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         return new SentenceQuizOrderingPracticeProblemsResponseDTO(generateOrderingSentenceQuiz(generateSentenceQuizRequestDTO));
     }

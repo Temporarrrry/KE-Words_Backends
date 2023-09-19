@@ -9,7 +9,6 @@ import com.example.demo.Word.DTO.WordWithBookmarkResponseDTO;
 import com.example.demo.Word.Entity.Word;
 import com.example.demo.Word.Exception.WordNotExistException;
 import com.example.demo.Word.Repository.WordRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class WordWIthBookmarkServiceImpl implements WordWIthBookmarkService {
     private final WordRepository wordRepository;

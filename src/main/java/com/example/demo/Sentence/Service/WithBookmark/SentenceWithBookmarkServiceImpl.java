@@ -9,7 +9,6 @@ import com.example.demo.Sentence.DTO.SentenceWithBookmarkResponseDTO;
 import com.example.demo.Sentence.Entity.Sentence;
 import com.example.demo.Sentence.Exception.SentenceNotExistException;
 import com.example.demo.Sentence.Repository.SentenceRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SentenceWithBookmarkServiceImpl implements SentenceWithBookmarkService {
 
