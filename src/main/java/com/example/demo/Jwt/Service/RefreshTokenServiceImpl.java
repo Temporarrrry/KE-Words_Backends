@@ -18,7 +18,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    //@Transactional
+    @Transactional
     public void saveOrUpdate(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         String refreshToken = refreshTokenRequestDTO.getRefreshToken();
 
