@@ -31,7 +31,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class WordQuizServiceImpl implements WordQuizService {
     private final WordQuizRepository wordQuizRepository;
@@ -102,7 +101,6 @@ public class WordQuizServiceImpl implements WordQuizService {
     }
 
     @Override
-    @Transactional
     public WordQuizPracticeProblemsResponseDTO getPractice(GenerateWordQuizRequestDTO generateWordQuizRequestDTO) {
         return new WordQuizPracticeProblemsResponseDTO(generateWordQuiz(generateWordQuizRequestDTO));
     }
@@ -111,16 +109,6 @@ public class WordQuizServiceImpl implements WordQuizService {
     @Transactional
     public WordQuizTestProblemsResponseDTO getTest(GenerateWordQuizRequestDTO generateWordQuizRequestDTO) {
         return new WordQuizTestProblemsResponseDTO(generateWordQuiz(generateWordQuizRequestDTO));
-    }
-
-
-    //DELETE
-
-    @Override
-    @Transactional
-    public void deleteQuiz(Long wordQuizId) throws WordQuizNotExistException {
-        if (!wordQuizRepository.existsById(wordQuizId)) throw new WordQuizNotExistException();
-        wordQuizRepository.deleteById(wordQuizId);
     }
 
     //READ

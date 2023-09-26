@@ -1,7 +1,7 @@
 package com.example.demo.Word.Controller;
 
-import com.example.demo.Word.DTO.WordResponseDTO;
-import com.example.demo.Word.Service.WordService;
+import com.example.demo.Word.DTO.WordWithBookmarkResponseDTO;
+import com.example.demo.Word.Service.WithBookmark.WordWIthBookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,21 +15,21 @@ import java.util.List;
 @RequestMapping("/api/word")
 @RequiredArgsConstructor
 public class WordController {
-    private final WordService wordService;
+    private final WordWIthBookmarkService wordWIthBookmarkService;
 
     @GetMapping("/{wordId}")
-    public ResponseEntity<WordResponseDTO> findById(@PathVariable Long wordId) {
-        return new ResponseEntity<>(wordService.findById(wordId), HttpStatus.OK);
+    public ResponseEntity<WordWithBookmarkResponseDTO> findById(@PathVariable Long wordId) {
+        return new ResponseEntity<>(wordWIthBookmarkService.findById(wordId), HttpStatus.OK);
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<WordResponseDTO>> getWordsByRandom(@RequestParam(value = "count") int count) {
+    public ResponseEntity<List<WordWithBookmarkResponseDTO>> getWordsByRandom(@RequestParam(value = "count") int count) {
         if (200 < count) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(wordService.findWordsByRandom(count), HttpStatus.OK);
+        return new ResponseEntity<>(wordWIthBookmarkService.findWordsByRandom(count), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<WordResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable) {
-        return new ResponseEntity<>(wordService.findAll(pageable).getContent(), HttpStatus.OK);
+    public ResponseEntity<List<WordWithBookmarkResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable) {
+        return new ResponseEntity<>(wordWIthBookmarkService.findAll(pageable).getContent(), HttpStatus.OK);
     }
 }

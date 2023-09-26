@@ -13,8 +13,4 @@ public interface LastWordRepository extends JpaRepository<LastWord, Long> {
     <S extends LastWord> S save(S entity);
 
     Optional<LastWord> findByUserId(Long userId);
-
-    void deleteByUserId(Long userId);
-
-    boolean existsByUserId(Long userId);
 }

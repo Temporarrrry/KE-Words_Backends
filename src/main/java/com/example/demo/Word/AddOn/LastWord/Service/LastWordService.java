@@ -7,8 +7,5 @@ public interface LastWordService {
 
     void saveOrUpdate(LastWordRequestDTO lastWordRequestDTO);
 
-    void delete(LastWordRequestDTO lastWordRequestDTO);
-
-
     LastWordResponseDTO findByUserId(Long userId);
 }

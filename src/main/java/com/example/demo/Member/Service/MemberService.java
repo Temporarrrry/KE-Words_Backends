@@ -23,7 +23,7 @@ public interface MemberService extends UserDetailsService {
 
     void resign(String accessToken, String password);
 
-    boolean userEmailDupCheck(String userEmail);
+    Boolean userEmailDupCheck(String userEmail);
 
     Optional<String> findUserEmailById(Long userId);
 

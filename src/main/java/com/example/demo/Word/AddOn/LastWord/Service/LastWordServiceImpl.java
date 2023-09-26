@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class LastWordServiceImpl implements LastWordService {
 
@@ -19,6 +18,7 @@ public class LastWordServiceImpl implements LastWordService {
 
 
     @Override
+    @Transactional
     public void saveOrUpdate(LastWordRequestDTO lastWordRequestDTO) throws WordNotExistException {
         lastWordRepository.findByUserId(lastWordRequestDTO.getUserId()).ifPresentOrElse(
                 lastWord -> lastWord.setWordId(lastWordRequestDTO.getWordId()),
@@ -27,11 +27,6 @@ public class LastWordServiceImpl implements LastWordService {
 
 
         lastWordRepository.save(lastWordRequestDTO.toEntity());
-    }
-
-    @Override
-    public void delete(LastWordRequestDTO lastWordRequestDTO) {
-        lastWordRepository.deleteByUserId(lastWordRequestDTO.getUserId());
     }
 
     @Override

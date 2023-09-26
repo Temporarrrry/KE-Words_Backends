@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class LastSentenceServiceImpl implements LastSentenceService {
 
@@ -19,6 +18,7 @@ public class LastSentenceServiceImpl implements LastSentenceService {
 
 
     @Override
+    @Transactional
     public void saveOrUpdate(LastSentenceRequestDTO lastSentenceRequestDTO) throws WordNotExistException {
         lastSentenceRepository.findByUserId(lastSentenceRequestDTO.getUserId()).ifPresentOrElse(
                 lastSentence -> lastSentence.setSentenceId(lastSentenceRequestDTO.getSentenceId()),
@@ -27,11 +27,6 @@ public class LastSentenceServiceImpl implements LastSentenceService {
 
 
         lastSentenceRepository.save(lastSentenceRequestDTO.toEntity());
-    }
-
-    @Override
-    public void delete(LastSentenceRequestDTO lastSentenceRequestDTO) {
-        lastSentenceRepository.deleteByUserId(lastSentenceRequestDTO.getUserId());
     }
 
     @Override

@@ -12,5 +12,6 @@ public interface WordService {
 
     List<WordResponseDTO> findWordsByRandom(int count);
 
+
     Page<WordResponseDTO> findAll(Pageable pageable);
 }

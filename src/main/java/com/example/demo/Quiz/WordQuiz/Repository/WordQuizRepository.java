@@ -15,8 +15,6 @@ public interface WordQuizRepository extends JpaRepository<WordQuiz, Long> {
     @Override
     <S extends WordQuiz> S save(S entity);
 
-    void deleteById(Long id);
-
     boolean existsById(Long id);
 
     Optional<WordQuiz> findById(Long id);

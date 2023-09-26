@@ -17,8 +17,6 @@ public interface WordQuizService {
 
     WordQuizTestProblemsResponseDTO getTest(GenerateWordQuizRequestDTO generateWordQuizRequestDTO);
 
-    void deleteQuiz(Long wordQuizId);
-
     WordQuizProblemsResultResponseDTO findById(Long id);
     List<WordQuizProblemsResultForAllResponseDTO> findAllByUserId(Long userId, Pageable pageable);
 }

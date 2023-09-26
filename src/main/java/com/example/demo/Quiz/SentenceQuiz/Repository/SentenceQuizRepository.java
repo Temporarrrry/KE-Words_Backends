@@ -15,8 +15,6 @@ public interface SentenceQuizRepository extends JpaRepository<SentenceQuiz, Long
     @Override
     <S extends SentenceQuiz> S save(S entity);
 
-    void deleteById(Long id);
-
     boolean existsById(Long id);
 
     Optional<SentenceQuiz> findById(Long id);

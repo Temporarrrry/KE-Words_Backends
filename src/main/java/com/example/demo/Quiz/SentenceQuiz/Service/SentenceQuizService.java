@@ -16,15 +16,6 @@ import java.util.List;
 
 public interface SentenceQuizService {
 
-    //SentenceQuizResultResponseDTO checkQuiz(SentenceQuizRequestDTO sentenceQuizRequestDTO);
-    void deleteQuiz(Long userId, Long quizId);
-
-    //CommonSentenceQuizProblemsResponseDTO generateFillingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
-
-    //OrderingQuizProblemsResponseDTO generateOrderingSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
-
-    //KoreanWordQuizResponseDTO generateKoreanSentenceQuiz(int count);
-
     SentenceQuizMeaningTestProblemsResponseDTO getMeaningTest(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
     SentenceQuizMeaningPracticeProblemsResponseDTO getMeaningPractice(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO);
 

@@ -45,17 +45,6 @@ public class WordQuizController {
         return new ResponseEntity<>(test, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{quizId}")
-    public ResponseEntity<Void> deleteQuizResult(@PathVariable Long quizId) {
-        Long userId = memberService.findIdByAuthentication();
-        if (!Objects.equals(wordQuizService.findById(quizId).getUserId(), userId))
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        wordQuizService.deleteQuiz(quizId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
     @GetMapping("/{quizId}")
     public ResponseEntity<WordQuizProblemsResultResponseDTO> findById(@PathVariable Long quizId) {
         Long userId = memberService.findIdByAuthentication();

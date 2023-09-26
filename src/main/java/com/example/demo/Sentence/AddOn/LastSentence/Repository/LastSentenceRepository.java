@@ -13,8 +13,4 @@ public interface LastSentenceRepository extends JpaRepository<LastSentence, Long
     <S extends LastSentence> S save(S entity);
 
     Optional<LastSentence> findByUserId(Long userId);
-
-    void deleteByUserId(Long userId);
-
-    boolean existsByUserId(Long userId);
 }

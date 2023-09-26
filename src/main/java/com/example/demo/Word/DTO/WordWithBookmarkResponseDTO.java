@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordResponseDTO {
+public class WordWithBookmarkResponseDTO {
     private Long id;
 
     @NotBlank
@@ -24,9 +24,10 @@ public class WordResponseDTO {
 
     Boolean isBookmarked;
 
-    public WordResponseDTO(Word word) {
+    public WordWithBookmarkResponseDTO(Word word, Boolean isBookmarked) {
         this.id = word.getId();
         this.english = word.getEnglish();
         this.korean = Arrays.asList(word.getKorean().split("/"));
+        this.isBookmarked = isBookmarked;
     }
 }
