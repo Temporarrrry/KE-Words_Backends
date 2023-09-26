@@ -30,12 +30,6 @@ public class LastSentenceServiceImpl implements LastSentenceService {
     }
 
     @Override
-    @Transactional
-    public void delete(LastSentenceRequestDTO lastSentenceRequestDTO) {
-        lastSentenceRepository.deleteByUserId(lastSentenceRequestDTO.getUserId());
-    }
-
-    @Override
     public LastSentenceResponseDTO findByUserId(Long userId) {
         LastSentence lastSentence = lastSentenceRepository.findByUserId(userId).orElseThrow(LastSentenceNotExistException::new);
         return new LastSentenceResponseDTO(lastSentence);

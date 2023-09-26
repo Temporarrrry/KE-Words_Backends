@@ -111,16 +111,6 @@ public class WordQuizServiceImpl implements WordQuizService {
         return new WordQuizTestProblemsResponseDTO(generateWordQuiz(generateWordQuizRequestDTO));
     }
 
-
-    //DELETE
-
-    @Override
-    @Transactional
-    public void deleteQuiz(Long wordQuizId) throws WordQuizNotExistException {
-        if (!wordQuizRepository.existsById(wordQuizId)) throw new WordQuizNotExistException();
-        wordQuizRepository.deleteById(wordQuizId);
-    }
-
     //READ
 
     private WordQuizProblemsResultResponseDTO toResultResponseDTO(WordQuiz wordQuiz) {

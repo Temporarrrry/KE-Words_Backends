@@ -30,12 +30,6 @@ public class LastWordServiceImpl implements LastWordService {
     }
 
     @Override
-    @Transactional
-    public void delete(LastWordRequestDTO lastWordRequestDTO) {
-        lastWordRepository.deleteByUserId(lastWordRequestDTO.getUserId());
-    }
-
-    @Override
     public LastWordResponseDTO findByUserId(Long userId) {
         LastWord lastWord = lastWordRepository.findByUserId(userId).orElseThrow(LastWordNotExistException::new);
         return new LastWordResponseDTO(lastWord);

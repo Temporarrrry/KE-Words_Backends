@@ -7,8 +7,5 @@ public interface LastSentenceService {
 
     void saveOrUpdate(LastSentenceRequestDTO lastSentenceRequestDTO);
 
-    void delete(LastSentenceRequestDTO lastSentenceRequestDTO);
-
-
     LastSentenceResponseDTO findByUserId(Long userId);
 }

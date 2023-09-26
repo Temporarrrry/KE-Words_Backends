@@ -66,15 +66,6 @@ public class SentenceQuizServiceImpl implements SentenceQuizService {
         return sentenceQuizRepository.save(sentenceQuiz).getId();
     }
 
-    @Override
-    @Transactional
-    public void deleteQuiz(Long userId, Long quizId) throws NoAuthorityException {
-        if (!findById(quizId).getUserId().equals(userId))
-            throw new NoAuthorityException();
-
-        sentenceQuizRepository.deleteById(quizId);
-    }
-
     private SentenceQuizMeaningCommonProblemsResponseDTO generateMeaningSentenceQuiz(GenerateSentenceQuizRequestDTO generateSentenceQuizRequestDTO) {
         Integer count = generateSentenceQuizRequestDTO.getCount();
         Long userId = generateSentenceQuizRequestDTO.getUserId();

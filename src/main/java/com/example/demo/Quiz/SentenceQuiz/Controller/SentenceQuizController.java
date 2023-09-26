@@ -81,16 +81,6 @@ public class SentenceQuizController {
 
     //=====================
 
-    @DeleteMapping("/{quizId}")
-    public ResponseEntity<Void> deleteQuizResult(@PathVariable Long quizId) {
-        Long userId = memberService.findIdByAuthentication();
-
-        sentenceQuizService.deleteQuiz(userId, quizId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-
     @GetMapping("/{quizId}")
     public ResponseEntity<SentenceQuizProblemsResultResponseDTO> findById(@PathVariable Long quizId) {
         Long userId = memberService.findIdByAuthentication();
